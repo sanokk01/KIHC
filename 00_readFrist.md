@@ -31,7 +31,7 @@
 - `/adminpage1/about`, `/adminpage1/settings`: D1 기반 소개·사이트 정보 수정 및 이사장·조직도 이미지 업로드
 - 공개 Header/Footer에는 관리자 링크를 노출하지 않으며 기존 `/admin` 경로는 제거함
 - 저장 결과는 공동 관리자에게 공유되고 공개 홈페이지에 바로 반영됨
-- 배포 관리자 쓰기는 사이트 접근 권한이 있는 ChatGPT 로그인 사용자에게 허용됨. 특정 개인 계정 ID를 소스에 고정하지 않음
+- 공개 홈페이지는 GPT 로그인 없이 접속 가능하며, 관리자 쓰기는 ChatGPT 로그인 사용자에게만 허용됨. 특정 개인 계정 ID를 소스에 고정하지 않음
 
 ### Git 공동 작업
 
@@ -61,6 +61,7 @@
 - 가로형 투명 로고: `public/kihc-logo-horizontal.png`
 - 공유 이미지: `public/og.png`
 - 배포 주소: `https://kihc-research.gangstar1273.chatgpt.site`
+- 배포 접근 모드: `public` — 일반 방문자는 GPT 로그인 없이 공개 페이지 열람 가능, `/adminpage1`은 로그인 필요
 
 ## 3. 아직 미구현 또는 후속 작업인 부분
 
@@ -176,6 +177,7 @@
 - Sites 배포 관리자 화면에서 D1 임시 소식 등록 → 공개 `/news` 즉시 반영 → 관리자 삭제까지 실데이터 검증 완료
 - R2 업로드 API·관리자 파일 선택 UI·공개 이미지 route는 typecheck/build/test를 통과했으나, 브라우저 자동화 환경의 로컬 파일 선택 제한으로 운영 R2 실파일 업로드는 수동 1회 확인이 남아 있음
 - Sites 배포 버전 6이 `https://kihc-research.gangstar1273.chatgpt.site`에 반영된 것을 관리자/공개 화면에서 확인
+- Sites 접근 모드를 `public`으로 변경하고 비로그인 HTTP 요청에서 `/` 응답 200, `/adminpage1`의 ChatGPT 인증 이동을 확인
 - GitHub `origin/main` push는 이 PC의 GitHub 인증 부재로 실패했으며 기능 구현 commit은 `7145cba`
 
 ## 9. 다음 우선순위
