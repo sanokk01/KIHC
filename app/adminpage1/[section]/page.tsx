@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AdminContentManager, type AdminContentRecord, type AdminSection } from "../../components/AdminContentManager";
 import { AdminShell } from "../../components/AdminShell";
-import { contentRepository } from "../../lib/content";
+import { getAdminRecords, getAdminSingleton } from "../../lib/admin-data";
+import { requireAdminUser } from "../../lib/admin-auth";
 
 export const metadata: Metadata = { title: "콘텐츠 관리" };
 
@@ -14,30 +15,21 @@ const sectionInfo: Record<AdminSection, { label: string; eyebrow: string; descri
   settings: { label: "사이트 설정", eyebrow: "SITE SETTINGS", description: "사이트명과 Footer 기본 정보를 관리합니다." },
 };
 
-function recordsFor(section: AdminSection): AdminContentRecord[] {
-  if (section === "news") return contentRepository.listNews().map((item) => ({ id: item.id, title: item.title, publishedAt: item.publishedAt, status: item.status, excerpt: item.excerpt, content: item.content.join("\n\n") }));
-  if (section === "research") return contentRepository.listResearch().map((item) => ({ id: item.id, title: item.title, publishedAt: item.publishedAt, status: item.status, author: item.author, summary: item.summary, tableOfContents: item.tableOfContents.join("\n"), keywords: item.keywords.join(", ") }));
-  if (section === "popup") {
-    const popup = contentRepository.getActivePopup();
-    return popup ? [{ id: popup.id, title: popup.title, content: popup.content, link: popup.link, active: popup.active, startsAt: popup.startsAt, endsAt: popup.endsAt }] : [];
-  }
-  if (section === "about") {
-    const about = contentRepository.getAbout();
-    return [{ id: "about", title: "KIHC 소개", chairmanMessage: about.chairmanMessage.join("\n\n"), organizationIntroduction: about.organizationIntroduction.join("\n\n"), purpose: about.purpose, vision: about.vision }];
-  }
-  const settings = contentRepository.getSettings();
-  return [{ id: "settings", title: "사이트 설정", siteName: settings.siteName, footerInformation: settings.footerInformation, email: settings.email }];
+async function recordsFor(section: AdminSection): Promise<AdminContentRecord[]> {
+  if (section === "news" || section === "research" || section === "popup") return getAdminRecords(section);
+  return [await getAdminSingleton(section)];
 }
 
 export default async function AdminSectionPage({ params }: { params: Promise<{ section: string }> }) {
   const { section: rawSection } = await params;
   if (!(rawSection in sectionInfo)) notFound();
   const section = rawSection as AdminSection;
+  await requireAdminUser(`/adminpage1/${section}`);
   const info = sectionInfo[section];
   return (
     <AdminShell active={info.label}>
       <div className="admin-title"><div><p>{info.eyebrow}</p><h1>{info.label}</h1><span>{info.description}</span></div></div>
-      <AdminContentManager section={section} initialRecords={recordsFor(section)} />
+      <AdminContentManager section={section} initialRecords={await recordsFor(section)} />
     </AdminShell>
   );
 }

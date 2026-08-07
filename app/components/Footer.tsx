@@ -2,8 +2,8 @@ import { contentRepository } from "../lib/content";
 import { AppLink as Link } from "./AppLink";
 import { Logo } from "./Logo";
 
-export function Footer() {
-  const settings = contentRepository.getSettings();
+export async function Footer() {
+  const settings = await contentRepository.getSettings();
   return (
     <footer className="site-footer">
       <div className="container footer-top">

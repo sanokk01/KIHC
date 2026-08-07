@@ -7,8 +7,8 @@ import { contentRepository } from "../lib/content";
 
 export const metadata: Metadata = { title: "연구회 소식" };
 
-export default function NewsPage() {
-  const posts = contentRepository.listNews();
+export default async function NewsPage() {
+  const posts = await contentRepository.listNews();
   return (
     <>
       <SiteHeader />

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- R2 media is served by the app's immutable media route. */
 import type { Metadata } from "next";
 import { Footer } from "../components/Footer";
 import { PageHero } from "../components/PageHero";
@@ -6,8 +7,8 @@ import { contentRepository } from "../lib/content";
 
 export const metadata: Metadata = { title: "KIHC 소개" };
 
-export default function AboutPage() {
-  const about = contentRepository.getAbout();
+export default async function AboutPage() {
+  const about = await contentRepository.getAbout();
   return (
     <>
       <SiteHeader />
@@ -24,9 +25,7 @@ export default function AboutPage() {
 
         <section className="about-section" id="chairman">
           <div className="container about-chairman">
-            <div className="portrait-placeholder" aria-label="이사장 사진 준비 중">
-              <span>CHAIRMAN</span>
-            </div>
+            {about.chairmanImageUrl ? <div className="portrait-image"><img src={about.chairmanImageUrl} alt="한국인재역량연구회 이사장" /></div> : <div className="portrait-placeholder" aria-label="이사장 사진 준비 중"><span>CHAIRMAN</span></div>}
             <div className="about-copy">
               <p className="eyebrow">Chairman&apos;s Message</p>
               <h2>사람에 대한 깊은 이해에서<br />연구를 시작합니다.</h2>
@@ -64,7 +63,7 @@ export default function AboutPage() {
           <div className="container">
             <p className="eyebrow">Organization</p>
             <h2>조직도</h2>
-            <div className="organization-placeholder">
+            {about.organizationImageUrl ? <div className="organization-image"><img src={about.organizationImageUrl} alt="한국인재역량연구회 조직도" /></div> : <div className="organization-placeholder">
               <div className="org-node primary">이사장</div>
               <div className="org-line" aria-hidden="true" />
               <div className="org-node">운영위원회</div>
@@ -74,7 +73,7 @@ export default function AboutPage() {
                 <div className="org-node">대외협력</div>
               </div>
               <p>향후 관리자 화면에서 조직도 이미지로 교체할 수 있는 영역입니다.</p>
-            </div>
+            </div>}
           </div>
         </section>
       </main>

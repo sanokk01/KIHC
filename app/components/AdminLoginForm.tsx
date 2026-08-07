@@ -2,13 +2,11 @@
 
 import { AppLink as Link } from "./AppLink";
 
-export function AdminLoginForm() {
+export function AdminLoginForm({ authenticated = false }: { authenticated?: boolean }) {
   return (
-    <form className="admin-login-form" onSubmit={(event) => event.preventDefault()}>
-      <label><span>아이디</span><input name="id" autoComplete="username" placeholder="관리자 아이디" /></label>
-      <label><span>비밀번호</span><input name="password" type="password" autoComplete="current-password" placeholder="비밀번호" /></label>
-      <Link prefetch={false} className="admin-login-button" href="/adminpage1">개발 화면으로 입장</Link>
-      <p>현재는 인증이 연결되지 않은 개발용 화면입니다.</p>
-    </form>
+    <div className="admin-login-form">
+      <Link prefetch={false} className="admin-login-button" href={authenticated ? "/adminpage1" : "/signin-with-chatgpt?return_to=%2Fadminpage1"}>{authenticated ? "관리자 화면으로 이동" : "ChatGPT 계정으로 로그인"}</Link>
+      <p>사이트에 접근 권한을 받은 팀원은 각자의 ChatGPT 계정으로 공동 관리할 수 있습니다.</p>
+    </div>
   );
 }

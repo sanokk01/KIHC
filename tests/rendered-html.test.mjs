@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-async function render(pathname = "/") {
+async function render(pathname = "/", authenticated = true) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${pathname}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request(`http://localhost${pathname}`, { headers: { accept: "text/html" } }),
+    new Request(`http://${authenticated ? "localhost" : "kihc.example"}${pathname}`, { headers: authenticated ? { accept: "text/html", "oai-authenticated-user-id": "test-user", "oai-authenticated-user-email": "admin@kihc.test" } : { accept: "application/json" } }),
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
     { waitUntil() {}, passThroughOnException() {} },
   );
@@ -45,9 +45,16 @@ test("renders functional admin content managers", async () => {
   const responses = await Promise.all(["news", "research", "popup", "about", "settings"].map((section) => render(`/adminpage1/${section}`)));
   responses.forEach((response) => assert.equal(response.status, 200));
   const html = await responses[0].text();
-  assert.match(html, /로컬 미리보기 저장/);
+  assert.match(html, /DB 연결됨/);
   assert.match(html, /새 콘텐츠/);
   assert.doesNotMatch(html, /PDF 다운로드|PDF viewer/i);
+});
+
+test("protects admin write APIs while allowing authenticated reads", async () => {
+  const [authorized, unauthorized] = await Promise.all([render("/api/admin/content/news"), render("/api/admin/content/news", false)]);
+  assert.equal(authorized.status, 200);
+  assert.equal(unauthorized.status, 401);
+  assert.match(await authorized.text(), /2026년 한국인재역량연구회 연구 방향 안내/);
 });
 
 test("does not expose PDF routes or links", async () => {

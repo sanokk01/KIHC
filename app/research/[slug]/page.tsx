@@ -1,21 +1,24 @@
+/* eslint-disable @next/next/no-img-element -- R2 media is served by the app's immutable media route. */
 import type { Metadata } from "next";
 import { AppLink as Link } from "../../components/AppLink";
 import { Footer } from "../../components/Footer";
 import { OriginalInquiry } from "../../components/OriginalInquiry";
 import { SiteHeader } from "../../components/SiteHeader";
 import { contentRepository } from "../../lib/content";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = { title: "연구정책자료" };
 
 export default async function ResearchDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const item = contentRepository.getResearchBySlug(slug) ?? contentRepository.listResearch()[0];
+  const item = await contentRepository.getResearchBySlug(slug);
+  if (!item) notFound();
   return (
     <>
       <SiteHeader />
       <main className="research-detail-main">
         <article className="container research-detail">
-          <div className="detail-cover"><span>KIHC RESEARCH</span><strong>REPORT</strong></div>
+          <div className="detail-cover">{item.imageUrl ? <img className="content-cover-image" src={item.imageUrl} alt="" /> : null}<span>KIHC RESEARCH</span><strong>REPORT</strong></div>
           <div className="detail-intro">
             <p className="eyebrow">Research & Policy</p>
             <h1>{item.title}</h1>

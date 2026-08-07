@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- R2 media is served by the app's immutable media route. */
 import type { Metadata } from "next";
 import { Footer } from "../components/Footer";
 import { AppLink as Link } from "../components/AppLink";
@@ -7,8 +8,8 @@ import { contentRepository } from "../lib/content";
 
 export const metadata: Metadata = { title: "연구정책자료" };
 
-export default function ResearchPage() {
-  const materials = contentRepository.listResearch();
+export default async function ResearchPage() {
+  const materials = await contentRepository.listResearch();
   return (
     <>
       <SiteHeader />
@@ -20,7 +21,7 @@ export default function ResearchPage() {
             <div className="research-grid listing-grid">
               {materials.map((item, index) => (
                 <Link prefetch={false} className="research-card" href={`/research/${item.slug}`} key={item.id}>
-                  <div className={`research-cover cover-${index + 1}`}><span>KIHC RESEARCH</span><strong>{String(index + 1).padStart(2, "0")}</strong></div>
+                  <div className={`research-cover cover-${index + 1}`}>{item.imageUrl ? <img className="content-cover-image" src={item.imageUrl} alt="" /> : null}<span>KIHC RESEARCH</span><strong>{String(index + 1).padStart(2, "0")}</strong></div>
                   <div className="research-card-body"><p>{item.publishedAt}</p><h2>{item.title}</h2><span className="card-arrow" aria-hidden="true">↗</span></div>
                 </Link>
               ))}

@@ -2,17 +2,19 @@ import type { Metadata } from "next";
 import { AppLink as Link } from "../../components/AppLink";
 import { AdminLoginForm } from "../../components/AdminLoginForm";
 import { Logo } from "../../components/Logo";
+import { getAdminUser } from "../../lib/admin-auth";
 
 export const metadata: Metadata = { title: "관리자 로그인" };
 
-export default function AdminLoginPage() {
+export default async function AdminLoginPage() {
+  const user = await getAdminUser();
   return (
     <main className="admin-login-page">
       <Link prefetch={false} className="back-site" href="/">← 사이트로 돌아가기</Link>
       <section className="admin-login-panel">
         <Logo />
         <div className="admin-login-heading"><p>KIHC ADMIN</p><h1>관리자 로그인</h1><span>콘텐츠 관리 화면에 접속합니다.</span></div>
-        <AdminLoginForm />
+        <AdminLoginForm authenticated={Boolean(user)} />
       </section>
     </main>
   );

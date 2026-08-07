@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element -- R2 media is served by the app's immutable media route. */
+
 import { useEffect, useState } from "react";
 import type { PopupNotice } from "../lib/content";
 import { AppLink as Link } from "./AppLink";
@@ -24,7 +26,7 @@ export function NoticePopup({ popup }: { popup: PopupNotice }) {
   return (
     <div className="notice-backdrop" role="dialog" aria-modal="true" aria-labelledby="notice-title">
       <div className="notice-popup">
-        <div className="notice-visual" aria-hidden="true"><span>KIHC NOTICE</span></div>
+        {popup.imageUrl ? <div className="notice-image"><img src={popup.imageUrl} alt="" /></div> : <div className="notice-visual" aria-hidden="true"><span>KIHC NOTICE</span></div>}
         <div className="notice-content">
           <p className="eyebrow">Notice</p>
           <h2 id="notice-title">{popup.title}</h2>

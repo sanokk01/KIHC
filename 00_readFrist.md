@@ -24,38 +24,52 @@
 
 ### Admin
 
-- `/adminpage1/login`: 실제 인증이 아님을 명시한 개발용 진입 화면
-- `/adminpage1`: 콘텐츠 현황 대시보드
-- `/adminpage1/news`, `/adminpage1/research`, `/adminpage1/popup`: 검색·등록·수정·삭제가 동작하는 관리자 미리보기
-- `/adminpage1/about`, `/adminpage1/settings`: 입력·수정·저장이 동작하는 관리자 미리보기
+- 관리자 접속 주소: `https://kihc-research.gangstar1273.chatgpt.site/adminpage1`
+- `/adminpage1/login`: ChatGPT 계정 로그인 안내 화면
+- `/adminpage1`: D1 콘텐츠 현황 대시보드
+- `/adminpage1/news`, `/adminpage1/research`, `/adminpage1/popup`: D1 기반 검색·등록·수정·삭제 및 R2 이미지 업로드
+- `/adminpage1/about`, `/adminpage1/settings`: D1 기반 소개·사이트 정보 수정 및 이사장·조직도 이미지 업로드
 - 공개 Header/Footer에는 관리자 링크를 노출하지 않으며 기존 `/admin` 경로는 제거함
-- 현재 관리자 저장 기능은 브라우저 `localStorage` 기반이며 공개 홈페이지·서버 DB에는 반영되지 않음
+- 저장 결과는 공동 관리자에게 공유되고 공개 홈페이지에 바로 반영됨
+- 배포 관리자 쓰기는 사이트 접근 권한이 있는 ChatGPT 로그인 사용자에게 허용됨. 특정 개인 계정 ID를 소스에 고정하지 않음
+
+### Git 공동 작업
+
+- GitHub: `https://github.com/sanokk01/KIHC`
+- 같은 저장소를 clone/pull한 팀원은 일반 Git 방식으로 모든 소스 파일을 수정·커밋·push할 수 있음
+- 시작 전 `00_readFrist.md`, `git status`, 최근 commit을 확인하고 완료 후 이 문서를 갱신할 것
+- 개인 계정 ID, DB ID, R2 bucket ID, 인증 토큰은 소스에 직접 기록하지 않음. `.openai/hosting.json`에는 논리 binding 이름만 유지
 
 ### 공통 구조
 
-- 도메인 타입 및 임시 Repository: `app/lib/content.ts`
+- Public 콘텐츠 Repository와 기본 fallback 데이터: `app/lib/content.ts`
+- 관리자 공통 타입·변환: `app/lib/admin-types.ts`, `app/lib/admin-data.ts`
+- DB/R2 접근 경계: `db/content-store.ts`
+- D1 Drizzle 스키마: `db/schema.ts`, migration: `drizzle/0000_skinny_viper.sql`
+- 관리자 API: `app/api/admin/**`, 공개 이미지 route: `app/api/media/[id]`
+- 논리 binding: D1 `DB`, R2 `MEDIA` (`.openai/hosting.json`)
 - 공식 로고 원본: `public/kihc-logo.png`
 - 가로형 투명 로고: `public/kihc-logo-horizontal.png`
 - 공유 이미지: `public/og.png`
 - 배포 주소: `https://kihc-research.gangstar1273.chatgpt.site`
 
-## 3. 아직 Mock 또는 미구현인 부분
+## 3. 아직 미구현 또는 후속 작업인 부분
 
-- DB 영구 저장과 실제 CRUD
-- 관리자 인증과 접근 제어
 - 문의 이메일/API 전송
 - 검색 결과 필터링과 실제 pagination
-- 이미지 업로드 및 미디어 저장소
-- 관리자 미리보기 데이터를 공개 사이트에 반영하는 저장 API
+- 관리자 역할 구분(소유자/편집자/열람자)과 초대 관리 UI
+- 사용하지 않는 R2 이미지 정리 기능
 - 확정 기관 정보, 대표 연락처, 개인정보처리방침 및 저작권 전문
-- 실제 이사장 사진, 조직도 이미지, 연구자료 썸네일
+- 실제 운영용 이사장 사진, 조직도 이미지, 연구자료 썸네일 데이터 입력
 
-## 4. DB/API 연결 지점
+## 4. DB/API 및 권한 연결 지점
 
-- DB: `app/lib/content.ts`의 `ContentRepository` 구현을 `DatabaseContentRepository`로 교체한다.
-- 인증: `app/adminpage1/login`과 `app/components/AdminLoginForm.tsx`에서 실제 Auth 서비스로 연결한다.
+- DB: 공개 읽기는 `app/lib/content.ts`, 관리자 쓰기는 `app/lib/admin-data.ts`가 `db/content-store.ts`를 통해 D1에 접근한다.
+- 이미지: `POST /api/admin/upload`가 R2 `MEDIA`에 파일을 저장하고 D1 `media_assets`에 메타데이터를 기록한다. 공개 URL은 `/api/media/[id]`이다.
+- 인증: `app/lib/admin-auth.ts`가 관리자 page/API를 보호한다. 배포 환경에서는 ChatGPT 인증 header가 필요하고 localhost는 개발 편의를 위해 허용한다.
+- 협업: 소스 수정 권한은 GitHub 저장소 권한으로 관리하고, 배포 관리자 접근 권한은 Sites 공유 설정으로 관리한다.
 - 문의: `app/components/ContactForm.tsx`의 submit 경계에 문의 API를 연결한다.
-- 현재 Mock 데이터가 실제로 저장되는 것처럼 가정하지 않는다.
+- DB가 없는 Node test 환경에서는 `app/lib/content.ts`의 기본 데이터로 fallback한다. 배포 환경의 D1이 authoritative source이다.
 
 ## 5. 검증 기준
 
@@ -80,7 +94,18 @@
 6. 이 문서의 현재 상태, Mock 범위, 검증 결과, 진행 기록을 갱신한다.
 7. 검증된 버전만 배포한다.
 
-## 7. 진행 기록
+## 7. 다른 AI 에이전트 인수인계 절차
+
+1. `C:\GitHub_clone\KIHC\00_readFrist.md` 전체를 먼저 읽는다.
+2. `git status --short`, `git log -5 --oneline`, `.openai/hosting.json`을 확인한다.
+3. DB 스키마 변경 시 `db/schema.ts` 수정 후 `drizzle-kit generate`를 실행하고 생성 SQL을 검토한다.
+4. 콘텐츠 도메인 필드는 `app/lib/content.ts`, 관리자 입력 타입은 `app/lib/admin-types.ts`, DB 변환은 `app/lib/admin-data.ts`를 함께 맞춘다.
+5. 이미지 파일 자체를 D1에 넣지 말고 R2 `MEDIA`에 저장한다.
+6. 관리자 API는 `app/lib/admin-auth.ts`의 권한 검사를 반드시 유지한다.
+7. TypeScript, ESLint, production build, `tests/rendered-html.test.mjs`를 통과시킨다.
+8. 완료 후 진행 기록, 남은 작업, 검증 결과를 이 문서에 추가한다.
+
+## 8. 진행 기록
 
 ### 2026-08-08 — 홈페이지 1차 골격
 
@@ -129,11 +154,24 @@
 - 배포 주소에서 가로형 로고 로드, 공개 관리자 링크 0개, `/adminpage1` 진입, 가로 overflow 0, console error 0건 재확인
 - 검증 및 배포 상태: 완료
 
-## 8. 다음 우선순위
+### 2026-08-08 — 관리자 D1/R2 영구 저장 연결
+
+- `.openai/hosting.json`에 D1 `DB`, R2 `MEDIA` 논리 binding 추가
+- 콘텐츠, 단일 설정, 미디어 메타데이터 Drizzle 스키마와 최초 migration 생성
+- 뉴스·연구자료·팝업 CRUD를 D1 API에 연결하고 기존 localStorage 저장 제거
+- 뉴스·연구자료·팝업·이사장·조직도 이미지 업로드를 R2에 연결
+- 관리자 저장 결과를 공개 홈·목록·상세·소개·Footer·팝업에서 비동기 조회하도록 연결
+- 관리자 page와 쓰기 API에 ChatGPT 사용자 인증 적용. 특정 개인 계정으로 제한하지 않아 초대된 공동 사용자가 각자 로그인해 작업 가능
+- Git 저장소를 공유받은 팀원이 동일 파일로 이어서 개발할 수 있도록 구조·작업 순서·주의사항 문서화
+- TypeScript, production build 및 렌더링/API 테스트 5건 통과
+- 실제 배포 D1/R2 저장·이미지 업로드 검증: 진행 중
+
+## 9. 다음 우선순위
 
 다음 상세 지시를 받기 전 임의 구현하지 않는다. 우선 검토 대상은 다음과 같다.
 
-1. DB Repository 구현과 관리자 저장 API 연결
-2. 실제 Auth 및 접근 제어 연결
-3. 이미지 업로드·미디어 저장소 연결
-4. 문의 API 연결
+1. 협업 사용자 초대·역할 관리 UI
+2. 문의 이메일/API 연결
+3. 공개 검색·pagination 연결
+4. 운영 이미지와 확정 기관 정보 입력
+5. 미사용 R2 이미지 정리 기능

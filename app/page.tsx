@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- R2 media is served by the app's immutable media route. */
 import { AppLink as Link } from "./components/AppLink";
 import { Footer } from "./components/Footer";
 import { NoticePopup } from "./components/NoticePopup";
@@ -25,10 +26,10 @@ const focusAreas = [
   },
 ];
 
-export default function Home() {
-  const research = contentRepository.listResearch().slice(0, 3);
-  const news = contentRepository.listNews().slice(0, 5);
-  const popup = contentRepository.getActivePopup();
+export default async function Home() {
+  const [allResearch, allNews, popup] = await Promise.all([contentRepository.listResearch(), contentRepository.listNews(), contentRepository.getActivePopup()]);
+  const research = allResearch.slice(0, 3);
+  const news = allNews.slice(0, 5);
 
   return (
     <>
@@ -98,6 +99,7 @@ export default function Home() {
               {research.map((item, index) => (
                 <Link prefetch={false} className="research-card" href={`/research/${item.slug}`} key={item.id}>
                   <div className={`research-cover cover-${index + 1}`}>
+                    {item.imageUrl ? <img className="content-cover-image" src={item.imageUrl} alt="" /> : null}
                     <span>KIHC RESEARCH</span>
                     <strong>{String(index + 1).padStart(2, "0")}</strong>
                   </div>
