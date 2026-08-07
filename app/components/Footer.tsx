@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { contentRepository } from "../lib/content";
+import { AppLink as Link } from "./AppLink";
 import { Logo } from "./Logo";
 
 export function Footer() {

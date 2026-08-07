@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { PopupNotice } from "../lib/content";
+import { AppLink as Link } from "./AppLink";
 
 export function NoticePopup({ popup }: { popup: PopupNotice }) {
   const [visible, setVisible] = useState(false);

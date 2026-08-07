@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { AdminShell } from "../components/AdminShell";
+import { AppLink as Link } from "../components/AppLink";
 import { contentRepository } from "../lib/content";
 
 export const metadata: Metadata = { title: "관리자 대시보드" };

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { AppLink as Link } from "./AppLink";
 
 export function Logo({ compact = false }: { compact?: boolean }) {
   return (

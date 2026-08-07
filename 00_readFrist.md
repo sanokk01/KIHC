@@ -91,7 +91,8 @@
 - Mobile Public 주요 화면의 가로 overflow 없음 확인
 - 소개 앵커, 원문 문의 모달, 문의 필수값 validation 확인
 - 배포 환경의 Next Link 사전 로딩 오류와 mobile menu 미동작 발견
-- 모든 내부 Link의 자동 prefetch를 비활성화하도록 수정
+- 자동 prefetch 비활성화만으로는 오류가 완전히 해소되지 않음을 재확인
+- 원인을 배포 런타임의 `next/link` 호환 문제로 좁히고 표준 anchor 기반 `AppLink`로 교체
 - 수정 후 검증 및 재배포 상태: 진행 중
 
 ## 8. 다음 우선순위

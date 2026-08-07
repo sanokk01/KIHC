@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
+import { AppLink as Link } from "./AppLink";
 
 export function OriginalInquiry() {
   const [open, setOpen] = useState(false);

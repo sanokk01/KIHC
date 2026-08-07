@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { AppLink as Link } from "../../components/AppLink";
 import { Footer } from "../../components/Footer";
 import { OriginalInquiry } from "../../components/OriginalInquiry";
 import { SiteHeader } from "../../components/SiteHeader";

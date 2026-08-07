@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Footer } from "../components/Footer";
+import { AppLink as Link } from "../components/AppLink";
 import { PageHero } from "../components/PageHero";
 import { SiteHeader } from "../components/SiteHeader";
 import { contentRepository } from "../lib/content";

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { AppLink as Link } from "./components/AppLink";
 import { Footer } from "./components/Footer";
 import { NoticePopup } from "./components/NoticePopup";
 import { SiteHeader } from "./components/SiteHeader";

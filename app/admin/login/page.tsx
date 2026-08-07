@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { AppLink as Link } from "../../components/AppLink";
 import { AdminLoginForm } from "../../components/AdminLoginForm";
 import { Logo } from "../../components/Logo";
 

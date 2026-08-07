@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Logo } from "./Logo";
+import { AppLink as Link } from "./AppLink";
 
 const navigation = [
   { label: "Dashboard", href: "/admin", icon: "D" },
