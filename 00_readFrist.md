@@ -107,7 +107,8 @@
 - 원본의 넓은 투명 여백은 파일을 변형하지 않고 CSS 표시 영역에서 조정
 - Header, Footer, Admin 및 mobile 표시와 가로 overflow 없음 확인
 - TypeScript, ESLint, production build, 렌더링 테스트 3건 통과
-- 검증 및 재배포 상태: 진행 중
+- 새 배포본에서 공식 로고 asset 로드, 가로 overflow 없음, console error 0건 확인
+- 검증 및 재배포 상태: 완료
 
 ## 8. 다음 우선순위
 
