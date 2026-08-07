@@ -32,6 +32,7 @@
 ### 공통 구조
 
 - 도메인 타입 및 임시 Repository: `app/lib/content.ts`
+- 공식 로고 원본: `public/kihc-logo.png`
 - 공유 이미지: `public/og.png`
 - 배포 주소: `https://kihc-research.gangstar1273.chatgpt.site`
 
@@ -98,6 +99,15 @@
 - 공지 팝업의 `오늘 하루 보지 않음` 선택 후 새로고침 시 재노출되지 않음 확인
 - TypeScript, ESLint, production build, 렌더링 테스트 3건 모두 통과
 - 수정 후 검증 및 재배포 상태: 완료
+
+### 2026-08-08 — 공식 로고 적용
+
+- 사용자 제공 `logo.PNG`를 원본 그대로 `public/kihc-logo.png`에 추가
+- 공통 `Logo` 컴포넌트를 제공된 공식 로고로 교체
+- 원본의 넓은 투명 여백은 파일을 변형하지 않고 CSS 표시 영역에서 조정
+- Header, Footer, Admin 및 mobile 표시와 가로 overflow 없음 확인
+- TypeScript, ESLint, production build, 렌더링 테스트 3건 통과
+- 검증 및 재배포 상태: 진행 중
 
 ## 8. 다음 우선순위
 

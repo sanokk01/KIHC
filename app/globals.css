@@ -41,11 +41,9 @@ button { cursor: pointer; }
 /* Header */
 .site-header { position: relative; z-index: 50; height: 88px; border-bottom: 1px solid rgba(9, 38, 71, .12); background: rgba(255,255,255,.97); }
 .header-inner { display: flex; align-items: center; justify-content: space-between; height: 100%; }
-.logo { display: inline-flex; align-items: center; gap: 12px; flex-shrink: 0; }
-.logo-mark { display: grid; place-items: center; width: 41px; height: 41px; border-radius: 50% 50% 46% 54%; background: var(--navy-900); color: white; font-family: Georgia, serif; font-size: 22px; font-weight: 700; }
-.logo-type { display: flex; flex-direction: column; line-height: 1.1; }
-.logo-type strong { color: var(--navy-900); font-family: Georgia, serif; font-size: 23px; letter-spacing: .04em; }
-.logo-type small { margin-top: 6px; color: #536273; font-size: 10px; font-weight: 700; letter-spacing: .08em; }
+.logo { display: inline-flex; align-items: center; flex-shrink: 0; }
+.logo-image { display: block; width: 88px; height: 72px; background: url("/kihc-logo.png") 49% 41.3% / 278.3% 223.6% no-repeat; }
+.logo-compact .logo-image { width: 72px; height: 60px; }
 .main-nav { display: flex; align-items: stretch; height: 100%; gap: 56px; }
 .main-nav > a, .nav-group > a { display: flex; align-items: center; height: 100%; font-size: 15px; font-weight: 700; }
 .nav-group { position: relative; height: 100%; }
@@ -109,9 +107,7 @@ button { cursor: pointer; }
 
 /* Footer */
 .site-footer { background: #071b31; color: #aab7c5; }
-.site-footer .logo-mark { background: white; color: var(--navy-900); }
-.site-footer .logo-type strong { color: white; }
-.site-footer .logo-type small { color: #aab7c5; }
+.site-footer .logo-image { background-color: white; box-shadow: 0 0 0 7px white; }
 .footer-top { display: grid; grid-template-columns: 270px 1fr auto; gap: 45px; align-items: start; padding: 56px 0 42px; }
 .footer-info p { margin: 0 0 5px; font-size: 13px; }
 .footer-links { display: flex; gap: 20px; font-size: 12px; }
@@ -254,8 +250,7 @@ button { cursor: pointer; }
 .admin-login-form p { margin: 0; padding: 11px; background: #fff8e8; color: #8b6b25; font-size: 11px; text-align: center; }
 .admin-shell { min-height: 100vh; display: grid; grid-template-columns: 250px 1fr; background: #f3f5f7; color: #263340; }
 .admin-sidebar { position: fixed; inset: 0 auto 0 0; display: flex; flex-direction: column; width: 250px; padding: 28px 22px; background: var(--navy-950); color: #b6c3cf; }
-.admin-sidebar .logo-mark { background: white; color: var(--navy-900); }
-.admin-sidebar .logo-type strong { color: white; }
+.admin-sidebar .logo-image { filter: brightness(0) invert(1); }
 .admin-label { margin: 50px 12px 12px; color: #627589; font-size: 9px; font-weight: 800; letter-spacing: .13em; }
 .admin-sidebar nav { display: grid; gap: 5px; }
 .admin-sidebar nav a { display: flex; align-items: center; gap: 13px; padding: 11px 12px; border-radius: 3px; font-size: 13px; }
@@ -320,7 +315,7 @@ button { cursor: pointer; }
 @media (max-width: 720px) {
   .container { width: min(calc(100% - 32px), var(--max)); }
   .site-header { height: 72px; }
-  .logo-type small { display: none; }
+  .logo-image { width: 74px; height: 62px; }
   .menu-toggle { display: block; }
   .menu-toggle.is-open span:first-child { transform: translateY(4px) rotate(45deg); }
   .menu-toggle.is-open span:last-child { transform: translateY(-4px) rotate(-45deg); }
