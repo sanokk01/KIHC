@@ -37,8 +37,17 @@
 
 - GitHub: `https://github.com/sanokk01/KIHC`
 - 같은 저장소를 clone/pull한 팀원은 일반 Git 방식으로 모든 소스 파일을 수정·커밋·push할 수 있음
+- 소스 수정과 GitHub/Netlify 배포에는 프로젝트 소유자의 GPT 계정 로그인이 필요하지 않음. 각 팀원은 본인의 GitHub 및 배포 서비스 계정을 사용한다.
 - 시작 전 `00_readFrist.md`, `git status`, 최근 commit을 확인하고 완료 후 이 문서를 갱신할 것
 - 개인 계정 ID, DB ID, R2 bucket ID, 인증 토큰은 소스에 직접 기록하지 않음. `.openai/hosting.json`에는 논리 binding 이름만 유지
+- 현재 로컬 최신 기능 commit `7145cba`는 이 PC의 GitHub 인증 부재로 `origin/main`에 push되지 않음. GitHub 권한이 있는 작업자가 `git push origin main`을 실행해야 다른 팀원이 받을 수 있다.
+
+### 배포 플랫폼 호환성
+
+- ChatGPT Sites/Cloudflare 배포: 현재 구조 그대로 D1 `DB`, R2 `MEDIA`, ChatGPT 로그인 기반 관리자 기능을 모두 사용한다.
+- Netlify 배포: 현재 저장소를 그대로 연결하면 전체 기능이 동작한다고 보장할 수 없다. 이 프로젝트는 표준 Next.js 서버가 아니라 vinext + Cloudflare Worker 구조이고, 관리자 데이터/이미지가 Cloudflare D1·R2 binding에 의존한다.
+- 따라서 Netlify에서 공개 화면뿐 아니라 관리자 CRUD·이미지·팝업까지 운영하려면 표준 Next.js/OpenNext 호환 구조로 전환하고 DB, 파일 저장소, 관리자 인증을 Netlify 호환 서비스로 교체하는 별도 작업이 필요하다.
+- Netlify 링크를 만드는 행위 자체에는 GPT 로그인이 필요 없지만, 위 이식 작업 전에는 해당 링크를 KIHC 완전판 배포로 간주하지 않는다.
 
 ### 공통 구조
 
@@ -164,7 +173,10 @@
 - 관리자 page와 쓰기 API에 ChatGPT 사용자 인증 적용. 특정 개인 계정으로 제한하지 않아 초대된 공동 사용자가 각자 로그인해 작업 가능
 - Git 저장소를 공유받은 팀원이 동일 파일로 이어서 개발할 수 있도록 구조·작업 순서·주의사항 문서화
 - TypeScript, production build 및 렌더링/API 테스트 5건 통과
-- 실제 배포 D1/R2 저장·이미지 업로드 검증: 진행 중
+- Sites 배포 관리자 화면에서 D1 임시 소식 등록 → 공개 `/news` 즉시 반영 → 관리자 삭제까지 실데이터 검증 완료
+- R2 업로드 API·관리자 파일 선택 UI·공개 이미지 route는 typecheck/build/test를 통과했으나, 브라우저 자동화 환경의 로컬 파일 선택 제한으로 운영 R2 실파일 업로드는 수동 1회 확인이 남아 있음
+- Sites 배포 버전 6이 `https://kihc-research.gangstar1273.chatgpt.site`에 반영된 것을 관리자/공개 화면에서 확인
+- GitHub `origin/main` push는 이 PC의 GitHub 인증 부재로 실패했으며 기능 구현 commit은 `7145cba`
 
 ## 9. 다음 우선순위
 
