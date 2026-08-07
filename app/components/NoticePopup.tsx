@@ -29,7 +29,7 @@ export function NoticePopup({ popup }: { popup: PopupNotice }) {
           <p className="eyebrow">Notice</p>
           <h2 id="notice-title">{popup.title}</h2>
           <p>{popup.content}</p>
-          {popup.link ? <Link className="text-link" href={popup.link}>자세히 보기 →</Link> : null}
+          {popup.link ? <Link prefetch={false} className="text-link" href={popup.link}>자세히 보기 →</Link> : null}
         </div>
         <div className="notice-actions">
           <button type="button" onClick={hideToday}>오늘 하루 보지 않음</button>

@@ -19,7 +19,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
           <time>{post.publishedAt}</time>
           <div className="article-divider" />
           <div className="article-body">{post.content.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
-          <Link className="button button-outline" href="/news">목록으로 돌아가기</Link>
+          <Link prefetch={false} className="button button-outline" href="/news">목록으로 돌아가기</Link>
         </article>
       </main>
       <Footer />

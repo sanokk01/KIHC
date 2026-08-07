@@ -15,7 +15,7 @@ export function OriginalInquiry() {
             <p className="eyebrow">Original Text</p>
             <h2 id="inquiry-title">원문 열람 안내</h2>
             <p>해당 연구자료의 원문은 공개 자료가 아닙니다.<br />원문 열람이 필요한 경우 KIHC로 문의해 주세요.</p>
-            <div className="modal-actions"><Link className="button button-primary" href="/contact">문의 페이지로 이동</Link><button className="button button-outline" type="button" onClick={() => setOpen(false)}>닫기</button></div>
+            <div className="modal-actions"><Link prefetch={false} className="button button-primary" href="/contact">문의 페이지로 이동</Link><button className="button button-outline" type="button" onClick={() => setOpen(false)}>닫기</button></div>
           </div>
         </div>
       ) : null}

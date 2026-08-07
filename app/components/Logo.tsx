@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Logo({ compact = false }: { compact?: boolean }) {
   return (
-    <Link className={`logo ${compact ? "logo-compact" : ""}`} href="/" aria-label="KIHC 홈">
+    <Link prefetch={false} className={`logo ${compact ? "logo-compact" : ""}`} href="/" aria-label="KIHC 홈">
       <span className="logo-mark" aria-hidden="true">K</span>
       <span className="logo-type">
         <strong>KIHC</strong>

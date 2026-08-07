@@ -35,22 +35,22 @@ export function SiteHeader() {
         </button>
         <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="주요 메뉴">
           <div className="nav-group">
-            <Link href="/about" onClick={() => setOpen(false)}>KIHC 소개</Link>
+            <Link prefetch={false} href="/about" onClick={() => setOpen(false)}>KIHC 소개</Link>
             <div className="dropdown">
               {aboutLinks.map(([label, href]) => (
-                <Link href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>
+                <Link prefetch={false} href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>
               ))}
             </div>
           </div>
           <div className="nav-group">
-            <Link href="/news" onClick={() => setOpen(false)}>열린소식</Link>
+            <Link prefetch={false} href="/news" onClick={() => setOpen(false)}>열린소식</Link>
             <div className="dropdown">
               {newsLinks.map(([label, href]) => (
-                <Link href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>
+                <Link prefetch={false} href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>
               ))}
             </div>
           </div>
-          <Link href="/contact" onClick={() => setOpen(false)}>문의</Link>
+          <Link prefetch={false} href="/contact" onClick={() => setOpen(false)}>문의</Link>
         </nav>
       </div>
     </header>

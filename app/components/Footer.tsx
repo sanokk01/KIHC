@@ -13,13 +13,13 @@ export function Footer() {
           <p>{settings.email}</p>
         </div>
         <div className="footer-links">
-          <Link href="/contact">개인정보처리방침</Link>
-          <Link href="/contact">자료 이용·저작권 안내</Link>
+          <Link prefetch={false} href="/contact">개인정보처리방침</Link>
+          <Link prefetch={false} href="/contact">자료 이용·저작권 안내</Link>
         </div>
       </div>
       <div className="container footer-bottom">
         <span>© 2026 KIHC. All rights reserved.</span>
-        <Link href="/admin/login">관리자</Link>
+        <Link prefetch={false} href="/admin/login">관리자</Link>
       </div>
     </footer>
   );

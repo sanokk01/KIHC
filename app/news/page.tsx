@@ -29,7 +29,7 @@ export default function NewsPage() {
               {posts.map((post, index) => (
                 <div className="board-row" role="row" key={post.id}>
                   <span>{posts.length - index}</span>
-                  <Link href={`/news/${post.slug}`}>{post.title}</Link>
+                  <Link prefetch={false} href={`/news/${post.slug}`}>{post.title}</Link>
                   <time>{post.publishedAt}</time>
                 </div>
               ))}

@@ -24,7 +24,7 @@ export default async function ResearchDetailPage({ params }: { params: Promise<{
           <section className="detail-section"><h2>목차</h2><ol>{item.tableOfContents.map((entry) => <li key={entry}>{entry}</li>)}</ol></section>
           <section className="detail-section"><h2>내용 요약</h2><p>{item.summary}</p></section>
           <section className="detail-section"><h2>핵심 키워드</h2><div className="keyword-list">{item.keywords.map((keyword) => <span key={keyword}>#{keyword}</span>)}</div></section>
-          <div className="detail-actions"><OriginalInquiry /><Link className="button button-outline" href="/research">목록으로</Link></div>
+          <div className="detail-actions"><OriginalInquiry /><Link prefetch={false} className="button button-outline" href="/research">목록으로</Link></div>
         </article>
       </main>
       <Footer />

@@ -19,7 +19,7 @@ export default function ResearchPage() {
             <div className="listing-heading"><p>전체 <strong>{materials.length}</strong>건</p><span>원문은 별도 문의를 통해 열람할 수 있습니다.</span></div>
             <div className="research-grid listing-grid">
               {materials.map((item, index) => (
-                <Link className="research-card" href={`/research/${item.slug}`} key={item.id}>
+                <Link prefetch={false} className="research-card" href={`/research/${item.slug}`} key={item.id}>
                   <div className={`research-cover cover-${index + 1}`}><span>KIHC RESEARCH</span><strong>{String(index + 1).padStart(2, "0")}</strong></div>
                   <div className="research-card-body"><p>{item.publishedAt}</p><h2>{item.title}</h2><span className="card-arrow" aria-hidden="true">↗</span></div>
                 </Link>

@@ -47,7 +47,7 @@ export default function Home() {
               한국인재역량연구회는 인간의 내면 역량과 지속 가능한 성장의 조건을
               차분하게 탐구합니다.
             </p>
-            <Link className="button button-light" href="/about">
+            <Link prefetch={false} className="button button-light" href="/about">
               KIHC 소개 <span aria-hidden="true">→</span>
             </Link>
           </div>
@@ -90,13 +90,13 @@ export default function Home() {
                 <p className="eyebrow">Research & Policy</p>
                 <h2>최신 연구정책자료</h2>
               </div>
-              <Link className="text-link" href="/research">
+              <Link prefetch={false} className="text-link" href="/research">
                 전체 자료 보기 <span aria-hidden="true">→</span>
               </Link>
             </div>
             <div className="research-grid">
               {research.map((item, index) => (
-                <Link className="research-card" href={`/research/${item.slug}`} key={item.id}>
+                <Link prefetch={false} className="research-card" href={`/research/${item.slug}`} key={item.id}>
                   <div className={`research-cover cover-${index + 1}`}>
                     <span>KIHC RESEARCH</span>
                     <strong>{String(index + 1).padStart(2, "0")}</strong>
@@ -118,13 +118,13 @@ export default function Home() {
               <p className="eyebrow">KIHC News</p>
               <h2>연구회 소식</h2>
               <p>KIHC의 새로운 소식과 주요 안내를 전합니다.</p>
-              <Link className="button button-outline" href="/news">
+              <Link prefetch={false} className="button button-outline" href="/news">
                 소식 더보기
               </Link>
             </div>
             <div className="news-list">
               {news.map((item, index) => (
-                <Link href={`/news/${item.slug}`} key={item.id}>
+                <Link prefetch={false} href={`/news/${item.slug}`} key={item.id}>
                   <span className="news-no">{String(index + 1).padStart(2, "0")}</span>
                   <strong>{item.title}</strong>
                   <time>{item.publishedAt}</time>
