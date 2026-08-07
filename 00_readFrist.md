@@ -24,15 +24,18 @@
 
 ### Admin
 
-- `/admin/login`: 실제 인증이 아님을 명시한 개발용 진입 화면
-- `/admin`: 콘텐츠 현황 대시보드
-- `/admin/news`, `/admin/research`: 목록 관리 UI 골격
-- `/admin/popup`, `/admin/about`, `/admin/settings`: 다음 단계 입력·저장 기능을 위한 화면 골격
+- `/adminpage1/login`: 실제 인증이 아님을 명시한 개발용 진입 화면
+- `/adminpage1`: 콘텐츠 현황 대시보드
+- `/adminpage1/news`, `/adminpage1/research`, `/adminpage1/popup`: 검색·등록·수정·삭제가 동작하는 관리자 미리보기
+- `/adminpage1/about`, `/adminpage1/settings`: 입력·수정·저장이 동작하는 관리자 미리보기
+- 공개 Header/Footer에는 관리자 링크를 노출하지 않으며 기존 `/admin` 경로는 제거함
+- 현재 관리자 저장 기능은 브라우저 `localStorage` 기반이며 공개 홈페이지·서버 DB에는 반영되지 않음
 
 ### 공통 구조
 
 - 도메인 타입 및 임시 Repository: `app/lib/content.ts`
 - 공식 로고 원본: `public/kihc-logo.png`
+- 가로형 투명 로고: `public/kihc-logo-horizontal.png`
 - 공유 이미지: `public/og.png`
 - 배포 주소: `https://kihc-research.gangstar1273.chatgpt.site`
 
@@ -43,14 +46,14 @@
 - 문의 이메일/API 전송
 - 검색 결과 필터링과 실제 pagination
 - 이미지 업로드 및 미디어 저장소
-- 관리자 작성·수정 폼과 편집기
+- 관리자 미리보기 데이터를 공개 사이트에 반영하는 저장 API
 - 확정 기관 정보, 대표 연락처, 개인정보처리방침 및 저작권 전문
 - 실제 이사장 사진, 조직도 이미지, 연구자료 썸네일
 
 ## 4. DB/API 연결 지점
 
 - DB: `app/lib/content.ts`의 `ContentRepository` 구현을 `DatabaseContentRepository`로 교체한다.
-- 인증: `app/admin/login`과 `app/components/AdminLoginForm.tsx`에서 실제 Auth 서비스로 연결한다.
+- 인증: `app/adminpage1/login`과 `app/components/AdminLoginForm.tsx`에서 실제 Auth 서비스로 연결한다.
 - 문의: `app/components/ContactForm.tsx`의 submit 경계에 문의 API를 연결한다.
 - 현재 Mock 데이터가 실제로 저장되는 것처럼 가정하지 않는다.
 
@@ -110,11 +113,26 @@
 - 새 배포본에서 공식 로고 asset 로드, 가로 overflow 없음, console error 0건 확인
 - 검증 및 재배포 상태: 완료
 
+### 2026-08-08 — 가로형 로고 및 관리자 기능 확장
+
+- 공식 심벌을 왼쪽, KIHC 및 한국인재역량연구회 글자를 오른쪽에 배치한 가로형 투명 로고 제작
+- 공통 Header, Footer, 관리자 화면의 로고를 가로형 자산으로 교체
+- 공개 Footer에서 관리자 링크 제거, 관리자 전용 경로를 `/adminpage1`로 변경하고 기존 `/admin` route 제거
+- 연구회 소식·연구정책자료·팝업 관리 화면에 검색, 등록, 수정, 삭제 및 상태 관리 구현
+- KIHC 소개·사이트 설정 화면에 편집 및 저장 폼 구현
+- 실제 DB 연결 전 검증을 위해 브라우저 `localStorage`에만 저장하며, 공개 사이트 미반영 안내를 화면에 명시
+- `read_first_me_plz.txt` 요구사항을 재검토하고 PDF 기능 제외, 공통 Repository 경계, Mock 범위 표시 원칙 유지
+- TypeScript, ESLint, production build 및 렌더링 테스트 4건 통과
+- 로컬 브라우저에서 공개 관리자 링크 0개, 기존 `/admin` 404, `/adminpage1`과 하위 관리 화면 렌더링 확인
+- 뉴스 등록·수정·새로고침 유지·삭제, 사이트 설정 저장·새로고침 유지 확인
+- 관리자 전체 화면 가로 overflow 0, console error 0건 확인
+- 검증 상태: 완료, 배포 진행 중
+
 ## 8. 다음 우선순위
 
 다음 상세 지시를 받기 전 임의 구현하지 않는다. 우선 검토 대상은 다음과 같다.
 
-1. Admin 실제 작성·수정·삭제 UI
-2. Popup/About/Settings 입력 폼
-3. DB Repository 구현과 Auth 연결
+1. DB Repository 구현과 관리자 저장 API 연결
+2. 실제 Auth 및 접근 제어 연결
+3. 이미지 업로드·미디어 저장소 연결
 4. 문의 API 연결

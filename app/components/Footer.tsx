@@ -19,7 +19,6 @@ export function Footer() {
       </div>
       <div className="container footer-bottom">
         <span>© 2026 KIHC. All rights reserved.</span>
-        <Link prefetch={false} href="/admin/login">관리자</Link>
       </div>
     </footer>
   );

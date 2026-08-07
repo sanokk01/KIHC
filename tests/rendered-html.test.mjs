@@ -24,19 +24,30 @@ test("server-renders the KIHC home flow", async () => {
   assert.match(html, /연구분야/);
   assert.match(html, /최신 연구정책자료/);
   assert.match(html, /연구회 소식/);
+  assert.doesNotMatch(html, /\/admin(?:page1)?/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/);
 });
 
 test("renders public and admin route shells", async () => {
-  const [aboutResponse, adminResponse] = await Promise.all([render("/about"), render("/admin")]);
+  const [aboutResponse, adminResponse, oldAdminResponse] = await Promise.all([render("/about"), render("/adminpage1"), render("/admin")]);
   assert.equal(aboutResponse.status, 200);
   assert.equal(adminResponse.status, 200);
+  assert.equal(oldAdminResponse.status, 404);
 
   const [aboutHtml, adminHtml] = await Promise.all([aboutResponse.text(), adminResponse.text()]);
   assert.match(aboutHtml, /이사장 소개/);
   assert.match(aboutHtml, /설립목적 · 비전/);
   assert.match(adminHtml, /KIHC Content Management/);
   assert.match(adminHtml, /현재 활성 팝업/);
+});
+
+test("renders functional admin content managers", async () => {
+  const responses = await Promise.all(["news", "research", "popup", "about", "settings"].map((section) => render(`/adminpage1/${section}`)));
+  responses.forEach((response) => assert.equal(response.status, 200));
+  const html = await responses[0].text();
+  assert.match(html, /로컬 미리보기 저장/);
+  assert.match(html, /새 콘텐츠/);
+  assert.doesNotMatch(html, /PDF 다운로드|PDF viewer/i);
 });
 
 test("does not expose PDF routes or links", async () => {
