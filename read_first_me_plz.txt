@@ -1,0 +1,718 @@
+KIHC 홈페이지를 현재 프로젝트 위에서 완성해줘.
+
+이번 작업은 새 프로젝트를 만드는 것이 아니다.
+먼저 현재 repository 구조와 기존 페이지/components/styles를 짧게 확인하고,
+재사용 가능한 것은 최대한 유지한 채 필요한 부분만 수정/추가해라.
+
+중요:
+- 이미 구현된 것을 이유 없이 다시 만들지 말 것.
+- 전체 프로젝트 리팩터링 금지.
+- 사용하지 않을 추상화/라이브러리 추가 금지.
+- 아래 요구사항 밖의 페이지나 기능을 임의로 추가하지 말 것.
+- 디자인과 IA를 임의로 재해석하지 말 것.
+- 현재 사용 중인 Next.js/React/TypeScript 구조와 스타일 방식을 우선 존중할 것.
+- 작업 전에 장황한 계획을 출력하지 말고 repository를 확인한 뒤 바로 구현할 것.
+- 완료 후 변경 파일, 구현 기능, 테스트 결과, DB 연결 포인트만 짧게 보고할 것.
+
+==================================================
+1. 사이트 성격
+==================================================
+
+기관:
+KIHC 한국인재역량연구회
+
+현재 제공된 KIHC 로고 asset을 사용한다.
+기존 프로젝트에 로고가 이미 들어가 있다면 중복 복사하지 않는다.
+
+사이트는 과장된 대형 연구기관 스타일보다
+깔끔하고 신뢰감 있는 소규모 연구회 공식 홈페이지 느낌으로 만든다.
+
+반응형:
+- Desktop
+- Tablet
+- Mobile
+모두 정상 사용 가능해야 한다.
+
+==================================================
+2. 최종 Navigation
+==================================================
+
+Header:
+
+[KIHC Logo]          KIHC 소개 | 열린소식 | 문의
+
+Desktop:
+hover/focus dropdown 지원.
+
+Mobile:
+hamburger menu.
+
+KIHC 소개 dropdown:
+- 이사장 소개
+- 연구회 소개
+- 설립목적 · 비전
+- 조직도
+
+열린소식 dropdown:
+- 연구회 소식
+- 연구정책자료
+
+문의:
+- 문의 페이지 이동
+
+제외:
+- 연구원칙
+- 연혁
+- 연구활동
+- 연구 참여
+- 별도 연구분야 대메뉴
+
+위 제외 항목은 만들지 말 것.
+
+==================================================
+3. HOME
+==================================================
+
+구조:
+
+1) Header
+2) Hero
+3) 연구분야
+4) 최신 연구정책자료
+5) 공지사항
+6) Footer
+
+Hero:
+- 큰 배경 이미지 사용 가능
+- 짧은 메인 카피
+- KIHC 소개 CTA
+- CTA 클릭 시 KIHC 소개 페이지 이동
+
+연구분야:
+별도 상세 페이지를 만들지 않는다.
+Home 안의 카드 섹션으로만 존재한다.
+
+3개 카드:
+1. 자아확립
+2. 메타인지 · 회복탄력성
+3. 가치판단 · 창의적 사고
+
+카드는 이미지 + 제목 중심.
+hover 시 과하지 않은 확대/overlay 등의 interaction.
+
+연구정책자료:
+최근 자료 카드 3개 정도 표시.
+더보기 → 연구정책자료 목록.
+
+공지사항:
+최근 연구회 소식 4~5개.
+제목 + 날짜.
+클릭 → 게시글 상세.
+
+==================================================
+4. HOME 공지 팝업
+==================================================
+
+사이트 최초 진입 시 공지 팝업을 지원한다.
+
+팝업:
+- 제목
+- 이미지 optional
+- 내용
+- 링크 optional
+- 닫기
+- "오늘 하루 보지 않음"
+
+"오늘 하루 보지 않음" 선택 시
+해당 브라우저에서 당일에는 다시 표시하지 않는다.
+
+localStorage 또는 cookie 중 현재 구조에 자연스러운 방법을 사용한다.
+
+팝업의 콘텐츠 자체는 아래 Admin/Data 계층에서 읽도록 설계한다.
+
+==================================================
+5. KIHC 소개
+==================================================
+
+한 개의 긴 페이지로 구현한다.
+
+상단:
+KIHC 소개 hero/title + image.
+
+페이지 내부 section:
+1. 이사장 소개
+2. 연구회 소개
+3. 설립목적 · 비전
+4. 조직도
+
+Header dropdown에서 각 항목을 누르면
+해당 페이지의 anchor section으로 이동한다.
+
+smooth scroll 가능.
+
+이사장 소개:
+- 사진
+- 인사말
+
+연구회 소개:
+- 텍스트
+
+설립목적 · 비전:
+- 텍스트
+
+조직도:
+- 이미지 기반으로 관리 가능하게 한다.
+
+연혁과 연구원칙은 추가하지 않는다.
+
+==================================================
+6. 연구회 소식
+==================================================
+
+목록 페이지:
+전통적인 연구기관 게시판 형태.
+
+컬럼:
+- No.
+- 제목
+- 날짜
+
+기능:
+- 제목 클릭 → 상세
+- pagination
+- 검색
+
+검색 조건:
+- 제목
+- 내용
+- 제목+내용
+
+상세 페이지:
+- 제목
+- 날짜
+- 내용
+- 필요 시 대표 이미지
+- 목록으로 돌아가기
+
+==================================================
+7. 연구정책자료
+==================================================
+
+목록:
+Desktop 기준 3열 카드 형태.
+썸네일 + 제목.
+반응형 지원.
+
+카드 클릭 → 상세.
+
+상세 페이지:
+
+- 썸네일
+- 제목
+- 저자
+- 발행일
+- 목차
+- 내용 요약
+- 핵심 키워드
+
+중요한 원문 정책:
+
+PDF를 웹에서 절대 공개하지 않는다.
+PDF viewer도 만들지 않는다.
+PDF download도 만들지 않는다.
+공개 frontend에 PDF URL을 넣지도 않는다.
+
+상세 페이지 하단 버튼:
+
+[원문 열람 문의]
+
+버튼 클릭 시 modal:
+
+제목:
+원문 열람 안내
+
+내용:
+"해당 연구자료의 원문은 공개 자료가 아닙니다.
+원문 열람이 필요한 경우 KIHC로 문의해 주세요."
+
+buttons:
+[문의 페이지로 이동]
+[닫기]
+
+문의 페이지로 이동 → 기존 문의 페이지.
+
+Admin에서도 PDF upload 기능은 만들지 않는다.
+
+==================================================
+8. 문의
+==================================================
+
+페이지 상단:
+문의하기
+연구협력 · 논문 작업 등에 대한 문의 안내.
+
+Form UI:
+- 성명 *
+- 이메일 *
+- 소속
+- 문의사항 *
+- 문의하기 button
+
+이번 작업에서:
+- 실제 SMTP
+- email API
+- backend mail sending
+은 구현하지 않는다.
+
+버튼과 validation/UI만 구현한다.
+
+버튼 클릭 후 현재는 명확한 준비중 안내를 표시하면 된다.
+
+예:
+"문의 접수 기능은 현재 준비 중입니다."
+
+나중에 실제 API를 연결하기 쉽게 submit handler/service 경계를 분리해둔다.
+
+==================================================
+9. Footer
+==================================================
+
+최소 정보만 제공.
+
+- KIHC logo/name
+- 기본 기관 정보 영역
+- Copyright
+- 개인정보처리방침 링크 영역
+- 자료 이용/저작권 안내 링크 영역
+
+내용이 아직 확정되지 않은 경우 허위 정보를 작성하지 말고
+placeholder 또는 설정 데이터로 분리한다.
+
+==================================================
+10. ADMIN
+==================================================
+
+중요:
+Admin은 이번 홈페이지의 핵심 기능이다.
+
+Route 예:
+/admin
+/admin/login
+/admin/news
+/admin/research
+/admin/popup
+/admin/about
+/admin/settings
+
+현재 프로젝트 routing convention에 맞게 적용한다.
+
+Public site와 별도의 관리 UI.
+깔끔한 desktop-oriented admin dashboard 형태.
+
+--------------------------------
+10-1. Admin Login
+--------------------------------
+
+화면:
+KIHC ADMIN
+아이디
+비밀번호
+로그인
+
+이번 단계에서는 실제 production 인증 시스템을 억지로 구현하지 않는다.
+
+향후 DB/Auth 연결이 가능하도록
+auth 관련 UI와 boundary를 분리한다.
+
+보안이 구현된 것처럼 거짓으로 표시하지 말 것.
+Mock/dev 인증을 사용한다면 코드와 UI에서 명확하게 구분한다.
+
+--------------------------------
+10-2. Dashboard
+--------------------------------
+
+표시:
+
+- 연구회 소식 수
+- 연구정책자료 수
+- 현재 활성 팝업 수
+- 최근 게시물
+
+Sidebar:
+
+Dashboard
+게시물 관리
+  - 연구회 소식
+  - 연구정책자료
+팝업 관리
+KIHC 소개 관리
+사이트 설정
+로그아웃
+
+--------------------------------
+10-3. 연구회 소식 관리
+--------------------------------
+
+목록:
+- 번호
+- 제목
+- 게시상태
+- 작성일
+- 수정
+- 삭제
+
+기능:
+- 등록
+- 조회
+- 수정
+- 삭제 UI
+
+작성/수정:
+- 제목
+- 내용
+- 대표 이미지 optional
+- 공개/비공개
+- 저장
+
+Editor:
+현재 프로젝트에 editor dependency가 없다면
+무거운 WYSIWYG package를 임의로 추가하지 말 것.
+
+우선 textarea 또는 기존 editor가 있다면 재사용.
+나중에 editor를 교체하기 쉬운 component boundary를 둔다.
+
+--------------------------------
+10-4. 연구정책자료 관리
+--------------------------------
+
+필드:
+
+- 제목 *
+- 썸네일
+- 저자
+- 발행일
+- 목차
+- 내용 요약
+- 키워드
+- 공개/비공개
+
+PDF upload 없음.
+PDF path 없음.
+PDF URL 없음.
+
+원문은 항상 문의 방식.
+
+CRUD UI를 구현한다.
+
+--------------------------------
+10-5. Popup 관리
+--------------------------------
+
+필드:
+
+- 제목
+- 이미지 optional
+- 내용
+- 링크 optional
+- 노출 시작일
+- 노출 종료일
+- 활성/비활성
+
+Admin에서 현재 팝업 상태 확인 가능.
+
+HOME popup component와 같은 domain model을 사용한다.
+
+--------------------------------
+10-6. KIHC 소개 관리
+--------------------------------
+
+관리 항목:
+
+- 이사장 소개
+- 연구회 소개
+- 설립목적 · 비전
+- 조직도 이미지
+
+조직도는 자유형 diagram editor를 만들지 말고
+이미지 필드로 관리.
+
+--------------------------------
+10-7. 사이트 설정
+--------------------------------
+
+최소한만 만든다.
+
+예:
+- 사이트명
+- Footer 기본 정보
+- 대표 연락처/이메일 표시 정보
+
+불필요한 설정 시스템을 만들지 않는다.
+
+==================================================
+11. DB 연결을 위한 구조
+==================================================
+
+DB는 이번 작업에서 실제 연결하지 않는다.
+
+하지만 나중에 PostgreSQL / Supabase / 다른 DB 등으로
+교체할 때 page/component를 다시 뜯어고치지 않도록
+데이터 접근 계층을 분리한다.
+
+예시 방향:
+
+domain/content types
+        ↓
+repository interface
+        ↓
+temporary/mock repository
+        ↓
+services/use-cases
+        ↓
+pages/components
+
+이름과 실제 folder 구조는 현재 repository convention에 맞게 결정해도 된다.
+
+필요 domain model 예:
+
+NewsPost
+ResearchMaterial
+PopupNotice
+AboutContent
+SiteSettings
+
+Repository가 제공할 기능 예:
+
+News:
+- list
+- getById / getBySlug
+- create
+- update
+- delete
+
+Research:
+- list
+- getById / getBySlug
+- create
+- update
+- delete
+
+Popup:
+- getActive
+- list
+- create
+- update
+- delete
+
+About:
+- get
+- update
+
+Settings:
+- get
+- update
+
+중요:
+React component 안에서 직접 mock array를 import하여
+데이터 구조를 고정하지 말 것.
+
+Public page와 Admin이 같은 domain/service 계층을 사용하도록 한다.
+
+DB 연결 시에는 repository implementation만 교체할 수 있어야 한다.
+
+예:
+MockContentRepository
+→ DatabaseContentRepository
+
+UI route와 component를 다시 작성하지 않는 구조가 목표.
+
+이번 단계의 mock 데이터가 실제 DB처럼 영구 저장되는 척하지 말 것.
+실제 persistence가 없는 부분은 명확하게 구분한다.
+
+필요하다면 docs에 짧게:
+
+"DB Integration"
+
+섹션을 만들어
+- repository implementation 교체 위치
+- 필요한 tables/entities
+- auth 연결 위치
+- 문의 API 연결 위치
+
+정도만 기록한다.
+
+대형 설계 문서는 만들지 않는다.
+
+==================================================
+12. 데이터 모델
+==================================================
+
+초기 DB schema로 자연스럽게 옮길 수 있도록
+ID / slug / timestamps / publication status 등을 타입에 반영한다.
+
+최소 예:
+
+NewsPost
+- id
+- slug
+- title
+- content
+- thumbnail?
+- status
+- publishedAt?
+- createdAt
+- updatedAt
+
+ResearchMaterial
+- id
+- slug
+- title
+- author
+- thumbnail?
+- publishedAt
+- tableOfContents
+- summary
+- keywords[]
+- status
+- createdAt
+- updatedAt
+
+PopupNotice
+- id
+- title
+- content
+- image?
+- link?
+- startsAt?
+- endsAt?
+- active
+- createdAt
+- updatedAt
+
+AboutContent
+- chairmanMessage
+- chairmanImage?
+- organizationIntroduction
+- purpose
+- vision
+- organizationChartImage?
+
+SiteSettings
+- siteName
+- footer fields
+
+현재 UI에 필요하지 않은 필드는 과하게 만들지 않는다.
+
+==================================================
+13. 디자인 원칙
+==================================================
+
+사용자가 제공한 손그림 IA를 우선한다.
+
+디자인은:
+- 신뢰감 있는 연구기관/연구회
+- 충분한 whitespace
+- KIHC logo의 navy/blue 계열과 조화
+- 과한 gradient/animation 금지
+- startup/SaaS dashboard처럼 보이지 않게
+- public site와 admin 시각적 역할 구분
+
+폰트는 현재 프로젝트에서 이미 사용하는
+Pretendard가 있다면 그대로 유지한다.
+
+모바일에서:
+- navigation
+- cards
+- tables
+- forms
+- modal
+이 깨지지 않도록 한다.
+
+==================================================
+14. 하지 말아야 할 것
+==================================================
+
+다음은 구현하지 않는다:
+
+- 연구원칙
+- 연혁
+- 연구활동 페이지
+- 연구 참여 페이지/폼
+- 회원가입
+- 일반 사용자 로그인
+- 회원 관리
+- 이메일 발송
+- 뉴스레터
+- 실제 SMTP
+- PDF viewer
+- PDF download
+- 연구자료 PDF upload
+- 방문자 자체 analytics
+- AI chatbot
+- AI 자동 작성
+- 관리자 권한 등급
+- 내부 결재 시스템
+- 연구 프로젝트 관리
+- 별도 연구분야 상세 페이지
+
+==================================================
+15. 구현 순서
+==================================================
+
+불필요한 반복을 피하기 위해 다음 순서를 지켜라.
+
+1. 현재 repository 및 기존 구현 확인
+2. 기존 구현 중 재사용할 것 판단
+3. shared layout/navigation/footer 정리
+4. domain/data access boundary 정리
+5. Public pages 구현/수정
+6. Admin layout 및 pages 구현
+7. Public/Admin 공통 데이터 흐름 연결
+8. responsive/accessibility 확인
+9. lint/typecheck/build/test 실행
+10. 발견된 실제 오류만 수정
+
+이미 정상 동작하는 부분을 마지막 단계에서
+디자인 취향 때문에 다시 수정하지 말 것.
+
+==================================================
+16. 완료 조건
+==================================================
+
+완료 시 확인:
+
+- HOME 동작
+- dropdown navigation 동작
+- mobile navigation 동작
+- 오늘 하루 보지 않음 popup 동작
+- KIHC 소개 anchor 이동
+- 연구회 소식 list/detail/search/pagination UI
+- 연구정책자료 list/detail
+- 원문 열람 문의 modal
+- PDF 공개 경로 없음
+- 문의 form UI/validation
+- Admin login UI
+- Admin dashboard
+- News management UI
+- Research management UI
+- Popup management UI
+- About management UI
+- Settings UI
+- Public/Admin domain model 공유
+- 향후 DB repository 교체 가능한 구조
+- responsive
+- typecheck
+- lint
+- production build
+
+기존 tests가 있다면 유지하고 실행한다.
+
+완료 보고는 길게 설명하지 말고:
+
+1. 구현 완료 항목
+2. 주요 변경 파일
+3. 검증 결과
+4. 아직 mock인 부분
+5. 나중에 DB 연결 시 교체할 파일/계층
+
+만 보고해라.
