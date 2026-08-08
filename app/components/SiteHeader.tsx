@@ -22,6 +22,16 @@ const newsLinks = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
+
+  const closeAll = () => {
+    setOpen(false);
+    setOpenGroup(null);
+  };
+
+  const toggleGroup = (group: string) => {
+    setOpenGroup((prev) => (prev === group ? null : group));
+  };
 
   return (
     <header className="site-header">
@@ -32,29 +42,47 @@ export function SiteHeader() {
           type="button"
           aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
           aria-expanded={open}
-          onClick={() => setOpen((value) => !value)}
+          onClick={() => { setOpen((v) => !v); setOpenGroup(null); }}
         >
           <span />
           <span />
         </button>
         <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="주요 메뉴">
           <div className="nav-group">
-            <Link prefetch={false} href="/about" onClick={() => setOpen(false)}>KIHC 소개</Link>
-            <div className="dropdown">
+            <Link prefetch={false} href="/about" onClick={closeAll}>KIHC 소개</Link>
+            <button
+              className="nav-group-toggle"
+              type="button"
+              aria-expanded={openGroup === "about"}
+              aria-label="KIHC 소개 하위 메뉴 열기"
+              onClick={() => toggleGroup("about")}
+            >
+              ▾
+            </button>
+            <div className={`dropdown${openGroup === "about" ? " is-open" : ""}`}>
               {aboutLinks.map(([label, href]) => (
-                <Link prefetch={false} href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>
+                <Link prefetch={false} href={href} key={href} onClick={closeAll}>{label}</Link>
               ))}
             </div>
           </div>
           <div className="nav-group">
-            <Link prefetch={false} href="/news" onClick={() => setOpen(false)}>열린소식</Link>
-            <div className="dropdown">
+            <Link prefetch={false} href="/news" onClick={closeAll}>열린소식</Link>
+            <button
+              className="nav-group-toggle"
+              type="button"
+              aria-expanded={openGroup === "news"}
+              aria-label="열린소식 하위 메뉴 열기"
+              onClick={() => toggleGroup("news")}
+            >
+              ▾
+            </button>
+            <div className={`dropdown${openGroup === "news" ? " is-open" : ""}`}>
               {newsLinks.map(([label, href]) => (
-                <Link prefetch={false} href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>
+                <Link prefetch={false} href={href} key={href} onClick={closeAll}>{label}</Link>
               ))}
             </div>
           </div>
-          <Link prefetch={false} href="/contact" onClick={() => setOpen(false)}>문의</Link>
+          <Link prefetch={false} href="/contact" onClick={closeAll}>문의</Link>
         </nav>
       </div>
     </header>
