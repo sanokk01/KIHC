@@ -7,6 +7,8 @@ import { NoticePopup } from "./components/NoticePopup";
 import { SiteHeader } from "./components/SiteHeader";
 import { contentRepository } from "./lib/content";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const cookieStore = await cookies();
   const isEn = cookieStore.get("kihc-language")?.value === "en";

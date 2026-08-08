@@ -6,6 +6,7 @@ import { PageHero } from "../components/PageHero";
 import { SiteHeader } from "../components/SiteHeader";
 import { contentRepository } from "../lib/content";
 
+export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: "연구정책자료" };
 
 export default async function ResearchPage() {
