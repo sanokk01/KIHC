@@ -1,16 +1,55 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import { spawn } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import test, { after, before } from "node:test";
+
+const projectRoot = fileURLToPath(new URL("..", import.meta.url));
+const nextCli = fileURLToPath(new URL("../node_modules/next/dist/bin/next", import.meta.url));
+const testPort = Number(process.env.KIHC_TEST_PORT ?? 31347);
+const baseUrl = `http://127.0.0.1:${testPort}`;
+let server;
+let serverOutput = "";
+
+before(async () => {
+  server = spawn(process.execPath, [nextCli, "start", "-H", "127.0.0.1", "-p", String(testPort)], {
+    cwd: projectRoot,
+    env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1" },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  server.stdout.on("data", (chunk) => { serverOutput += chunk.toString(); });
+  server.stderr.on("data", (chunk) => { serverOutput += chunk.toString(); });
+
+  const deadline = Date.now() + 25_000;
+  while (Date.now() < deadline) {
+    if (server.exitCode !== null) throw new Error(`Next.js test server exited early.\n${serverOutput}`);
+    try {
+      const response = await fetch(baseUrl);
+      if (response.ok) return;
+    } catch {
+      // The production server is still starting.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 150));
+  }
+  throw new Error(`Next.js test server did not become ready.\n${serverOutput}`);
+}, { timeout: 30_000 });
+
+after(async () => {
+  if (!server || server.exitCode !== null) return;
+  server.kill();
+  await new Promise((resolve) => {
+    const timer = setTimeout(resolve, 3_000);
+    server.once("exit", () => { clearTimeout(timer); resolve(); });
+  });
+});
 
 async function render(pathname = "/", authenticated = true) {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${pathname}`);
-  const { default: worker } = await import(workerUrl.href);
-
-  return worker.fetch(
-    new Request(`http://${authenticated ? "localhost" : "kihc.example"}${pathname}`, { headers: authenticated ? { accept: "text/html", host: "localhost" } : { accept: "application/json" } }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
-    { waitUntil() {}, passThroughOnException() {} },
-  );
+  return fetch(`${baseUrl}${pathname}`, {
+    headers: {
+      accept: authenticated ? "text/html" : "application/json",
+      host: authenticated ? `localhost:${testPort}` : "kihc.example",
+      ...(authenticated ? {} : { "x-forwarded-host": "kihc.example" }),
+    },
+  });
 }
 
 test("server-renders the KIHC home flow", async () => {
@@ -93,18 +132,11 @@ test("protects admin write APIs while allowing authenticated reads", async () =>
 });
 
 test("returns a clear service-unavailable response while external storage is disconnected", async () => {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-storage-write`);
-  const { default: worker } = await import(workerUrl.href);
-  const response = await worker.fetch(
-    new Request("http://localhost/api/admin/content/news", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: "저장 테스트" }),
-    }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
-    { waitUntil() {}, passThroughOnException() {} },
-  );
+  const response = await fetch(`${baseUrl}/api/admin/content/news`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", host: `localhost:${testPort}` },
+    body: JSON.stringify({ title: "저장 테스트" }),
+  });
   assert.equal(response.status, 503);
   assert.match(await response.text(), /외부 데이터베이스 연결 대기/);
 });

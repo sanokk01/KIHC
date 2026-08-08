@@ -2,6 +2,8 @@
 
 한국인재역량연구회 홈페이지의 로컬 개발용 소스입니다. 현재는 외부 DB와 운영 관리자 인증을 연결하지 않은 상태이며, 공개 화면은 기본 콘텐츠로 동작합니다.
 
+이 프로젝트는 표준 Next.js App Router 구조이며 Vercel과 Netlify에서 Git 저장소 연결 방식으로 배포할 수 있습니다.
+
 ## 로컬 실행
 
 필요 환경:
@@ -49,6 +51,15 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 도메인을 구매하고 운영 배포 환경이 결정되면 `NEXT_PUBLIC_SITE_URL`만 실제 도메인으로 변경합니다. 내부 링크와 관리자 경로는 상대 경로이므로 도메인 변경을 위해 소스 URL을 다시 수정할 필요가 없습니다.
+
+## Netlify·Vercel 배포
+
+- Build command: `npm run build`
+- Netlify publish directory: `.next`
+- Node.js: 22
+- `netlify.toml`에 위 설정이 포함되어 있으므로 기존 Netlify 사이트에서 publish directory가 `dist`로 저장되어 있더라도 Git 설정을 다시 읽어 배포하면 표준 Next.js 결과물을 사용합니다.
+- Vercel은 저장소를 연결하면 Next.js를 자동 감지하므로 별도 output directory를 지정하지 않습니다.
+- 운영 주소가 확정되면 각 호스팅 서비스의 환경 변수에 `NEXT_PUBLIC_SITE_URL=https://실제도메인`을 등록합니다.
 
 ## 외부 DB 인수인계
 

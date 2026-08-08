@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const deploymentUrl = process.env.NEXT_PUBLIC_SITE_URL
+  ?? process.env.URL
+  ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(deploymentUrl),
   title: {
     default: "KIHC 한국인재역량연구회",
     template: "%s | KIHC",

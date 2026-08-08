@@ -15,7 +15,7 @@
 
 ### Public
 
-- `/` 홈: 대형 Hero와 최근 연구 패널, 연구분야, 연구 정책자료, 주요 연구자료, 연구회 소식, 주요 바로가기, 복고형 공지 팝업
+- `/` 홈: Hero와 최근 연구 패널, 연구분야, 연구 정책자료, 주요 연구자료, 연구회 소식, 행사 달력, 주요 바로가기, 복고형 공지 팝업
 - `/about`: 이사장 소개, 연구회 소개, 설립목적·비전, 조직도 앵커 구성
 - `/research-focus`: KIHC 연구분야, 핵심 가치, 연구 접근방식을 소개하며 한국어·영어 즉시 전환과 공유 가능한 `?lang=en` 주소 지원
 - `/ci`: 공식 CI 섬네일 미리보기와 협력 기업 전용 원본·사용 지침 열람 문의
@@ -45,17 +45,18 @@
 - 소스 수정과 GitHub/Netlify 배포에는 프로젝트 소유자의 GPT 계정 로그인이 필요하지 않음. 각 팀원은 본인의 GitHub 및 배포 서비스 계정을 사용한다.
 - 시작 전 `00_readFrist.md`, `git status`, 최근 commit을 확인하고 완료 후 이 문서를 갱신할 것
 - 현재 작업에서는 자동 `git add`·`commit`·`push`를 실행하지 않는다. 검증 후 변경 파일을 확인하고 커밋과 푸시는 사용자가 직접 수행한다.
-- 개인 계정 ID, DB ID, R2 bucket ID, 인증 토큰은 소스에 직접 기록하지 않음. `.openai/hosting.json`에는 논리 binding 이름만 유지
+- 개인 계정 ID, DB ID, 저장소 ID, 인증 토큰은 소스에 직접 기록하지 않음
 - 이 PC에서는 GitHub 인증이 완료되지 않아 최신 로컬 commit이 `origin/main`에 push되지 않을 수 있음. 인수인계 전 `git rev-list --left-right --count origin/main...HEAD`를 확인한다.
 
 ### 배포 플랫폼 호환성
 
-- 현재 작업 기준은 `http://localhost:3000` 로컬 실행이며 ChatGPT Sites로 자동 배포하지 않는다.
+- 현재 작업 기준은 `http://localhost:3000` 로컬 실행이며 자동 배포하지 않는다.
 - 내부 페이지·관리자 링크는 상대 경로이므로 이후 구매한 도메인을 연결해도 소스의 링크 주소를 다시 바꿀 필요가 없다.
 - 운영 배포 시 `.env.example`의 `NEXT_PUBLIC_SITE_URL`을 실제 `https://도메인` 값으로 설정한다.
-- Netlify 배포: 현재 저장소는 vinext + Cloudflare Worker 구조이므로 그대로 연결한 전체 기능 동작을 보장할 수 없다.
-- Netlify에서 관리자 CRUD·이미지·팝업까지 운영하려면 런타임을 호환 구조로 전환하고 팀 DB, 파일 저장소, 관리자 인증을 연결하는 별도 작업이 필요하다.
-- Netlify 링크를 만드는 행위 자체에는 GPT 로그인이 필요 없지만, 위 이식 작업 전에는 해당 링크를 KIHC 완전판 배포로 간주하지 않는다.
+- 현재 저장소는 표준 Next.js 16 App Router 구조이며 Vercel·Netlify에서 Git 저장소 연결 방식으로 배포 가능하다.
+- Netlify 설정은 `netlify.toml`의 build command `npm run build`, publish directory `.next`, Node.js 22를 사용한다. 기존 사이트 설정이 `dist`라면 새 배포에서 저장소 설정을 다시 읽도록 한다.
+- Vercel은 Next.js를 자동 감지하므로 별도 output directory를 지정하지 않는다.
+- 관리자 CRUD·이미지·팝업의 실제 저장은 호스팅 문제가 아니라 팀 DB, 파일 저장소와 운영 인증을 연결해야 완성된다.
 
 ### 공통 구조
 
@@ -64,7 +65,8 @@
 - 외부 DB/파일 저장소 어댑터 계약: `db/content-store.ts` (`contentStore`는 현재 `null`)
 - 이전 D1 스키마 참고본: `db/schema.ts`, `drizzle/0000_skinny_viper.sql` — 현재 런타임에서는 사용하지 않음
 - 관리자 API: `app/api/admin/**`, 공개 이미지 route: `app/api/media/[id]`
-- Sites 저장소 binding: D1 `null`, R2 `null` (`.openai/hosting.json`)
+- 런타임: Next.js 16.2.6 App Router
+- Netlify 배포 설정: `netlify.toml`
 - 공식 로고 원본: `public/kihc-logo.png`
 - 가로형 투명 로고: `public/kihc-logo-horizontal.png`
 - 공유 이미지: `public/og.png`
@@ -326,6 +328,17 @@
 - 모바일 달력 월 이동 버튼을 44px로 확대하고 행사 표시 링크는 시각적으로 작은 점을 유지하면서 실제 클릭 영역을 날짜 셀 안으로 확대
 - 모바일의 주요 텍스트 링크와 Footer 정책 링크에 최소 클릭 높이를 추가
 - Git 자동 `add`·`commit`·`push` 및 배포는 수행하지 않음
+
+### 2026-08-08 — vinext/Cloudflare 구조에서 표준 Next.js로 전환
+
+- 기존 App Router 화면·API·관리자 경로는 유지하고 실행 명령을 `next dev`, `next build`, `next start`로 전환
+- `next` 16.2.6을 정식 런타임 의존성으로 추가하고 vinext, Vite RSC, Cloudflare Worker 및 Wrangler 전용 의존성과 설정을 제거
+- Cloudflare 전용 worker entry, Vite plugin과 Sites hosting metadata를 제거하여 Vercel·Netlify가 저장소를 표준 Next.js 프로젝트로 자동 인식하도록 변경
+- Netlify의 build command `npm run build`, publish directory `.next`, Node.js 22 설정을 `netlify.toml`에 고정하여 기존 `dist` 설정으로 인한 기본 404 재발 방지
+- Netlify `URL`과 Vercel `VERCEL_URL`을 metadata base 후보로 사용하고 실제 도메인은 `NEXT_PUBLIC_SITE_URL`로 우선 지정
+- 렌더링/API 테스트를 vinext Worker 직접 호출 방식에서 실제 Next.js production server HTTP 검증 방식으로 전환
+- 외부 DB, 관리자 인증, 문의 전송 경계의 연결 대기 정책은 변경하지 않음
+- Git 자동 `add`·`commit`·`push` 및 실제 Netlify/Vercel 배포는 수행하지 않음
 
 ## 9. 다음 우선순위
 

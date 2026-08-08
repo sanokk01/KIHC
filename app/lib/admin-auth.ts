@@ -14,7 +14,8 @@ function isLocalHost(host: string | null) {
 
 export async function getAdminUser(): Promise<AdminUser | null> {
   const requestHeaders = await headers();
-  if (isLocalHost(requestHeaders.get("host"))) {
+  const forwardedHost = requestHeaders.get("x-forwarded-host")?.split(",")[0]?.trim() ?? null;
+  if (isLocalHost(forwardedHost ?? requestHeaders.get("host"))) {
     return { userId: "local-admin", displayName: "Local Admin", email: "local@kihc.test", fullName: "Local Admin" };
   }
   return null;
@@ -27,8 +28,9 @@ export async function requireAdminUser(returnTo: string): Promise<AdminUser> {
 }
 
 export function isAuthorizedAdminRequest(request: Request): boolean {
-  const url = new URL(request.url);
-  return url.hostname === "localhost" || url.hostname === "127.0.0.1" || url.hostname === "::1";
+  const forwardedHost = request.headers.get("x-forwarded-host")?.split(",")[0]?.trim();
+  const host = forwardedHost ?? request.headers.get("host") ?? new URL(request.url).host;
+  return isLocalHost(host);
 }
 
 export function unauthorizedResponse() {
