@@ -52,7 +52,7 @@ export function HomeEventCalendar({ events, inline = false }: { events: EventRec
         <div className="home-calendar" aria-label={`${year}년 ${month + 1}월 행사 달력`}>
           <div className="calendar-toolbar">
             <button type="button" onClick={() => moveMonth(-1)} aria-label="이전 달">‹</button>
-            <strong>{year}. {String(month + 1).padStart(2, "00")}</strong>
+            <strong>{year}. {String(month + 1).padStart(2, "0")}</strong>
             <button type="button" onClick={() => moveMonth(1)} aria-label="다음 달">›</button>
           </div>
           <div className="calendar-weekdays" aria-hidden="true">
@@ -69,20 +69,10 @@ export function HomeEventCalendar({ events, inline = false }: { events: EventRec
             })}
           </div>
         </div>
-
-        <aside className="calendar-event-list" aria-label="선택한 달의 행사">
-          <div className="calendar-list-title"><span>{String(month + 1).padStart(2, "0")}월</span><strong>{monthEvents.length}건의 일정</strong></div>
-          {monthEvents.length ? monthEvents.map((event) => (
-            <Link prefetch={false} href={`/events/${event.slug}`} key={event.id}>
-              <time>{String(event.date.getDate()).padStart(2, "0")}</time>
-              <div><span>{event.eventType}</span><strong>{event.title}</strong></div>
-              <i aria-hidden="true">→</i>
-            </Link>
-          )) : <p className="calendar-empty">등록된 행사가 없습니다.<br />이전·다음 달 버튼으로 다른 일정을 확인할 수 있습니다.</p>}
-        </aside>
       </div>
     </>
   );
+
 
   if (inline) {
     return <div className="news-events-col news-events-col--calendar">{calendarContent}</div>;

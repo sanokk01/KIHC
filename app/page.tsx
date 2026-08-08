@@ -56,19 +56,23 @@ export default async function Home() {
           </div>
           <div className="container hero-layout">
             <div className="hero-content">
-              <p className="eyebrow light">KOREA INSTITUTE OF HUMAN CAPABILITY</p>
-              <p className="hero-korean-name">KIHC · 한국인재역량연구회</p>
+              <p className="eyebrow light">HUMAN CAPABILITY RESEARCH & POLICY THINK-TANK</p>
+              <p className="hero-korean-name">KIHC · 한국인재역량연구회 · 인재역량 진단 및 정책연구 전문기관</p>
               <h1>
-                사람의 가능성을 이해하고,
-                <br />더 나은 성장을 연구합니다.
+                사람의 가능성을 탐구하고,
+                <br />지속 가능한 성장의 해법을 연구합니다.
               </h1>
               <p className="hero-copy">
-                변화하는 시대, 인간 고유의 사고와 내면 역량을 다시 바라보며
-                지속 가능한 성장의 조건을 탐구합니다.
+                정부·기업·학계와 협력하여 인간 고유의 사고 역량과 내면 성장의 조건을 다각도로 진단하고, 신뢰할 수 있는 정책 및 교육 솔루션을 제안합니다.
               </p>
-              <Link prefetch={false} className="button button-light" href="/about">
-                KIHC 소개 <span aria-hidden="true">→</span>
-              </Link>
+              <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
+                <Link prefetch={false} className="button button-light" href="/about">
+                  KIHC 연구소 소개 <span aria-hidden="true">→</span>
+                </Link>
+                <Link prefetch={false} className="button button-primary" href="/contact">
+                  연구 용역 · 제휴 문의 <span aria-hidden="true">↗</span>
+                </Link>
+              </div>
             </div>
 
             <aside className="hero-research-panel" aria-label="최근 연구자료">
