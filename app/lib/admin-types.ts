@@ -14,6 +14,9 @@ export interface AdminContentRecord {
   summary?: string;
   tableOfContents?: string;
   keywords?: string;
+  researchType?: string;
+  category1?: string;
+  category2?: string;
   link?: string;
   active?: boolean;
   startsAt?: string;

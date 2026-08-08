@@ -28,6 +28,10 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
     
     // Refresh the router so Server Components re-fetch cookies and re-render
     router.refresh();
+    // Force a hard reload to guarantee static Server Components completely translate instantly
+    setTimeout(() => {
+      window.location.reload();
+    }, 50);
   };
 
   if (!isClient) return <div className={`lang-switcher-inline ${className}`} aria-hidden="true" />;

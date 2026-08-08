@@ -24,6 +24,9 @@ export interface ResearchMaterial {
   tableOfContents: string[];
   summary: string;
   keywords: string[];
+  researchType: string;
+  category1: string;
+  category2: string;
   imageUrl?: string;
   status: PublicationStatus;
   createdAt: string;
@@ -455,6 +458,9 @@ function mapStoredToResearch(row: any): ResearchMaterial {
     tableOfContents: payload.tableOfContents || [],
     summary: payload.summary || "",
     keywords: payload.keywords || [],
+    researchType: payload.researchType || "자료집",
+    category1: payload.category1 || "",
+    category2: payload.category2 || "",
     imageUrl: row.imageUrl || undefined,
     status: row.status,
     createdAt: row.createdAt,

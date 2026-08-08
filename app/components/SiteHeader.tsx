@@ -29,27 +29,20 @@ export function SiteHeader() {
   ];
 
   useEffect(() => {
-    const stored = window.localStorage.getItem("kihc-language");
-    if (stored === "en" || window.location.search.includes("lang=en")) {
-      setLang("en");
+    const match = document.cookie.match(new RegExp('(^| )kihc-language=([^;]+)'));
+    if (match) {
+      setLang(match[2] as "ko" | "en");
     } else {
-      setLang("ko");
+      const stored = window.localStorage.getItem("kihc-language");
+      if (stored === "en" || window.location.search.includes("lang=en")) {
+        setLang("en");
+      } else {
+        setLang("ko");
+      }
     }
   }, []);
 
-  const changeLanguage = (nextLang: "ko" | "en") => {
-    setLang(nextLang);
-    window.localStorage.setItem("kihc-language", nextLang);
-    const url = new URL(window.location.href);
-    if (nextLang === "en") {
-      url.searchParams.set("lang", "en");
-    } else {
-      url.searchParams.delete("lang");
-    }
-    window.history.replaceState({}, "", url.toString());
-    window.location.reload();
-  };
-
+  // changeLanguage is no longer needed here since LanguageSwitcher handles it
   const closeAll = () => {
     setOpen(false);
     setOpenGroup(null);

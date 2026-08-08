@@ -5,6 +5,7 @@ import { Footer } from "./components/Footer";
 import { HomeEventCalendar } from "./components/HomeEventCalendar";
 import { NoticePopup } from "./components/NoticePopup";
 import { SiteHeader } from "./components/SiteHeader";
+import { HomeFeaturedSlider } from "./components/HomeFeaturedSlider";
 import { contentRepository } from "./lib/content";
 
 export const dynamic = 'force-dynamic';
@@ -182,58 +183,7 @@ export default async function Home() {
 
         <section className="section featured-section">
           <div className="container">
-            <div className="featured-heading-h">
-              <h2>{dict.featuredTitle}</h2>
-              <div className="slider-controls">
-                <span>&lt; 1/{featuredResearch.length || 1} &gt;</span>
-                <span className="plus-icon">+</span>
-              </div>
-            </div>
-            
-            <div className="featured-slider">
-              {featuredResearch.map((item, index) => (
-                <article className="featured-card-h" key={item.id}>
-                  <div className={`featured-cover-h cover-${index + 1}`}>
-                    <span className="cover-badge">{isEn ? "BRIEF" : (index % 2 === 0 ? "브리프" : "자료집")}</span>
-                    {item.imageUrl ? <img className="content-cover-image" src={item.imageUrl} alt="" /> : null}
-                    {!item.imageUrl && (
-                      <div className="cover-inner-text">
-                        <small>KIHC</small>
-                        <br/><strong>{item.title}</strong>
-                      </div>
-                    )}
-                  </div>
-                  <div className="featured-copy-h">
-                    <h3>{item.title}</h3>
-                    <p>{item.title}</p>
-                    <Link prefetch={false} href={`/research/${item.slug}`}>{dict.featuredMore}</Link>
-                  </div>
-                </article>
-              ))}
-            </div>
-
-            <div className="featured-search-box">
-              <form action="/research" method="GET" className="featured-search-form">
-                <select name="cat1" className="search-select">
-                  <option value="">{isEn ? "All Categories" : "대분류 전체"}</option>
-                </select>
-                <select name="cat2" className="search-select">
-                  <option value="">{isEn ? "All Subcategories" : "중분류 전체"}</option>
-                </select>
-                <input type="text" name="query" placeholder={isEn ? "Enter search term." : "검색어를 입력해주세요."} className="search-input" />
-                <button type="submit" className="search-submit" aria-label="Search">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                </button>
-              </form>
-              <div className="search-keywords">
-                <strong><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg> {isEn ? "Keywords" : "키워드"}</strong>
-                <Link prefetch={false} href="/research?query=정책연구">#정책연구</Link>
-                <Link prefetch={false} href="/research?query=미래전략">#미래전략</Link>
-                <Link prefetch={false} href="/research?query=탄소중립">#탄소중립</Link>
-                <Link prefetch={false} href="/research?query=컨퍼런스">#컨퍼런스</Link>
-                <Link prefetch={false} href="/research?query=포럼">#포럼</Link>
-              </div>
-            </div>
+            <HomeFeaturedSlider featuredResearch={featuredResearch} isEn={isEn} />
           </div>
         </section>
 
