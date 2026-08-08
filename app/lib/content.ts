@@ -28,12 +28,41 @@ export interface ResearchMaterial {
   updatedAt: string;
 }
 
+export interface PromotionalMaterial {
+  id: string;
+  slug: string;
+  title: string;
+  category: string;
+  publishedAt: string;
+  thumbnailLabel: string;
+  imageUrl?: string;
+  protectedDetails: string[];
+  status: PublicationStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EventRecord {
+  id: string;
+  slug: string;
+  title: string;
+  eventType: string;
+  heldAt: string;
+  thumbnailLabel: string;
+  imageUrl?: string;
+  protectedDetails: string[];
+  status: PublicationStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface PopupNotice {
   id: string;
   title: string;
   content: string;
   link?: string;
   imageUrl?: string;
+  imageDisplay?: "banner" | "full";
   active: boolean;
   startsAt?: string;
   endsAt?: string;
@@ -56,14 +85,60 @@ export interface SiteSettings {
   email: string;
 }
 
+export type NewsSearchField = "title" | "content" | "all";
+
+export interface NewsListOptions {
+  query?: string;
+  field?: NewsSearchField;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface NewsListResult {
+  items: NewsPost[];
+  total: number;
+  filteredTotal: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
 export interface ContentRepository {
   listNews(): Promise<NewsPost[]>;
+  searchNews(options?: NewsListOptions): Promise<NewsListResult>;
   getNewsBySlug(slug: string): Promise<NewsPost | undefined>;
   listResearch(): Promise<ResearchMaterial[]>;
   getResearchBySlug(slug: string): Promise<ResearchMaterial | undefined>;
+  listPromotionalMaterials(): Promise<PromotionalMaterial[]>;
+  getPromotionalMaterialBySlug(slug: string): Promise<PromotionalMaterial | undefined>;
+  listEvents(): Promise<EventRecord[]>;
+  getEventBySlug(slug: string): Promise<EventRecord | undefined>;
   getActivePopup(): Promise<PopupNotice | undefined>;
   getAbout(): Promise<AboutContent>;
   getSettings(): Promise<SiteSettings>;
+}
+
+function publishedNews() {
+  return defaultNewsPosts.filter((post) => post.status === "published");
+}
+
+function matchesNews(post: NewsPost, query: string, field: NewsSearchField) {
+  if (!query) return true;
+  const normalizedQuery = query.toLocaleLowerCase("ko-KR");
+  const title = post.title.toLocaleLowerCase("ko-KR");
+  const content = [post.excerpt, ...post.content].join(" ").toLocaleLowerCase("ko-KR");
+  if (field === "title") return title.includes(normalizedQuery);
+  if (field === "content") return content.includes(normalizedQuery);
+  return title.includes(normalizedQuery) || content.includes(normalizedQuery);
+}
+
+function popupIsVisible(popup: PopupNotice, now = Date.now()) {
+  if (!popup.active) return false;
+  const startsAt = popup.startsAt ? Date.parse(popup.startsAt) : Number.NaN;
+  const endsAt = popup.endsAt ? Date.parse(popup.endsAt) : Number.NaN;
+  if (Number.isFinite(startsAt) && startsAt > now) return false;
+  if (Number.isFinite(endsAt) && endsAt < now) return false;
+  return true;
 }
 
 export const defaultNewsPosts: NewsPost[] = [
@@ -169,11 +244,78 @@ export const defaultResearchMaterials: ResearchMaterial[] = [
   },
 ];
 
+export const defaultPromotionalMaterials: PromotionalMaterial[] = [
+  {
+    id: "promotion-3",
+    slug: "kihc-introduction-brochure",
+    title: "KIHC 연구회 소개서",
+    category: "기관 소개",
+    publishedAt: "2026. 08. 08",
+    thumbnailLabel: "KIHC INTRODUCTION",
+    protectedDetails: ["KIHC 소개와 연구 방향", "주요 연구분야 안내", "협력 및 자료 이용 안내"],
+    status: "published",
+    createdAt: "2026-08-08T09:00:00+09:00",
+    updatedAt: "2026-08-08T09:00:00+09:00",
+  },
+  {
+    id: "promotion-2",
+    slug: "human-capability-research-leaflet",
+    title: "인재역량 연구분야 안내 리플릿",
+    category: "연구 안내",
+    publishedAt: "2026. 07. 18",
+    thumbnailLabel: "RESEARCH FOCUS",
+    protectedDetails: ["자아확립 연구 개요", "메타인지·회복탄력성 연구 개요", "가치판단·창의적 사고 연구 개요"],
+    status: "published",
+    createdAt: "2026-07-18T09:00:00+09:00",
+    updatedAt: "2026-07-18T09:00:00+09:00",
+  },
+  {
+    id: "promotion-1",
+    slug: "research-policy-publication-guide",
+    title: "연구정책자료 발간 안내",
+    category: "발간 안내",
+    publishedAt: "2026. 06. 24",
+    thumbnailLabel: "PUBLICATION GUIDE",
+    protectedDetails: ["연구정책자료 구성", "자료 열람과 이용 범위", "협력 기관 문의 절차"],
+    status: "published",
+    createdAt: "2026-06-24T09:00:00+09:00",
+    updatedAt: "2026-06-24T09:00:00+09:00",
+  },
+];
+
+export const defaultEvents: EventRecord[] = [
+  {
+    id: "event-2",
+    slug: "human-capability-summer-seminar",
+    title: "인재역량 연구를 위한 여름 세미나",
+    eventType: "세미나",
+    heldAt: "2026. 07. 12",
+    thumbnailLabel: "KIHC SEMINAR",
+    protectedDetails: ["세미나 세부 프로그램", "발표 및 토론 구성", "협력 기업용 행사 기록"],
+    status: "published",
+    createdAt: "2026-07-12T09:00:00+09:00",
+    updatedAt: "2026-07-12T09:00:00+09:00",
+  },
+  {
+    id: "event-1",
+    slug: "research-network-meeting",
+    title: "인재역량 연구 네트워크 간담회",
+    eventType: "간담회",
+    heldAt: "2026. 05. 30",
+    thumbnailLabel: "RESEARCH NETWORK",
+    protectedDetails: ["간담회 진행 내용", "연구 협력 논의 항목", "협력 기업용 행사 기록"],
+    status: "published",
+    createdAt: "2026-05-30T09:00:00+09:00",
+    updatedAt: "2026-05-30T09:00:00+09:00",
+  },
+];
+
 export const defaultPopup: PopupNotice = {
-  id: "popup-site-renewal",
+  id: "popup-site-renewal-v2",
   title: "KIHC 홈페이지를 새롭게 준비하고 있습니다",
   content: "연구회의 방향과 주요 자료를 더 편리하게 만나실 수 있도록 홈페이지를 개편 중입니다.",
   link: "/news/website-renewal",
+  imageDisplay: "full",
   active: true,
   createdAt: "2026-08-01T09:00:00+09:00",
   updatedAt: "2026-08-01T09:00:00+09:00",
@@ -199,11 +341,32 @@ export const defaultSettings: SiteSettings = {
 };
 
 export const contentRepository: ContentRepository = {
-  listNews: async () => defaultNewsPosts.filter((post) => post.status === "published"),
-  getNewsBySlug: async (slug) => defaultNewsPosts.find((post) => post.slug === slug),
+  listNews: async () => publishedNews(),
+  searchNews: async ({ query = "", field = "title", page = 1, pageSize = 10 } = {}) => {
+    const posts = publishedNews();
+    const normalizedQuery = query.trim();
+    const safePageSize = Math.min(50, Math.max(1, Math.trunc(pageSize) || 10));
+    const filtered = posts.filter((post) => matchesNews(post, normalizedQuery, field));
+    const totalPages = Math.max(1, Math.ceil(filtered.length / safePageSize));
+    const safePage = Math.min(totalPages, Math.max(1, Math.trunc(page) || 1));
+    const offset = (safePage - 1) * safePageSize;
+    return {
+      items: filtered.slice(offset, offset + safePageSize),
+      total: posts.length,
+      filteredTotal: filtered.length,
+      page: safePage,
+      pageSize: safePageSize,
+      totalPages,
+    };
+  },
+  getNewsBySlug: async (slug) => publishedNews().find((post) => post.slug === slug),
   listResearch: async () => defaultResearchMaterials.filter((item) => item.status === "published"),
-  getResearchBySlug: async (slug) => defaultResearchMaterials.find((item) => item.slug === slug),
-  getActivePopup: async () => defaultPopup.active ? defaultPopup : undefined,
+  getResearchBySlug: async (slug) => defaultResearchMaterials.find((item) => item.slug === slug && item.status === "published"),
+  listPromotionalMaterials: async () => defaultPromotionalMaterials.filter((item) => item.status === "published"),
+  getPromotionalMaterialBySlug: async (slug) => defaultPromotionalMaterials.find((item) => item.slug === slug && item.status === "published"),
+  listEvents: async () => defaultEvents.filter((item) => item.status === "published"),
+  getEventBySlug: async (slug) => defaultEvents.find((item) => item.slug === slug && item.status === "published"),
+  getActivePopup: async () => popupIsVisible(defaultPopup) ? defaultPopup : undefined,
   getAbout: async () => defaultAbout,
   getSettings: async () => defaultSettings,
 };

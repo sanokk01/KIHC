@@ -7,6 +7,7 @@ export interface AdminContentRecord {
   publishedAt?: string;
   status?: "published" | "draft";
   imageUrl?: string;
+  imageDisplay?: "banner" | "full";
   excerpt?: string;
   content?: string;
   author?: string;

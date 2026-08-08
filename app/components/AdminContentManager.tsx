@@ -11,7 +11,7 @@ export type { AdminContentRecord, AdminSection } from "../lib/admin-types";
 const emptyBySection: Record<AdminSection, AdminContentRecord> = {
   news: { id: "", slug: "", title: "", publishedAt: "", status: "draft", imageUrl: "", excerpt: "", content: "" },
   research: { id: "", slug: "", title: "", publishedAt: "", status: "draft", imageUrl: "", author: "", summary: "", tableOfContents: "", keywords: "" },
-  popup: { id: "", title: "", active: false, imageUrl: "", link: "", startsAt: "", endsAt: "", content: "" },
+  popup: { id: "", title: "", active: false, imageUrl: "", imageDisplay: "full", link: "", startsAt: "", endsAt: "", content: "" },
   about: { id: "about", title: "KIHC 소개", chairmanMessage: "", chairmanImageUrl: "", organizationIntroduction: "", organizationImageUrl: "", purpose: "", vision: "" },
   settings: { id: "settings", title: "사이트 설정", siteName: "", footerInformation: "", email: "" },
 };
@@ -30,7 +30,7 @@ async function uploadImage(file: File): Promise<string> {
   return result.url;
 }
 
-function ImageUploadField({ label, value, onChange }: { label: string; value?: string; onChange: (url: string) => void }) {
+function ImageUploadField({ label, value, onChange, allowUrl = false }: { label: string; value?: string; onChange: (url: string) => void; allowUrl?: boolean }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const choose = async (file?: File) => {
@@ -41,7 +41,7 @@ function ImageUploadField({ label, value, onChange }: { label: string; value?: s
     catch (uploadError) { setError(uploadError instanceof Error ? uploadError.message : "업로드에 실패했습니다."); }
     finally { setUploading(false); }
   };
-  return <label className="wide admin-upload-field"><span>{label}</span><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(event) => choose(event.target.files?.[0])} disabled={uploading || !databaseConnected} />{uploading && <small>이미지 업로드 중...</small>}{value && <div className="admin-upload-result"><img src={value} alt="업로드 미리보기" /><button type="button" onClick={() => onChange("")}>이미지 제거</button></div>}{error && <small className="error">{error}</small>}<small>{databaseConnected ? "JPG, PNG, WEBP, GIF · 최대 6MB" : "외부 파일 저장소 연결 후 사용할 수 있습니다."}</small></label>;
+  return <label className="wide admin-upload-field"><span>{label}</span>{allowUrl ? <input type="url" value={value ?? ""} onChange={(event) => onChange(event.target.value)} placeholder="/popup.jpg 또는 https://example.com/popup.jpg" aria-label={`${label} 주소`} /> : null}<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(event) => choose(event.target.files?.[0])} disabled={uploading || !databaseConnected} />{uploading && <small>이미지 업로드 중...</small>}{value && <div className="admin-upload-result"><img src={value} alt="업로드 미리보기" /><button type="button" onClick={() => onChange("")}>이미지 제거</button></div>}{error && <small className="error">{error}</small>}<small>{databaseConnected ? "JPG, PNG, WEBP, GIF · 최대 6MB" : (allowUrl ? "DB 연결 전에는 public 이미지 경로나 외부 이미지 주소로 미리보기만 할 수 있습니다." : "외부 파일 저장소 연결 후 사용할 수 있습니다.")}</small></label>;
 }
 
 function AdminEditor({ section, value, onChange, onCancel, onSave, saving }: {
@@ -62,10 +62,10 @@ function AdminEditor({ section, value, onChange, onCancel, onSave, saving }: {
           {section !== "popup" && <label><span>주소 식별자</span><input value={value.slug ?? ""} onChange={(event) => field("slug", event.target.value)} placeholder="영문-숫자-하이픈" /></label>}
           {section !== "popup" && <label><span>게시일</span><input value={value.publishedAt ?? ""} onChange={(event) => field("publishedAt", event.target.value)} placeholder="2026. 08. 08" /></label>}
           {section !== "popup" && <label><span>공개 상태</span><select value={value.status ?? "draft"} onChange={(event) => field("status", event.target.value)}><option value="published">공개</option><option value="draft">초안</option></select></label>}
-          <ImageUploadField label={section === "popup" ? "팝업 이미지" : "대표 이미지"} value={value.imageUrl} onChange={(url) => field("imageUrl", url)} />
+          <ImageUploadField label={section === "popup" ? "팝업 이미지" : "대표 이미지"} value={value.imageUrl} onChange={(url) => field("imageUrl", url)} allowUrl={section === "popup"} />
           {section === "news" && <><label className="wide"><span>요약</span><textarea rows={3} value={value.excerpt ?? ""} onChange={(event) => field("excerpt", event.target.value)} /></label><label className="wide"><span>본문</span><textarea rows={8} value={value.content ?? ""} onChange={(event) => field("content", event.target.value)} /></label></>}
           {section === "research" && <><label><span>저자</span><input value={value.author ?? ""} onChange={(event) => field("author", event.target.value)} /></label><label><span>키워드</span><input value={value.keywords ?? ""} onChange={(event) => field("keywords", event.target.value)} placeholder="쉼표로 구분" /></label><label className="wide"><span>목차</span><textarea rows={4} value={value.tableOfContents ?? ""} onChange={(event) => field("tableOfContents", event.target.value)} placeholder="줄바꿈으로 구분" /></label><label className="wide"><span>요약</span><textarea rows={6} value={value.summary ?? ""} onChange={(event) => field("summary", event.target.value)} /></label></>}
-          {section === "popup" && <><label className="admin-check"><input type="checkbox" checked={Boolean(value.active)} onChange={(event) => field("active", event.target.checked)} /><span>홈에서 팝업 활성화</span></label><label><span>연결 주소</span><input value={value.link ?? ""} onChange={(event) => field("link", event.target.value)} placeholder="/news/example 또는 https://..." /></label><label><span>노출 시작</span><input type="datetime-local" value={value.startsAt ?? ""} onChange={(event) => field("startsAt", event.target.value)} /></label><label><span>노출 종료</span><input type="datetime-local" value={value.endsAt ?? ""} onChange={(event) => field("endsAt", event.target.value)} /></label><label className="wide"><span>내용</span><textarea rows={7} value={value.content ?? ""} onChange={(event) => field("content", event.target.value)} /></label></>}
+          {section === "popup" && <><label><span>이미지 표시 방식</span><select value={value.imageDisplay ?? "full"} onChange={(event) => field("imageDisplay", event.target.value)}><option value="full">이미지 전체 표시</option><option value="banner">상단 이미지 + 공지 내용</option></select><small>전체 표시는 원본 비율을 유지하며 이미지를 자르지 않습니다.</small></label><label className="admin-check"><input type="checkbox" checked={Boolean(value.active)} onChange={(event) => field("active", event.target.checked)} /><span>홈에서 팝업 활성화</span></label><label><span>연결 주소</span><input value={value.link ?? ""} onChange={(event) => field("link", event.target.value)} placeholder="/news/example 또는 https://..." /></label><label><span>노출 시작</span><input type="datetime-local" value={value.startsAt ?? ""} onChange={(event) => field("startsAt", event.target.value)} /></label><label><span>노출 종료</span><input type="datetime-local" value={value.endsAt ?? ""} onChange={(event) => field("endsAt", event.target.value)} /></label><label className="wide"><span>내용</span><textarea rows={7} value={value.content ?? ""} onChange={(event) => field("content", event.target.value)} /></label></>}
         </div>
         <div className="admin-editor-actions"><button type="button" className="secondary" onClick={onCancel}>취소</button><button type="button" onClick={onSave} disabled={!databaseConnected || !value.title.trim() || saving}>{saving ? "저장 중..." : (databaseConnected ? "DB에 저장" : "DB 연결 후 저장 가능")}</button></div>
       </section>

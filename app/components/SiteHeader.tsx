@@ -7,13 +7,17 @@ import { Logo } from "./Logo";
 const aboutLinks = [
   ["이사장 소개", "/about#chairman"],
   ["연구회 소개", "/about#institute"],
+  ["CI 소개", "/ci"],
   ["설립목적 · 비전", "/about#vision"],
   ["조직도", "/about#organization"],
+  ["연구와 핵심가치", "/research-focus"],
 ];
 
 const newsLinks = [
   ["연구회 소식", "/news"],
   ["연구정책자료", "/research"],
+  ["홍보물", "/promotional-materials"],
+  ["강연·학회", "/events"],
 ];
 
 export function SiteHeader() {
@@ -26,7 +30,7 @@ export function SiteHeader() {
         <button
           className={`menu-toggle ${open ? "is-open" : ""}`}
           type="button"
-          aria-label="메뉴 열기"
+          aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
           aria-expanded={open}
           onClick={() => setOpen((value) => !value)}
         >
