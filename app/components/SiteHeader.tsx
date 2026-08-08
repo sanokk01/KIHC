@@ -5,11 +5,11 @@ import { AppLink as Link } from "./AppLink";
 import { Logo } from "./Logo";
 
 const aboutLinks = [
-  ["이사장 소개", "/about#chairman"],
   ["연구회 소개", "/about#institute"],
-  ["CI 소개", "/ci"],
   ["설립목적 · 비전", "/about#vision"],
+  ["이사장 소개", "/about#chairman"],
   ["조직도", "/about#organization"],
+  ["CI 소개", "/ci"],
   ["연구와 핵심가치", "/research-focus"],
 ];
 
