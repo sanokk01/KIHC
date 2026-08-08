@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element -- future uploaded media may be served by the app's media route. */
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { AppLink as Link } from "../components/AppLink";
 import { Footer } from "../components/Footer";
 import { PageHero } from "../components/PageHero";
@@ -8,9 +9,9 @@ import { contentRepository } from "../lib/content";
 
 export const metadata: Metadata = { title: "KIHC 소개 | 한국인재역량연구회" };
 
-export default async function AboutPage({ searchParams }: { searchParams?: Promise<{ lang?: string }> }) {
-  const params = await searchParams;
-  const isEn = params?.lang === "en";
+export default async function AboutPage() {
+  const cookieStore = await cookies();
+  const isEn = cookieStore.get("kihc-language")?.value === "en";
   const about = await contentRepository.getAbout();
 
   const dict = {

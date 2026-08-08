@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AppLink as Link } from "./AppLink";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Logo } from "./Logo";
 
 export function SiteHeader() {
@@ -108,6 +109,10 @@ export function SiteHeader() {
             </div>
           </div>
           <Link prefetch={false} href="/contact" onClick={closeAll}>{isEn ? "Contact" : "문의"}</Link>
+          
+          <div className="header-lang-container">
+            <LanguageSwitcher />
+          </div>
         </nav>
       </div>
     </header>

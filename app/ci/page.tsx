@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element -- official CI assets are served from the public directory. */
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Footer } from "../components/Footer";
 import { PageHero } from "../components/PageHero";
 import { RestrictedDetailGate } from "../components/RestrictedDetailGate";
@@ -7,9 +8,9 @@ import { SiteHeader } from "../components/SiteHeader";
 
 export const metadata: Metadata = { title: "CI 소개 | KIHC 한국인재역량연구회" };
 
-export default async function CiPage({ searchParams }: { searchParams?: Promise<{ lang?: string }> }) {
-  const params = await searchParams;
-  const isEn = params?.lang === "en";
+export default async function CiPage() {
+  const cookieStore = await cookies();
+  const isEn = cookieStore.get("kihc-language")?.value === "en";
 
   const dict = {
     title: isEn ? "CI Overview & Brand Guide" : "CI 소개 및 브랜드 가이드",

@@ -1,48 +1,54 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export function LanguageSwitcher({ className = "" }: { className?: string }) {
+  const router = useRouter();
   const [lang, setLang] = useState<"ko" | "en">("ko");
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const stored = window.localStorage.getItem("kihc-language");
-    if (stored === "en" || window.location.search.includes("lang=en")) {
-      setLang("en");
+    setIsClient(true);
+    // Read from cookie first, fallback to localStorage
+    const match = document.cookie.match(new RegExp('(^| )kihc-language=([^;]+)'));
+    if (match) {
+      setLang(match[2] as "ko" | "en");
     } else {
-      setLang("ko");
+      const stored = window.localStorage.getItem("kihc-language");
+      if (stored === "en") setLang("en");
     }
   }, []);
 
   const changeLanguage = (nextLang: "ko" | "en") => {
     setLang(nextLang);
+    // Save to both cookie (for server components) and localStorage (fallback)
+    document.cookie = `kihc-language=${nextLang}; path=/; max-age=31536000`;
     window.localStorage.setItem("kihc-language", nextLang);
-    const url = new URL(window.location.href);
-    if (nextLang === "en") {
-      url.searchParams.set("lang", "en");
-    } else {
-      url.searchParams.delete("lang");
-    }
-    window.history.replaceState({}, "", url.toString());
-    window.location.reload();
+    
+    // Refresh the router so Server Components re-fetch cookies and re-render
+    router.refresh();
   };
 
+  if (!isClient) return <div className={`language-dropdown-wrapper ${className}`} aria-hidden="true" />;
+
   return (
-    <div className={`hero-lang-switcher ${className}`} aria-label="Language Switcher">
-      <button
-        type="button"
-        className={lang === "ko" ? "active" : ""}
-        onClick={() => changeLanguage("ko")}
-      >
-        한국어
-      </button>
-      <button
-        type="button"
-        className={lang === "en" ? "active" : ""}
-        onClick={() => changeLanguage("en")}
-      >
-        English
-      </button>
+    <div className={`language-dropdown-wrapper ${className}`}>
+      <label htmlFor="lang-select" className="lang-label">
+        {lang === "ko" ? "언어:" : "Lang:"}
+      </label>
+      <div className="lang-select-box">
+        <select
+          id="lang-select"
+          className="lang-select"
+          value={lang}
+          onChange={(e) => changeLanguage(e.target.value as "ko" | "en")}
+          aria-label="언어 선택"
+        >
+          <option value="ko">한국어</option>
+          <option value="en">English</option>
+        </select>
+      </div>
     </div>
   );
 }

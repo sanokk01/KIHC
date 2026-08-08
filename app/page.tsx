@@ -1,15 +1,15 @@
 /* eslint-disable @next/next/no-img-element -- future uploaded media may be served by the app's media route. */
+import { cookies } from "next/headers";
 import { AppLink as Link } from "./components/AppLink";
 import { Footer } from "./components/Footer";
 import { HomeEventCalendar } from "./components/HomeEventCalendar";
-import { LanguageSwitcher } from "./components/LanguageSwitcher";
 import { NoticePopup } from "./components/NoticePopup";
 import { SiteHeader } from "./components/SiteHeader";
 import { contentRepository } from "./lib/content";
 
-export default async function Home({ searchParams }: { searchParams?: Promise<{ lang?: string }> }) {
-  const params = await searchParams;
-  const isEn = params?.lang === "en";
+export default async function Home() {
+  const cookieStore = await cookies();
+  const isEn = cookieStore.get("kihc-language")?.value === "en";
 
   const researchFramework = [
     {
@@ -90,9 +90,6 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
       <SiteHeader />
       <main className="home-main">
         <section className="home-hero">
-          <div className="container home-hero-lang-box">
-            <LanguageSwitcher className="main-hero-lang" />
-          </div>
           <div className="hero-visual-placeholder" aria-hidden="true">
             <span className="hero-visual-grid" />
             <span className="hero-visual-core" />
