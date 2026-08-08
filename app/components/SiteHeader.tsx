@@ -4,26 +4,28 @@ import { useEffect, useState } from "react";
 import { AppLink as Link } from "./AppLink";
 import { Logo } from "./Logo";
 
-const aboutLinks = [
-  ["연구회 소개", "/about#institute"],
-  ["설립목적 · 비전", "/about#vision"],
-  ["이사장 소개", "/about#chairman"],
-  ["조직도", "/about#organization"],
-  ["CI 소개", "/ci"],
-  ["연구와 핵심가치", "/research-focus"],
-];
-
-const newsLinks = [
-  ["연구회 소식", "/news"],
-  ["연구정책자료", "/research"],
-  ["홍보물", "/promotional-materials"],
-  ["강연·학회", "/events"],
-];
-
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [lang, setLang] = useState<"ko" | "en">("ko");
+
+  const isEn = lang === "en";
+
+  const aboutLinks = [
+    [isEn ? "About Institute" : "연구회 소개", "/about#institute"],
+    [isEn ? "Purpose & Vision" : "설립목적 · 비전", "/about#vision"],
+    [isEn ? "Chairman" : "이사장 소개", "/about#chairman"],
+    [isEn ? "Organization" : "조직도", "/about#organization"],
+    [isEn ? "Brand Identity" : "CI 소개", "/ci"],
+    [isEn ? "Research & Values" : "연구와 핵심가치", "/research-focus"],
+  ];
+
+  const newsLinks = [
+    [isEn ? "News" : "연구회 소식", "/news"],
+    [isEn ? "Research Materials" : "연구정책자료", "/research"],
+    [isEn ? "Promotional Materials" : "홍보물", "/promotional-materials"],
+    [isEn ? "Events" : "강연·학회", "/events"],
+  ];
 
   useEffect(() => {
     const stored = window.localStorage.getItem("kihc-language");
@@ -70,14 +72,14 @@ export function SiteHeader() {
           <span />
           <span />
         </button>
-        <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="주요 메뉴">
+        <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label={isEn ? "Main Menu" : "주요 메뉴"}>
           <div className="nav-group">
-            <Link prefetch={false} href="/about" onClick={closeAll}>KIHC 소개</Link>
+            <Link prefetch={false} href="/about" onClick={closeAll}>{isEn ? "About KIHC" : "KIHC 소개"}</Link>
             <button
               className="nav-group-toggle"
               type="button"
               aria-expanded={openGroup === "about"}
-              aria-label="KIHC 소개 하위 메뉴 열기"
+              aria-label={isEn ? "Open About Submenu" : "KIHC 소개 하위 메뉴 열기"}
               onClick={() => toggleGroup("about")}
             >
               ▾
@@ -89,12 +91,12 @@ export function SiteHeader() {
             </div>
           </div>
           <div className="nav-group">
-            <Link prefetch={false} href="/news" onClick={closeAll}>열린소식</Link>
+            <Link prefetch={false} href="/news" onClick={closeAll}>{isEn ? "News & Updates" : "열린소식"}</Link>
             <button
               className="nav-group-toggle"
               type="button"
               aria-expanded={openGroup === "news"}
-              aria-label="열린소식 하위 메뉴 열기"
+              aria-label={isEn ? "Open News Submenu" : "열린소식 하위 메뉴 열기"}
               onClick={() => toggleGroup("news")}
             >
               ▾
@@ -105,7 +107,7 @@ export function SiteHeader() {
               ))}
             </div>
           </div>
-          <Link prefetch={false} href="/contact" onClick={closeAll}>문의</Link>
+          <Link prefetch={false} href="/contact" onClick={closeAll}>{isEn ? "Contact" : "문의"}</Link>
         </nav>
       </div>
     </header>

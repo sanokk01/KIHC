@@ -7,45 +7,71 @@ import { NoticePopup } from "./components/NoticePopup";
 import { SiteHeader } from "./components/SiteHeader";
 import { contentRepository } from "./lib/content";
 
-const researchFramework = [
-  {
-    number: "01",
-    badge: "DIFFERENTIATION",
-    title: "AI 차별화 역량 연구",
-    summary: "인공지능이 대체할 수 없는 인간 고유의 비판적 사고력과 창의적 문제해결, 윤리적 판단 역량을 집중 연구합니다.",
-    keywords: ["비판적 사고", "창의적 문제해결", "공감·소통", "윤리적 판단"],
-  },
-  {
-    number: "02",
-    badge: "SCIENTIFIC MODEL",
-    title: "과학적 역량 모델 구축",
-    summary: "심리학·인지과학·행동과학을 융합한 객관적 역량 진단 체계 및 개인별 맞춤형 성장 모델을 개발합니다.",
-    keywords: ["심리학 진단", "인지과학 역량", "행동과학 분석", "성장 모델"],
-  },
-  {
-    number: "03",
-    badge: "PRACTICAL PROGRAM",
-    title: "연구 기반 프로그램 보급",
-    summary: "기업, 공공기관, 학교 현장에 즉시 적용 가능한 실전 역량 강화 및 현장 중심 교육 체계를 보급합니다.",
-    keywords: ["기업 역량강화", "공공기관 프로그램", "교사 연수", "청년 교육"],
-  },
-  {
-    number: "04",
-    badge: "NATIONAL POLICY",
-    title: "국가 인재정책 제안",
-    summary: "AI 시대 패러다임 전환에 맞춘 국가 인재상 정립 및 교육 제도 개선을 위한 정책 R&D를 수행합니다.",
-    keywords: ["인재상 정립", "교육 패러다임", "제도 개선", "국가 경쟁력"],
-  },
-  {
-    number: "05",
-    badge: "GLOBAL NETWORK",
-    title: "글로벌 연구 네트워크",
-    summary: "정부·대학·기업 및 해외 선도 연구기관을 잇는 지속 가능한 인재역량 학술 생태계를 조성합니다.",
-    keywords: ["정부기관 협력", "국내외 대학", "기업 파트너십", "학술 생태계"],
-  },
-];
+export default async function Home({ searchParams }: { searchParams?: Promise<{ lang?: string }> }) {
+  const params = await searchParams;
+  const isEn = params?.lang === "en";
 
-export default async function Home() {
+  const researchFramework = [
+    {
+      number: "01",
+      badge: "DIFFERENTIATION",
+      title: isEn ? "AI Differentiation Capability Research" : "AI 차별화 역량 연구",
+      summary: isEn ? "Intensive research on human-unique critical thinking, creative problem-solving, and ethical judgment capabilities that AI cannot replace." : "인공지능이 대체할 수 없는 인간 고유의 비판적 사고력과 창의적 문제해결, 윤리적 판단 역량을 집중 연구합니다.",
+      keywords: isEn ? ["Critical Thinking", "Creative Problem-solving", "Empathy & Communication", "Ethical Judgment"] : ["비판적 사고", "창의적 문제해결", "공감·소통", "윤리적 판단"],
+    },
+    {
+      number: "02",
+      badge: "SCIENTIFIC MODEL",
+      title: isEn ? "Scientific Capability Model Construction" : "과학적 역량 모델 구축",
+      summary: isEn ? "Developing an objective capability diagnosis system and personalized growth model converging psychology, cognitive science, and behavioral science." : "심리학·인지과학·행동과학을 융합한 객관적 역량 진단 체계 및 개인별 맞춤형 성장 모델을 개발합니다.",
+      keywords: isEn ? ["Psychological Diagnosis", "Cognitive Science", "Behavioral Analysis", "Growth Model"] : ["심리학 진단", "인지과학 역량", "행동과학 분석", "성장 모델"],
+    },
+    {
+      number: "03",
+      badge: "PRACTICAL PROGRAM",
+      title: isEn ? "Research-Based Program Distribution" : "연구 기반 프로그램 보급",
+      summary: isEn ? "Distributing practical capability enhancement and field-oriented education systems that can be immediately applied to corporate, public institution, and school fields." : "기업, 공공기관, 학교 현장에 즉시 적용 가능한 실전 역량 강화 및 현장 중심 교육 체계를 보급합니다.",
+      keywords: isEn ? ["Corporate Capability", "Public Programs", "Teacher Training", "Youth Education"] : ["기업 역량강화", "공공기관 프로그램", "교사 연수", "청년 교육"],
+    },
+    {
+      number: "04",
+      badge: "NATIONAL POLICY",
+      title: isEn ? "National Talent Policy Proposal" : "국가 인재정책 제안",
+      summary: isEn ? "Conducting policy R&D to establish national talent models and improve education systems tailored to the AI era paradigm shift." : "AI 시대 패러다임 전환에 맞춘 국가 인재상 정립 및 교육 제도 개선을 위한 정책 R&D를 수행합니다.",
+      keywords: isEn ? ["Talent Model", "Education Paradigm", "System Improvement", "National Competitiveness"] : ["인재상 정립", "교육 패러다임", "제도 개선", "국가 경쟁력"],
+    },
+    {
+      number: "05",
+      badge: "GLOBAL NETWORK",
+      title: isEn ? "Global Research Network" : "글로벌 연구 네트워크",
+      summary: isEn ? "Fostering a sustainable human capability academic ecosystem connecting governments, universities, corporations, and leading overseas research institutes." : "정부·대학·기업 및 해외 선도 연구기관을 잇는 지속 가능한 인재역량 학술 생태계를 조성합니다.",
+      keywords: isEn ? ["Government Cooperation", "Global Universities", "Corporate Partnership", "Academic Ecosystem"] : ["정부기관 협력", "국내외 대학", "기업 파트너십", "학술 생태계"],
+    },
+  ];
+
+  const dict = {
+    heroSub: isEn ? "KIHC · Korea Institute of Human Capability · Specialized Agency for Capability Diagnosis and Policy Research" : "KIHC · 한국인재역량연구회 · 인재역량 진단 및 정책연구 전문기관",
+    heroTitle: isEn ? "Exploring human potential,\nresearching solutions for sustainable growth." : "사람의 가능성을 탐구하고,\n지속 가능한 성장의 해법을 연구합니다.",
+    heroCopy: isEn ? "In collaboration with government, corporations, and academia, we multidimensionally diagnose the conditions of human unique thinking capabilities and inner growth, proposing reliable policy and education solutions." : "정부·기업·학계와 협력하여 인간 고유의 사고 역량과 내면 성장의 조건을 다각도로 진단하고, 신뢰할 수 있는 정책 및 교육 솔루션을 제안합니다.",
+    heroBtn1: isEn ? "About KIHC Institute" : "KIHC 연구소 소개",
+    heroBtn2: isEn ? "Research Services & Partnerships" : "연구 용역 · 제휴 문의",
+    recentResearch: isEn ? "Recent Research" : "최근 연구자료",
+    recentResearchMore: isEn ? "View all research materials" : "연구자료 전체보기",
+    focusTitle: isEn ? "Research Focus" : "연구분야",
+    focusDesc: isEn ? "Diagnosing conditions for human unique thinking and growth, proposing reliable academic research and policy solutions." : "인간 고유의 사고와 성장의 조건을 진단하고, 신뢰할 수 있는 학술 연구와 정책 솔루션을 제안합니다.",
+    focusMore: isEn ? "View Details on Research & Core Values" : "연구와 핵심가치 자세히 보기",
+    featuredTitle: isEn ? "Featured Research" : "주요 연구자료",
+    featuredDesc: isEn ? "Recent KIHC research viewing human growth and social change together." : "사람의 성장과 사회의 변화를 함께 바라보는 KIHC의 최근 연구입니다.",
+    featuredMore: isEn ? "Read more" : "자세히 보기",
+    newsTitle: isEn ? "KIHC News" : "연구회 소식",
+    newsDesc: isEn ? "Quickly check the latest news and major announcements from KIHC." : "KIHC의 새로운 소식과 주요 안내를 빠르게 확인하세요.",
+    newsMore: isEn ? "More News" : "소식 더보기",
+    quick1: isEn ? "About KIHC" : "KIHC 소개",
+    quick2: isEn ? "KIHC News" : "연구회 소식",
+    quick3: isEn ? "Research Policy Materials" : "연구정책자료",
+    quick4: isEn ? "Contact Us" : "문의"
+  };
+
   const [allResearch, allNews, events, popup] = await Promise.all([
     contentRepository.listResearch(),
     contentRepository.listNews(),
@@ -74,29 +100,28 @@ export default async function Home() {
           <div className="container hero-layout">
             <div className="hero-content">
               <p className="eyebrow light">HUMAN CAPABILITY RESEARCH & POLICY THINK-TANK</p>
-              <p className="hero-korean-name">KIHC · 한국인재역량연구회 · 인재역량 진단 및 정책연구 전문기관</p>
-              <h1>
-                사람의 가능성을 탐구하고,
-                <br />지속 가능한 성장의 해법을 연구합니다.
+              <p className="hero-korean-name">{dict.heroSub}</p>
+              <h1 style={{ whiteSpace: "pre-line" }}>
+                {dict.heroTitle}
               </h1>
               <p className="hero-copy">
-                정부·기업·학계와 협력하여 인간 고유의 사고 역량과 내면 성장의 조건을 다각도로 진단하고, 신뢰할 수 있는 정책 및 교육 솔루션을 제안합니다.
+                {dict.heroCopy}
               </p>
               <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
                 <Link prefetch={false} className="button button-light" href="/about">
-                  KIHC 연구소 소개 <span aria-hidden="true">→</span>
+                  {dict.heroBtn1} <span aria-hidden="true">→</span>
                 </Link>
                 <Link prefetch={false} className="button button-primary" href="/contact">
-                  연구 용역 · 제휴 문의 <span aria-hidden="true">↗</span>
+                  {dict.heroBtn2} <span aria-hidden="true">↗</span>
                 </Link>
               </div>
             </div>
 
-            <aside className="hero-research-panel" aria-label="최근 연구자료">
+            <aside className="hero-research-panel" aria-label={dict.recentResearch}>
               <div className="hero-panel-heading">
                 <div>
                   <span>Research Update</span>
-                  <h2>최근 연구자료</h2>
+                  <h2>{dict.recentResearch}</h2>
                 </div>
                 <strong>{String(sortedResearch.length).padStart(2, "0")}</strong>
               </div>
@@ -110,7 +135,7 @@ export default async function Home() {
                 ))}
               </div>
               <Link prefetch={false} className="hero-panel-more" href="/research">
-                연구자료 전체보기 <span aria-hidden="true">→</span>
+                {dict.recentResearchMore} <span aria-hidden="true">→</span>
               </Link>
             </aside>
           </div>
@@ -126,9 +151,9 @@ export default async function Home() {
             <div className="section-heading">
               <div>
                 <p className="eyebrow">HUMAN CAPABILITY RESEARCH FOCUS</p>
-                <h2>연구분야</h2>
+                <h2>{dict.focusTitle}</h2>
               </div>
-              <p>인간 고유의 사고와 성장의 조건을 진단하고, 신뢰할 수 있는 학술 연구와 정책 솔루션을 제안합니다.</p>
+              <p>{dict.focusDesc}</p>
             </div>
 
             <div className="research-framework-grid">
@@ -150,7 +175,7 @@ export default async function Home() {
             </div>
             <div className="focus-more">
               <Link prefetch={false} className="text-link" href="/research-focus">
-                연구와 핵심가치 자세히 보기 <span aria-hidden="true">→</span>
+                {dict.focusMore} <span aria-hidden="true">→</span>
               </Link>
             </div>
           </div>
@@ -161,9 +186,9 @@ export default async function Home() {
             <div className="featured-heading">
               <div>
                 <p className="eyebrow light">Featured Research</p>
-                <h2>주요 연구자료</h2>
+                <h2>{dict.featuredTitle}</h2>
               </div>
-              <p>사람의 성장과 사회의 변화를 함께 바라보는 KIHC의 최근 연구입니다.</p>
+              <p>{dict.featuredDesc}</p>
             </div>
             <div className="featured-grid">
               {featuredResearch.map((item, index) => (
@@ -177,7 +202,7 @@ export default async function Home() {
                     <time>{item.publishedAt}</time>
                     <h3>{item.title}</h3>
                     <p>{item.summary}</p>
-                    <Link prefetch={false} href={`/research/${item.slug}`}>자세히 보기 <span aria-hidden="true">→</span></Link>
+                    <Link prefetch={false} href={`/research/${item.slug}`}>{dict.featuredMore} <span aria-hidden="true">→</span></Link>
                   </div>
                 </article>
               ))}
@@ -192,10 +217,10 @@ export default async function Home() {
               <div className="news-events-col-head">
                 <div>
                   <p className="eyebrow">KIHC News</p>
-                  <h2>연구회 소식</h2>
-                  <p className="news-events-desc">KIHC의 새로운 소식과 주요 안내를 빠르게 확인하세요.</p>
+                  <h2>{dict.newsTitle}</h2>
+                  <p className="news-events-desc">{dict.newsDesc}</p>
                 </div>
-                <Link prefetch={false} className="button button-outline" href="/news">소식 더보기</Link>
+                <Link prefetch={false} className="button button-outline" href="/news">{dict.newsMore}</Link>
               </div>
               <div className="news-list">
                 {news.map((item, index) => (
@@ -214,12 +239,12 @@ export default async function Home() {
           </div>
         </section>
 
-        <nav className="quick-section" aria-label="주요 바로가기">
+        <nav className="quick-section" aria-label={isEn ? "Quick Links" : "주요 바로가기"}>
           <div className="container quick-grid">
-            <Link prefetch={false} href="/about"><span>01</span><strong>KIHC 소개</strong><i aria-hidden="true">→</i></Link>
-            <Link prefetch={false} href="/news"><span>02</span><strong>연구회 소식</strong><i aria-hidden="true">→</i></Link>
-            <Link prefetch={false} href="/research"><span>03</span><strong>연구정책자료</strong><i aria-hidden="true">→</i></Link>
-            <Link prefetch={false} href="/contact"><span>04</span><strong>문의</strong><i aria-hidden="true">→</i></Link>
+            <Link prefetch={false} href="/about"><span>01</span><strong>{dict.quick1}</strong><i aria-hidden="true">→</i></Link>
+            <Link prefetch={false} href="/news"><span>02</span><strong>{dict.quick2}</strong><i aria-hidden="true">→</i></Link>
+            <Link prefetch={false} href="/research"><span>03</span><strong>{dict.quick3}</strong><i aria-hidden="true">→</i></Link>
+            <Link prefetch={false} href="/contact"><span>04</span><strong>{dict.quick4}</strong><i aria-hidden="true">→</i></Link>
           </div>
         </nav>
       </main>
