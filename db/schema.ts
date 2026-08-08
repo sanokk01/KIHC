@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
-import { index, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { index, pgTable, text, uniqueIndex } from "drizzle-orm/pg-core";
 
-export const contentRecords = sqliteTable("content_records", {
+export const contentRecords = pgTable("content_records", {
   id: text("id").primaryKey(),
   section: text("section").notNull(),
   slug: text("slug"),
@@ -17,13 +17,13 @@ export const contentRecords = sqliteTable("content_records", {
   uniqueIndex("idx_content_section_slug").on(table.section, table.slug),
 ]);
 
-export const siteSingletons = sqliteTable("site_singletons", {
+export const siteSingletons = pgTable("site_singletons", {
   key: text("key").primaryKey(),
   payload: text("payload").notNull().default("{}"),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const mediaAssets = sqliteTable("media_assets", {
+export const mediaAssets = pgTable("media_assets", {
   id: text("id").primaryKey(),
   objectKey: text("object_key").notNull().unique(),
   filename: text("filename").notNull(),
@@ -31,3 +31,4 @@ export const mediaAssets = sqliteTable("media_assets", {
   size: text("size").notNull(),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
+

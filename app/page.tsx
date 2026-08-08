@@ -37,9 +37,13 @@ export default async function Home() {
     contentRepository.listEvents(),
     contentRepository.getActivePopup(),
   ]);
-  const research = allResearch.slice(0, 3);
-  const featuredResearch = allResearch.slice(0, 2);
-  const news = allNews.slice(0, 5);
+  // 최신순 정렬 (publishedAt 내림차순)
+  const sortedResearch = [...allResearch].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+  const sortedNews = [...allNews].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+  // TODO: featuredResearch는 DB 연결 후 조회수(viewCount) 기준으로 변경 예정
+  const featuredResearch = sortedResearch.slice(0, 2);
+  const news = sortedNews.slice(0, 5);
+
 
   return (
     <>
@@ -73,10 +77,10 @@ export default async function Home() {
                   <span>Research Update</span>
                   <h2>최근 연구자료</h2>
                 </div>
-                <strong>{String(allResearch.length).padStart(2, "0")}</strong>
+                <strong>{String(sortedResearch.length).padStart(2, "0")}</strong>
               </div>
               <div className="hero-panel-list">
-                {allResearch.slice(0, 4).map((item, index) => (
+                {sortedResearch.slice(0, 4).map((item, index) => (
                   <Link prefetch={false} href={`/research/${item.slug}`} key={item.id}>
                     <span>{String(index + 1).padStart(2, "0")}</span>
                     <strong>{item.title}</strong>
