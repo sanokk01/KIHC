@@ -54,12 +54,52 @@ export function NoticePopup({ popup }: { popup: PopupNotice }) {
 
   return (
     <div className="notice-backdrop" role="dialog" aria-modal="true" aria-labelledby="notice-title" aria-describedby="notice-description">
-      <div className={`notice-popup notice-popup-vintage ${fullImage ? "notice-popup-full-image" : ""}`}>
-        <div className="notice-titlebar"><strong>공지사항</strong><span>KIHC NOTICE</span></div>
-        {fullImage ? <div className="notice-poster">{popupLink ? <Link prefetch={false} href={popupLink} aria-label={`${popup.title} 자세히 보기`}>{poster}</Link> : poster}<h2 className="sr-only" id="notice-title">{popup.title}</h2><p className="sr-only" id="notice-description">{popup.content}</p></div> : <>{popup.imageUrl ? <div className="notice-image"><img src={popup.imageUrl} alt="" /></div> : <div className="notice-visual" aria-hidden="true"><span>KIHC</span><strong>알려드립니다</strong></div>}<div className="notice-content"><p className="notice-date">KIHC 홈페이지 공지</p><h2 id="notice-title">{popup.title}</h2><p id="notice-description">{popup.content}</p>{popupLink ? <Link prefetch={false} className="notice-detail-link" href={popupLink}>자세히 보기 &gt;</Link> : null}</div></>}
-        <div className="notice-actions">
-          <button type="button" onClick={hideToday}>오늘 하루 보지 않음</button>
-          <button type="button" onClick={() => setVisible(false)}>닫기</button>
+      <div className={`notice-popup-modal ${fullImage ? "notice-popup-full" : ""}`}>
+        <div className="notice-modal-header">
+          <div className="modal-header-brand">
+            <span className="brand-dot" />
+            <strong>KIHC 공지사항</strong>
+          </div>
+          <button type="button" className="modal-close-icon" onClick={() => setVisible(false)} aria-label="닫기">
+            ✕
+          </button>
+        </div>
+
+        <div className="notice-modal-body">
+          {fullImage ? (
+            <div className="notice-poster-box">
+              {popupLink ? <Link prefetch={false} href={popupLink}>{poster}</Link> : poster}
+              <h2 className="sr-only" id="notice-title">{popup.title}</h2>
+              <p className="sr-only" id="notice-description">{popup.content}</p>
+            </div>
+          ) : (
+            <div className="notice-standard-box">
+              {popup.imageUrl ? (
+                <div className="notice-thumb-box">
+                  <img src={popup.imageUrl} alt="" />
+                </div>
+              ) : null}
+              <div className="notice-text-content">
+                <span className="notice-tag">ANNOUNCEMENT</span>
+                <h2 id="notice-title">{popup.title}</h2>
+                <p id="notice-description">{popup.content}</p>
+                {popupLink ? (
+                  <Link prefetch={false} className="notice-action-btn" href={popupLink}>
+                    상세 내용 확인하기 →
+                  </Link>
+                ) : null}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="notice-modal-footer">
+          <button type="button" className="btn-hide-today" onClick={hideToday}>
+            오늘 하루 보지 않기
+          </button>
+          <button type="button" className="btn-close-modal" onClick={() => setVisible(false)}>
+            닫기
+          </button>
         </div>
       </div>
     </div>

@@ -7,76 +7,41 @@ import { NoticePopup } from "./components/NoticePopup";
 import { SiteHeader } from "./components/SiteHeader";
 import { contentRepository } from "./lib/content";
 
-const aiResearchFramework = [
+const researchFramework = [
   {
     number: "01",
-    badge: "AI DIFFERENTIATION",
-    title: "AI 차별화 역량 정의",
-    summary: "인공지능이 대체할 수 없는 인간 고유의 사고 및 행동 특성 집중 연구",
-    details: [
-      "비판적 사고력",
-      "창의적 문제해결력",
-      "공감과 소통 능력",
-      "윤리적 판단과 책임 의식",
-      "복합적 맥락 이해력",
-    ],
-    icon: "🧠",
+    badge: "DIFFERENTIATION",
+    title: "AI 차별화 역량 연구",
+    summary: "인공지능이 대체할 수 없는 인간 고유의 비판적 사고력과 창의적 문제해결, 윤리적 판단 역량을 집중 연구합니다.",
+    keywords: ["비판적 사고", "창의적 문제해결", "공감·소통", "윤리적 판단"],
   },
   {
     number: "02",
     badge: "SCIENTIFIC MODEL",
     title: "과학적 역량 모델 구축",
-    summary: "심리학·인지과학·행동과학 기반의 객관적 역량 진단 체계 및 성장 모델 개발",
-    details: [
-      "심리학 기반 역량 분석",
-      "인지과학 기반 역량 측정",
-      "행동과학 기반 행동 분석",
-      "객관적 역량 진단 체계",
-      "개인별 성장 모델 개발",
-    ],
-    icon: "📈",
+    summary: "심리학·인지과학·행동과학을 융합한 객관적 역량 진단 체계 및 개인별 맞춤형 성장 모델을 개발합니다.",
+    keywords: ["심리학 진단", "인지과학 역량", "행동과학 분석", "성장 모델"],
   },
   {
     number: "03",
     badge: "PRACTICAL PROGRAM",
     title: "연구 기반 프로그램 보급",
-    summary: "기업, 공공기관, 학교, 청년 현장에 즉시 적용 가능한 실전 교육 보급",
-    details: [
-      "기업 맞춤형 교육 프로그램",
-      "공공기관 역량 강화 프로그램",
-      "학교 교육과정 및 교사 연수",
-      "청년 대상 실전 역량 교육",
-      "연구 기반 실전 교육 보급",
-    ],
-    icon: "📚",
+    summary: "기업, 공공기관, 학교 현장에 즉시 적용 가능한 실전 역량 강화 및 현장 중심 교육 체계를 보급합니다.",
+    keywords: ["기업 역량강화", "공공기관 프로그램", "교사 연수", "청년 교육"],
   },
   {
     number: "04",
     badge: "NATIONAL POLICY",
     title: "국가 인재정책 제안",
-    summary: "AI 시대 패러다임 전환에 맞춘 국가 제도 개선 및 교육 정책 수립",
-    details: [
-      "AI 시대 인재상 정립",
-      "교육 정책 패러다임 전환 제안",
-      "제도 개선 및 정책 연구",
-      "국가 인재 경쟁력 강화",
-      "미래 사회 대비 인재 육성",
-    ],
-    icon: "🏛️",
+    summary: "AI 시대 패러다임 전환에 맞춘 국가 인재상 정립 및 교육 제도 개선을 위한 정책 R&D를 수행합니다.",
+    keywords: ["인재상 정립", "교육 패러다임", "제도 개선", "국가 경쟁력"],
   },
   {
     number: "05",
     badge: "GLOBAL NETWORK",
     title: "글로벌 연구 네트워크",
-    summary: "정부·대학·기업 및 해외 선도 연구기관을 잇는 인재역량 생태계 조성",
-    details: [
-      "정부 기관 협력",
-      "국내 대학 및 연구기관 협력",
-      "기업 파트너십 강화",
-      "해외 선도 연구기관 협력",
-      "글로벌 인재역량 생태계 조성",
-    ],
-    icon: "🌐",
+    summary: "정부·대학·기업 및 해외 선도 연구기관을 잇는 지속 가능한 인재역량 학술 생태계를 조성합니다.",
+    keywords: ["정부기관 협력", "국내외 대학", "기업 파트너십", "학술 생태계"],
   },
 ];
 
@@ -155,45 +120,30 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* AI 시대 5대 핵심 연구분야 섹션 */}
+        {/* 5대 핵심 연구분야 섹션 */}
         <section className="section focus-section">
           <div className="container">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">AI-ERA HUMAN CAPABILITY FRAMEWORK</p>
-                <h2>AI 시대 인재역량 핵심 연구분야</h2>
+                <p className="eyebrow">HUMAN CAPABILITY RESEARCH FOCUS</p>
+                <h2>연구분야</h2>
               </div>
-              <p>인공지능이 대체할 수 없는 사람만의 가치로 미래를 설계하고, 과학적 진단과 국가 인재정책 대안을 제시합니다.</p>
+              <p>인간 고유의 사고와 성장의 조건을 진단하고, 신뢰할 수 있는 학술 연구와 정책 솔루션을 제안합니다.</p>
             </div>
 
-            {/* 메인 센터 인포그래픽 배너 */}
-            <div className="ai-core-center-banner">
-              <div className="banner-icon-badge">🤖 ➔ 👤</div>
-              <div className="banner-text">
-                <h3>AI 시대 인재역량 연구원</h3>
-                <p>AI 시대, 사람만의 가치로 미래를 설계합니다</p>
-              </div>
-            </div>
-
-            <div className="ai-framework-grid">
-              {aiResearchFramework.map((item) => (
-                <article className="ai-framework-card" key={item.number}>
-                  <div className="framework-card-header">
-                    <span className="framework-num">{item.number}</span>
-                    <span className="framework-badge">{item.badge}</span>
-                    <span className="framework-icon">{item.icon}</span>
+            <div className="research-framework-grid">
+              {researchFramework.map((item) => (
+                <article className="research-framework-card" key={item.number}>
+                  <div className="card-top-line">
+                    <span className="card-num">{item.number}</span>
+                    <span className="card-tag">{item.badge}</span>
                   </div>
                   <h3>{item.title}</h3>
-                  <p className="framework-summary">{item.summary}</p>
-                  <div className="framework-details-list">
-                    <strong>주요 연구 및 수행 과제:</strong>
-                    <ul>
-                      {item.details.map((detail) => (
-                        <li key={detail}>
-                          <span className="check-bullet">✓</span> {detail}
-                        </li>
-                      ))}
-                    </ul>
+                  <p className="card-summary">{item.summary}</p>
+                  <div className="card-keywords">
+                    {item.keywords.map((kw) => (
+                      <span key={kw}>#{kw}</span>
+                    ))}
                   </div>
                 </article>
               ))}

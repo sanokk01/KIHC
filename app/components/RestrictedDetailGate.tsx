@@ -5,10 +5,10 @@ export function RestrictedDetailGate({ itemName, description = "상세 정보와
   return (
     <section className="restricted-detail-gate" aria-labelledby="restricted-detail-title">
       <div className="restricted-preview-lock">
-        <img src="/security-lock.jpg" alt="보안 걸린 협력 기업 상세자료" />
+        <img src="/security-lock.jpg" alt="협력 기업 전용 보안 자료" />
         <div className="lock-overlay-badge">
-          <span>🔒 ENCRYPTED</span>
-          <small>CONFIDENTIAL</small>
+          <span>CONFIDENTIAL</span>
+          <small>RESTRICTED ACCESS</small>
         </div>
       </div>
       <div className="restricted-gate-copy">
