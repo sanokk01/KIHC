@@ -1,6 +1,6 @@
 export type PublicationStatus = "published" | "draft";
 
-import { contentStore } from "../db/content-store";
+import { contentStore } from "../../db/content-store";
 
 export interface NewsPost {
   id: string;
