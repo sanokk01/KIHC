@@ -88,6 +88,7 @@ export interface SiteSettings {
   siteName: string;
   footerInformation: string;
   email: string;
+  searchKeywords?: string;
 }
 
 export type NewsSearchField = "title" | "content" | "all";
@@ -352,6 +353,7 @@ export const defaultSettings: SiteSettings = {
   siteName: "KIHC 한국인재역량연구회",
   footerInformation: "기관 정보는 운영 준비 후 등록됩니다.",
   email: "대표 이메일 준비 중",
+  searchKeywords: "정책연구,미래전략,탄소중립,컨퍼런스,포럼",
 };
 
 export const contentRepository: ContentRepository = {
@@ -420,8 +422,24 @@ export const contentRepository: ContentRepository = {
     } catch(e) { return []; }
   },
   getPromotionalMaterialBySlug: async (slug) => defaultPromotionalMaterials.find((item) => item.slug === slug && item.status === "published"),
-  listEvents: async () => defaultEvents.filter((item) => item.status === "published"),
-  getEventBySlug: async (slug) => defaultEvents.find((item) => item.slug === slug && item.status === "published"),
+  listEvents: async () => {
+    try {
+      const rows = await contentStore.listContent("events");
+      return rows.map(mapStoredToEvent);
+    } catch (error) {
+      console.error("DB Error in listEvents:", error);
+      return [];
+    }
+  },
+  getEventBySlug: async (slug) => {
+    try {
+      const row = await contentStore.getContentBySlug("events", slug);
+      return row ? mapStoredToEvent(row) : undefined;
+    } catch (error) {
+      console.error("DB Error in getEventBySlug:", error);
+      return undefined;
+    }
+  },
   getActivePopup: async () => {
     try {
       const rows = await contentStore.listContent("popup");
@@ -433,8 +451,20 @@ export const contentRepository: ContentRepository = {
       return undefined;
     }
   },
-  getAbout: async () => defaultAbout,
-  getSettings: async () => defaultSettings,
+  getAbout: async () => {
+    try {
+      const raw = await contentStore.getSingleton("about");
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return defaultAbout;
+  },
+  getSettings: async () => {
+    try {
+      const raw = await contentStore.getSingleton("settings");
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return defaultSettings;
+  },
 };
 
 // --- Mappers ---
@@ -490,6 +520,24 @@ function mapStoredToPopup(row: any): PopupNotice {
     active: row.status === "published",
     startsAt: payload.startsAt,
     endsAt: payload.endsAt,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+  };
+}
+
+function mapStoredToEvent(row: any): EventRecord {
+  let payload: any = {};
+  try { payload = JSON.parse(row.payload); } catch (e) {}
+  return {
+    id: row.id,
+    slug: row.slug || "",
+    title: row.title,
+    eventType: payload.eventType || "세미나",
+    heldAt: payload.heldAt || "",
+    thumbnailLabel: payload.thumbnailLabel || "",
+    protectedDetails: payload.protectedDetails || [],
+    imageUrl: row.imageUrl || undefined,
+    status: row.status,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   };

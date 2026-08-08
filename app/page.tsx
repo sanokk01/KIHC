@@ -75,11 +75,12 @@ export default async function Home() {
     quick4: isEn ? "Contact Us" : "문의"
   };
 
-  const [allResearch, allNews, events, popup] = await Promise.all([
+  const [allResearch, allNews, events, popup, settings] = await Promise.all([
     contentRepository.listResearch(),
     contentRepository.listNews(),
     contentRepository.listEvents(),
     contentRepository.getActivePopup(),
+    contentRepository.getSettings(),
   ]);
   // 최신순 정렬 (publishedAt 내림차순)
   const sortedResearch = [...allResearch].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
@@ -183,7 +184,7 @@ export default async function Home() {
 
         <section className="section featured-section">
           <div className="container">
-            <HomeFeaturedSlider featuredResearch={featuredResearch} isEn={isEn} />
+            <HomeFeaturedSlider featuredResearch={featuredResearch} isEn={isEn} searchKeywords={settings.searchKeywords} />
           </div>
         </section>
 

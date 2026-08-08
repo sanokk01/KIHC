@@ -7,6 +7,10 @@ export { databaseConnected, databasePendingMessage } from "./storage-status";
 function defaultRecords(section: StoredSection): AdminContentRecord[] {
   if (section === "news") return defaultNewsPosts.map((item) => ({ id: item.id, slug: item.slug, title: item.title, publishedAt: item.publishedAt, status: item.status, imageUrl: item.imageUrl, excerpt: item.excerpt, content: item.content.join("\n\n") }));
   if (section === "research") return defaultResearchMaterials.map((item) => ({ id: item.id, slug: item.slug, title: item.title, publishedAt: item.publishedAt, status: item.status, imageUrl: item.imageUrl, author: item.author, summary: item.summary, tableOfContents: item.tableOfContents.join("\n"), keywords: item.keywords.join(", ") }));
+  if (section === "events") {
+    const { defaultEvents } = require("./content");
+    return defaultEvents.map((item: any) => ({ id: item.id, slug: item.slug, title: item.title, heldAt: item.heldAt, status: item.status, eventType: item.eventType, thumbnailLabel: item.thumbnailLabel, protectedDetails: item.protectedDetails }));
+  }
   return [{ id: defaultPopup.id, title: defaultPopup.title, content: defaultPopup.content, imageUrl: defaultPopup.imageUrl, imageDisplay: defaultPopup.imageDisplay, link: defaultPopup.link, active: defaultPopup.active, startsAt: defaultPopup.startsAt, endsAt: defaultPopup.endsAt }];
 }
 
@@ -74,7 +78,7 @@ export async function getAdminSingleton(section: "about" | "settings"): Promise<
   try {
     const payload = await contentStore.getSingleton(section);
     if (!payload) {
-      const defaultData = section === "about" ? { id: "about", title: "KIHC 소개", chairmanMessage: defaultAbout.chairmanMessage.join("\n\n"), chairmanImageUrl: defaultAbout.chairmanImageUrl, organizationIntroduction: defaultAbout.organizationIntroduction.join("\n\n"), organizationImageUrl: defaultAbout.organizationImageUrl, purpose: defaultAbout.purpose, vision: defaultAbout.vision } : { id: "settings", title: "사이트 설정", siteName: defaultSettings.siteName, footerInformation: defaultSettings.footerInformation, email: defaultSettings.email };
+      const defaultData = section === "about" ? { id: "about", title: "KIHC 소개", chairmanMessage: defaultAbout.chairmanMessage.join("\n\n"), chairmanImageUrl: defaultAbout.chairmanImageUrl, organizationIntroduction: defaultAbout.organizationIntroduction.join("\n\n"), organizationImageUrl: defaultAbout.organizationImageUrl, purpose: defaultAbout.purpose, vision: defaultAbout.vision } : { id: "settings", title: "사이트 설정", siteName: defaultSettings.siteName, footerInformation: defaultSettings.footerInformation, email: defaultSettings.email, searchKeywords: defaultSettings.searchKeywords };
       await contentStore.upsertSingleton(section, JSON.stringify(defaultData));
       return defaultData;
     }
@@ -82,7 +86,7 @@ export async function getAdminSingleton(section: "about" | "settings"): Promise<
   } catch (error) {
     console.error("Failed to get singleton from DB:", error);
     if (section === "about") return { id: "about", title: "KIHC 소개", chairmanMessage: defaultAbout.chairmanMessage.join("\n\n"), chairmanImageUrl: defaultAbout.chairmanImageUrl, organizationIntroduction: defaultAbout.organizationIntroduction.join("\n\n"), organizationImageUrl: defaultAbout.organizationImageUrl, purpose: defaultAbout.purpose, vision: defaultAbout.vision };
-    return { id: "settings", title: "사이트 설정", siteName: defaultSettings.siteName, footerInformation: defaultSettings.footerInformation, email: defaultSettings.email };
+    return { id: "settings", title: "사이트 설정", siteName: defaultSettings.siteName, footerInformation: defaultSettings.footerInformation, email: defaultSettings.email, searchKeywords: defaultSettings.searchKeywords };
   }
 }
 
@@ -98,7 +102,7 @@ export function unavailableStorageResponse(error: unknown) {
 }
 
 export function isContentSection(section: string): section is StoredSection {
-  return section === "news" || section === "research" || section === "popup";
+  return section === "news" || section === "research" || section === "popup" || section === "events";
 }
 
 export function isAdminSection(section: string): section is AdminSection {

@@ -5,6 +5,7 @@ const navigation = [
   { label: "Dashboard", href: "/adminpage1", icon: "D" },
   { label: "연구회 소식", href: "/adminpage1/news", icon: "N" },
   { label: "연구정책자료", href: "/adminpage1/research", icon: "R" },
+  { label: "행사 일정", href: "/adminpage1/events", icon: "E" },
   { label: "팝업 관리", href: "/adminpage1/popup", icon: "P" },
   { label: "KIHC 소개 관리", href: "/adminpage1/about", icon: "A" },
   { label: "사이트 설정", href: "/adminpage1/settings", icon: "S" },

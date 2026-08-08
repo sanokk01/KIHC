@@ -10,13 +10,14 @@ export const metadata: Metadata = { title: "콘텐츠 관리" };
 const sectionInfo: Record<AdminSection, { label: string; eyebrow: string; description: string }> = {
   news: { label: "연구회 소식", eyebrow: "NEWS MANAGEMENT", description: "연구회 공지와 소식을 등록하고 공개 상태를 관리합니다." },
   research: { label: "연구정책자료", eyebrow: "RESEARCH MANAGEMENT", description: "PDF 없이 연구자료의 기본 정보, 목차, 요약과 공개 상태를 관리합니다." },
+  events: { label: "행사 일정", eyebrow: "EVENTS MANAGEMENT", description: "세미나, 간담회 등 달력에 표시될 행사 일정을 관리합니다." },
   popup: { label: "팝업 관리", eyebrow: "POPUP MANAGEMENT", description: "홈에 노출할 공지 팝업의 내용, 링크와 기간을 관리합니다." },
   about: { label: "KIHC 소개 관리", eyebrow: "ABOUT MANAGEMENT", description: "이사장 인사말, 연구회 소개, 설립 목적과 비전을 관리합니다." },
-  settings: { label: "사이트 설정", eyebrow: "SITE SETTINGS", description: "사이트명과 Footer 기본 정보를 관리합니다." },
+  settings: { label: "사이트 설정", eyebrow: "SITE SETTINGS", description: "사이트명과 추천 키워드, Footer 기본 정보를 관리합니다." },
 };
 
 async function recordsFor(section: AdminSection): Promise<AdminContentRecord[]> {
-  if (section === "news" || section === "research" || section === "popup") return getAdminRecords(section);
+  if (section === "news" || section === "research" || section === "events" || section === "popup") return getAdminRecords(section);
   return [await getAdminSingleton(section)];
 }
 

@@ -1,4 +1,4 @@
-export type AdminSection = "news" | "research" | "popup" | "about" | "settings";
+export type AdminSection = "news" | "research" | "events" | "popup" | "about" | "settings";
 
 export interface AdminContentRecord {
   id: string;
@@ -30,4 +30,9 @@ export interface AdminContentRecord {
   siteName?: string;
   footerInformation?: string;
   email?: string;
+  searchKeywords?: string;
+  eventType?: string;
+  heldAt?: string;
+  thumbnailLabel?: string;
+  protectedDetails?: string[];
 }

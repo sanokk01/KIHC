@@ -7,9 +7,11 @@ import type { ResearchMaterial } from "../lib/content";
 export function HomeFeaturedSlider({
   featuredResearch,
   isEn,
+  searchKeywords = "정책연구,미래전략,탄소중립,컨퍼런스,포럼",
 }: {
   featuredResearch: ResearchMaterial[];
   isEn: boolean;
+  searchKeywords?: string;
 }) {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -119,11 +121,9 @@ export function HomeFeaturedSlider({
             </svg>{" "}
             {isEn ? "Keywords" : "키워드"}
           </strong>
-          <Link prefetch={false} href="/research?query=정책연구">#정책연구</Link>
-          <Link prefetch={false} href="/research?query=미래전략">#미래전략</Link>
-          <Link prefetch={false} href="/research?query=탄소중립">#탄소중립</Link>
-          <Link prefetch={false} href="/research?query=컨퍼런스">#컨퍼런스</Link>
-          <Link prefetch={false} href="/research?query=포럼">#포럼</Link>
+          {searchKeywords.split(",").map((kw) => kw.trim()).filter(Boolean).map((kw) => (
+            <Link prefetch={false} href={`/research?query=${encodeURIComponent(kw)}`} key={kw}>#{kw}</Link>
+          ))}
         </div>
       </div>
     </>
