@@ -9,8 +9,15 @@ import { contentRepository } from "../lib/content";
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: "연구정책자료" };
 
-export default async function ResearchPage() {
-  const materials = await contentRepository.listResearch();
+export default async function ResearchPage({ searchParams }: { searchParams: Promise<{ query?: string }> }) {
+  const params = await searchParams;
+  const query = params.query?.toLowerCase() || "";
+  const allMaterials = await contentRepository.listResearch();
+  
+  const materials = query 
+    ? allMaterials.filter(item => item.title.toLowerCase().includes(query) || item.summary?.toLowerCase().includes(query))
+    : allMaterials;
+
   return (
     <>
       <SiteHeader />

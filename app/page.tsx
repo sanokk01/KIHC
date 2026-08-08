@@ -52,9 +52,9 @@ export default async function Home() {
   ];
 
   const dict = {
-    heroSub: isEn ? "KIHC · Korea Institute of Human Capability · Specialized Agency for Capability Diagnosis and Policy Research" : "KIHC · 한국인재역량연구회 · 인재역량 진단 및 정책연구 전문기관",
-    heroTitle: isEn ? "Exploring human potential,\nresearching solutions for sustainable growth." : "사람의 가능성을 탐구하고,\n지속 가능한 성장의 해법을 연구합니다.",
-    heroCopy: isEn ? "In collaboration with government, corporations, and academia, we multidimensionally diagnose the conditions of human unique thinking capabilities and inner growth, proposing reliable policy and education solutions." : "정부·기업·학계와 협력하여 인간 고유의 사고 역량과 내면 성장의 조건을 다각도로 진단하고, 신뢰할 수 있는 정책 및 교육 솔루션을 제안합니다.",
+    heroSub: isEn ? "KIHC · Korea Institute of Human Capability" : "KIHC · 한국인재역량연구회",
+    heroTitle: isEn ? "Exploring human potential\nfor sustainable growth." : "사람의 가능성을 탐구하고,\n지속 가능한 성장을 연구합니다.",
+    heroCopy: isEn ? "KIHC researches conditions for human capabilities and inner growth, proposing reliable solutions." : "KIHC는 인간 고유의 역량과 내면 성장의 조건을 진단하고, 신뢰할 수 있는 솔루션을 제안합니다.",
     heroBtn1: isEn ? "About KIHC Institute" : "KIHC 연구소 소개",
     heroBtn2: isEn ? "Research Services & Partnerships" : "연구 용역 · 제휴 문의",
     recentResearch: isEn ? "Recent Research" : "최근 연구자료",
@@ -62,9 +62,9 @@ export default async function Home() {
     focusTitle: isEn ? "Research Focus" : "연구분야",
     focusDesc: isEn ? "Diagnosing conditions for human unique thinking and growth, proposing reliable academic research and policy solutions." : "인간 고유의 사고와 성장의 조건을 진단하고, 신뢰할 수 있는 학술 연구와 정책 솔루션을 제안합니다.",
     focusMore: isEn ? "View Details on Research & Core Values" : "연구와 핵심가치 자세히 보기",
-    featuredTitle: isEn ? "Featured Research" : "주요 연구자료",
-    featuredDesc: isEn ? "Recent KIHC research viewing human growth and social change together." : "사람의 성장과 사회의 변화를 함께 바라보는 KIHC의 최근 연구입니다.",
-    featuredMore: isEn ? "Read more" : "자세히 보기",
+    featuredTitle: isEn ? "Featured Publications" : "주요 게시물",
+    featuredDesc: isEn ? "" : "",
+    featuredMore: isEn ? "Read more >" : "더보기 >",
     newsTitle: isEn ? "KIHC News" : "연구회 소식",
     newsDesc: isEn ? "Quickly check the latest news and major announcements from KIHC." : "KIHC의 새로운 소식과 주요 안내를 빠르게 확인하세요.",
     newsMore: isEn ? "More News" : "소식 더보기",
@@ -182,29 +182,57 @@ export default async function Home() {
 
         <section className="section featured-section">
           <div className="container">
-            <div className="featured-heading">
-              <div>
-                <p className="eyebrow light">Featured Research</p>
-                <h2>{dict.featuredTitle}</h2>
+            <div className="featured-heading-h">
+              <h2>{dict.featuredTitle}</h2>
+              <div className="slider-controls">
+                <span>&lt; 1/{featuredResearch.length || 1} &gt;</span>
+                <span className="plus-icon">+</span>
               </div>
-              <p>{dict.featuredDesc}</p>
             </div>
-            <div className="featured-grid">
+            
+            <div className="featured-slider">
               {featuredResearch.map((item, index) => (
-                <article className="featured-card" key={item.id}>
-                  <div className={`featured-cover cover-${index + 1}`}>
+                <article className="featured-card-h" key={item.id}>
+                  <div className={`featured-cover-h cover-${index + 1}`}>
+                    <span className="cover-badge">{isEn ? "BRIEF" : (index % 2 === 0 ? "브리프" : "자료집")}</span>
                     {item.imageUrl ? <img className="content-cover-image" src={item.imageUrl} alt="" /> : null}
-                    <span>KIHC</span>
-                    <strong>{String(index + 1).padStart(2, "0")}</strong>
+                    {!item.imageUrl && (
+                      <div className="cover-inner-text">
+                        <small>KIHC</small>
+                        <br/><strong>{item.title}</strong>
+                      </div>
+                    )}
                   </div>
-                  <div className="featured-copy">
-                    <time>{item.publishedAt}</time>
+                  <div className="featured-copy-h">
                     <h3>{item.title}</h3>
-                    <p>{item.summary}</p>
-                    <Link prefetch={false} href={`/research/${item.slug}`}>{dict.featuredMore} <span aria-hidden="true">→</span></Link>
+                    <p>{item.title}</p>
+                    <Link prefetch={false} href={`/research/${item.slug}`}>{dict.featuredMore}</Link>
                   </div>
                 </article>
               ))}
+            </div>
+
+            <div className="featured-search-box">
+              <form action="/research" method="GET" className="featured-search-form">
+                <select name="cat1" className="search-select">
+                  <option value="">{isEn ? "All Categories" : "대분류 전체"}</option>
+                </select>
+                <select name="cat2" className="search-select">
+                  <option value="">{isEn ? "All Subcategories" : "중분류 전체"}</option>
+                </select>
+                <input type="text" name="query" placeholder={isEn ? "Enter search term." : "검색어를 입력해주세요."} className="search-input" />
+                <button type="submit" className="search-submit" aria-label="Search">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+              </form>
+              <div className="search-keywords">
+                <strong><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg> {isEn ? "Keywords" : "키워드"}</strong>
+                <Link prefetch={false} href="/research?query=정책연구">#정책연구</Link>
+                <Link prefetch={false} href="/research?query=미래전략">#미래전략</Link>
+                <Link prefetch={false} href="/research?query=탄소중립">#탄소중립</Link>
+                <Link prefetch={false} href="/research?query=컨퍼런스">#컨퍼런스</Link>
+                <Link prefetch={false} href="/research?query=포럼">#포럼</Link>
+              </div>
             </div>
           </div>
         </section>
