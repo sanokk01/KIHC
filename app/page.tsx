@@ -160,13 +160,49 @@ export default async function Home() {
           <div className="container">
             <div className="section-heading">
               <div>
-                      {area.keywords.map((keyword) => <span key={keyword}>{keyword}</span>)}
-                    </div>
+                <p className="eyebrow">AI-ERA HUMAN CAPABILITY FRAMEWORK</p>
+                <h2>AI 시대 인재역량 핵심 연구분야</h2>
+              </div>
+              <p>인공지능이 대체할 수 없는 사람만의 가치로 미래를 설계하고, 과학적 진단과 국가 인재정책 대안을 제시합니다.</p>
+            </div>
+
+            {/* 메인 센터 인포그래픽 배너 */}
+            <div className="ai-core-center-banner">
+              <div className="banner-icon-badge">🤖 ➔ 👤</div>
+              <div className="banner-text">
+                <h3>AI 시대 인재역량 연구원</h3>
+                <p>AI 시대, 사람만의 가치로 미래를 설계합니다</p>
+              </div>
+            </div>
+
+            <div className="ai-framework-grid">
+              {aiResearchFramework.map((item) => (
+                <article className="ai-framework-card" key={item.number}>
+                  <div className="framework-card-header">
+                    <span className="framework-num">{item.number}</span>
+                    <span className="framework-badge">{item.badge}</span>
+                    <span className="framework-icon">{item.icon}</span>
+                  </div>
+                  <h3>{item.title}</h3>
+                  <p className="framework-summary">{item.summary}</p>
+                  <div className="framework-details-list">
+                    <strong>주요 연구 및 수행 과제:</strong>
+                    <ul>
+                      {item.details.map((detail) => (
+                        <li key={detail}>
+                          <span className="check-bullet">✓</span> {detail}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </article>
               ))}
             </div>
-            <div className="focus-more"><Link prefetch={false} className="text-link" href="/research-focus">연구와 핵심가치 자세히 보기 <span aria-hidden="true">→</span></Link></div>
+            <div className="focus-more">
+              <Link prefetch={false} className="text-link" href="/research-focus">
+                연구와 핵심가치 자세히 보기 <span aria-hidden="true">→</span>
+              </Link>
+            </div>
           </div>
         </section>
 
