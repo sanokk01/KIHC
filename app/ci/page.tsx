@@ -5,8 +5,130 @@ import { PageHero } from "../components/PageHero";
 import { RestrictedDetailGate } from "../components/RestrictedDetailGate";
 import { SiteHeader } from "../components/SiteHeader";
 
-export const metadata: Metadata = { title: "CI 소개" };
+export const metadata: Metadata = { title: "CI 소개 | KIHC 한국인재역량연구회" };
 
 export default function CiPage() {
-  return <><SiteHeader /><main><PageHero eyebrow="Corporate Identity" title="CI 소개" description="KIHC 한국인재역량연구회의 정체성을 표현하는 공식 시각 자산을 소개합니다." /><section className="section ci-section"><div className="container"><div className="section-heading"><div><p className="eyebrow">KIHC Identity</p><h2>공식 CI 미리보기</h2></div><p>외부 사용자는 공식 로고의 미리보기만 확인할 수 있습니다. 원본 파일과 상세 사용 규정은 협력 기업 확인 후 제공합니다.</p></div><div className="ci-preview-grid"><article><div className="ci-preview light"><img src="/kihc-logo-horizontal.png" alt="KIHC 가로형 공식 로고 미리보기" /></div><h3>가로형 로고</h3><p>홈페이지와 일반 문서에 사용하는 기본 조합의 미리보기입니다.</p></article><article><div className="ci-preview dark"><img src="/kihc-logo-horizontal.png" alt="어두운 배경의 KIHC 공식 로고 미리보기" /></div><h3>어두운 배경 적용</h3><p>어두운 배경에서의 로고 표시 예시입니다.</p></article></div><RestrictedDetailGate itemName="KIHC CI 원본 및 사용 지침" description="CI 원본 파일, 색상값, 최소 사용 크기와 금지 규정은 협력 기업 전용으로 제공합니다." /></div></section></main><Footer /></>;
+  return (
+    <>
+      <SiteHeader />
+      <main className="ci-main">
+        <PageHero
+          eyebrow="Corporate Identity"
+          title="CI 소개 및 브랜드 가이드"
+          description="KIHC 한국인재역량연구회의 정체성과 학술적 신뢰를 상징하는 공식 시각 자산을 소개합니다."
+        />
+
+        <section className="section ci-section">
+          <div className="container">
+            {/* 1. 브랜드 상징성 및 미학 */}
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">Identity Concept</p>
+                <h2>브랜드 심볼 및 정체성</h2>
+              </div>
+              <p>깊이 있는 학술적 통찰과 지속 가능한 인재 역량의 성장을 조화로운 조형으로 형상화했습니다.</p>
+            </div>
+
+            <div className="ci-concept-grid">
+              <article className="ci-concept-card">
+                <span className="concept-num">01</span>
+                <h3>상승하는 비전의 엠블럼</h3>
+                <p>인간 고유의 내면 역량이 외부로 확장되어 개인과 사회의 성장을 이끄는 상승의 궤적을 심볼릭 라인으로 표현했습니다.</p>
+              </article>
+              <article className="ci-concept-card">
+                <span className="concept-num">02</span>
+                <h3>딥 로열 네이비 & 샴페인 골드</h3>
+                <p>전문 연구기관의 흔들리지 않는 신뢰감을 상징하는 Deep Royal Navy와 깊이 있는 지혜를 뜻하는 Champagne Gold의 결합입니다.</p>
+              </article>
+              <article className="ci-concept-card">
+                <span className="concept-num">03</span>
+                <h3>정교한 워드마크 타이포그래피</h3>
+                <p>명확성과 가독성을 극대화한 커스텀 서체 조합으로, 학술적 엄밀함과 현대적인 유연성을 공존시켰습니다.</p>
+              </article>
+            </div>
+
+            {/* 2. 메인 로고 버라이어티 */}
+            <div className="ci-showcase-box">
+              <div className="ci-showcase-header">
+                <h3>공식 로고 조합 (Official Combinations)</h3>
+                <span>Digital & Print Usage Guidelines</span>
+              </div>
+              <div className="ci-preview-grid-v2">
+                <article className="ci-card-item">
+                  <div className="ci-preview-box light">
+                    <img src="/kihc-logo-horizontal.png" alt="KIHC 가로형 공식 로고" />
+                  </div>
+                  <div className="ci-card-info">
+                    <h4>가로형 시그니처 (Primary Horizontal)</h4>
+                    <p>홈페이지 상단, 공식 서식 및 학술 보고서 표지에 사용하는 메인 로고 조합입니다.</p>
+                  </div>
+                </article>
+                <article className="ci-card-item">
+                  <div className="ci-preview-box dark">
+                    <img src="/kihc-logo-horizontal.png" alt="어두운 배경 적용 KIHC 로고" />
+                  </div>
+                  <div className="ci-card-info">
+                    <h4>어두운 배경용 시그니처 (Dark Background)</h4>
+                    <p>어두운 톤의 템플릿 및 프레젠테이션 표지에 사용하는 반전 조합입니다.</p>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            {/* 3. 브랜드 전용 컬러 시스템 */}
+            <div className="ci-color-system">
+              <div className="section-heading compact">
+                <div>
+                  <p className="eyebrow">Color Palette</p>
+                  <h2>공식 컬러 시스템</h2>
+                </div>
+              </div>
+              <div className="color-swatch-grid">
+                <div className="color-swatch navy">
+                  <div className="swatch-preview" />
+                  <div className="swatch-details">
+                    <strong>Deep Royal Navy</strong>
+                    <span>#0A192F</span>
+                    <small>Primary Brand Color</small>
+                  </div>
+                </div>
+                <div className="color-swatch gold">
+                  <div className="swatch-preview" />
+                  <div className="swatch-details">
+                    <strong>Champagne Gold</strong>
+                    <span>#C5A059</span>
+                    <small>Accent Brand Color</small>
+                  </div>
+                </div>
+                <div className="color-swatch slate">
+                  <div className="swatch-preview" />
+                  <div className="swatch-details">
+                    <strong>Academic Slate</strong>
+                    <span>#153B66</span>
+                    <small>Secondary Neutral</small>
+                  </div>
+                </div>
+                <div className="color-swatch warm">
+                  <div className="swatch-preview" />
+                  <div className="swatch-details">
+                    <strong>Warm Paper White</strong>
+                    <span>#FCFBF9</span>
+                    <small>Background Base</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 4. 제한 다운로드 및 가이드 게이트 */}
+            <RestrictedDetailGate
+              itemName="KIHC CI 원본 패키지 (AI/SVG/PNG) 및 브랜드 사용 규정"
+              description="CI 원본 벡터 파일과 서체 사용 규칙은 공식 제휴 및 연구 협력 기관에 제공됩니다."
+            />
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
 }
+

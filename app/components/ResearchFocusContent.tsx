@@ -99,46 +99,104 @@ export function ResearchFocusContent({ initialLocale = "ko", useStoredPreference
       <section className="research-focus-hero">
         <div className="container">
           <div className="language-switcher" aria-label="Language">
-            {(Object.keys(content) as Locale[]).map((key) => <button type="button" aria-pressed={locale === key} className={locale === key ? "active" : ""} onClick={() => chooseLocale(key)} key={key}>{content[key].localeName}</button>)}
+            {(Object.keys(content) as Locale[]).map((key) => (
+              <button
+                type="button"
+                aria-pressed={locale === key}
+                className={locale === key ? "active" : ""}
+                onClick={() => chooseLocale(key)}
+                key={key}
+              >
+                {content[key].localeName}
+              </button>
+            ))}
           </div>
           <p className="eyebrow light">{copy.eyebrow}</p>
           <h1>{copy.title}</h1>
-          <p>{copy.introduction}</p>
+          <p className="research-focus-intro">{copy.introduction}</p>
         </div>
       </section>
 
       <section className="section research-question-section">
         <div className="container">
           <div className="section-heading">
-            <div><p className="eyebrow">{copy.focusEyebrow}</p><h2>{copy.focusTitle}</h2></div>
+            <div>
+              <p className="eyebrow">{copy.focusEyebrow}</p>
+              <h2>{copy.focusTitle}</h2>
+            </div>
             <p>{copy.focusDescription}</p>
           </div>
           <div className="research-question-grid">
-            {copy.areas.map((area) => <article key={area.number}><span>{area.number}</span><h3>{area.title}</h3><strong>{area.question}</strong><p>{area.description}</p><div>{area.keywords.map((keyword) => <em key={keyword}>{keyword}</em>)}</div></article>)}
+            {copy.areas.map((area) => (
+              <article key={area.number} className="research-area-card">
+                <span className="area-number">{area.number}</span>
+                <h3>{area.title}</h3>
+                <strong className="area-question">&ldquo;{area.question}&rdquo;</strong>
+                <p className="area-desc">{area.description}</p>
+                <div className="area-tags">
+                  {area.keywords.map((keyword) => (
+                    <em key={keyword}>#{keyword}</em>
+                  ))}
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
       <section className="section core-values-section">
         <div className="container">
-          <div className="values-heading"><p className="eyebrow light">{copy.valueEyebrow}</p><h2>{copy.valueTitle}</h2></div>
+          <div className="values-heading">
+            <p className="eyebrow light">{copy.valueEyebrow}</p>
+            <h2>{copy.valueTitle}</h2>
+          </div>
           <div className="core-values-grid">
-            {copy.values.map((value, index) => <article key={value.title}><span>{String(index + 1).padStart(2, "0")}</span><h3>{value.title}</h3><p>{value.description}</p></article>)}
+            {copy.values.map((value, index) => (
+              <article key={value.title} className="value-card">
+                <span className="value-index">{String(index + 1).padStart(2, "0")}</span>
+                <h3>{value.title}</h3>
+                <p>{value.description}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
       <section className="section research-approach-section">
         <div className="container">
-          <div className="section-heading compact"><div><p className="eyebrow">{copy.approachEyebrow}</p><h2>{copy.approachTitle}</h2></div></div>
+          <div className="section-heading compact">
+            <div>
+              <p className="eyebrow">{copy.approachEyebrow}</p>
+              <h2>{copy.approachTitle}</h2>
+            </div>
+          </div>
           <ol className="research-approach-list">
-            {copy.approaches.map((item) => <li key={item.step}><span>{item.step}</span><h3>{item.title}</h3><p>{item.description}</p></li>)}
+            {copy.approaches.map((item) => (
+              <li key={item.step} className="approach-step-item">
+                <span className="step-badge">STEP {item.step}</span>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </li>
+            ))}
           </ol>
         </div>
       </section>
 
       <section className="research-focus-cta">
-        <div className="container"><div><h2>{copy.closingTitle}</h2><p>{copy.closingDescription}</p></div><div><Link prefetch={false} className="button button-light" href="/research">{copy.researchButton}</Link><Link prefetch={false} className="button research-focus-contact" href="/contact">{copy.contactButton}</Link></div></div>
+        <div className="container cta-flex">
+          <div>
+            <h2>{copy.closingTitle}</h2>
+            <p>{copy.closingDescription}</p>
+          </div>
+          <div className="cta-buttons">
+            <Link prefetch={false} className="button button-light" href="/research">
+              {copy.researchButton} →
+            </Link>
+            <Link prefetch={false} className="button button-primary research-focus-contact" href="/contact">
+              {copy.contactButton} ↗
+            </Link>
+          </div>
+        </div>
       </section>
     </main>
   );

@@ -27,7 +27,6 @@ export default async function AboutPage() {
             <a href="#institute">연구회 소개</a>
             <a href="#vision">설립목적 · 비전</a>
             <a href="#chairman">이사장 인사말</a>
-            <a href="#history">연구소 연혁</a>
             <a href="#organization">조직 체계</a>
             <a href="#capabilities">핵심 역량 및 문의</a>
           </div>
@@ -131,44 +130,8 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        {/* 4. 연구소 연혁 */}
-        <section className="about-section muted-bg" id="history">
-          <div className="container">
-            <div className="section-heading compact">
-              <div>
-                <p className="eyebrow">History</p>
-                <h2>연구회 연혁</h2>
-              </div>
-              <p>인재역량 연구의 깊이를 더해온 KIHC의 발자취입니다.</p>
-            </div>
-            <div className="timeline-container">
-              <div className="timeline-item">
-                <div className="timeline-year">2026</div>
-                <div className="timeline-content">
-                  <h4>디지털 연구 플랫폼 개편 및 실시간 데이터베이스 연동</h4>
-                  <p>KIHC 디지털 연구 시스템 구축, 2026 주요 연구 정책자료 시리즈 발간 시작.</p>
-                </div>
-              </div>
-              <div className="timeline-item">
-                <div className="timeline-year">2025</div>
-                <div className="timeline-content">
-                  <h4>인재역량 진단 프레임워크 연구용역 수행</h4>
-                  <p>메타인지 및 회복탄력성 지표 개발 용역 프로젝트 성공적 수행, 정기 세미나 개최.</p>
-                </div>
-              </div>
-              <div className="timeline-item">
-                <div className="timeline-year">2024</div>
-                <div className="timeline-content">
-                  <h4>한국인재역량연구회(KIHC) 설립</h4>
-                  <p>인간 고유 역량 연구를 목표로 학계 및 산업계 연구진 공동 설립.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 5. 조직 체계 */}
-        <section className="about-section organization-section" id="organization">
+        {/* 4. 조직 체계 */}
+        <section className="about-section organization-section muted-bg" id="organization">
           <div className="container">
             <div className="section-heading compact">
               <div>
@@ -182,40 +145,100 @@ export default async function AboutPage() {
                 <img src={about.organizationImageUrl} alt="한국인재역량연구회 조직도" />
               </div>
             ) : (
-              <div className="organization-tree-v2">
-                <div className="tree-level top-level">
-                  <div className="tree-node board">이사회</div>
+              <div className="org-chart-luxurious">
+                {/* 1. 상부 의결 기구 */}
+                <div className="org-tier-top">
+                  <div className="org-card-pill board">
+                    <span className="pill-tag">GOVERNANCE</span>
+                    <strong>이사회</strong>
+                    <small>Board of Directors</small>
+                  </div>
+                  <div className="org-card-pill auditor">
+                    <span className="pill-tag">AUDIT</span>
+                    <strong>감사</strong>
+                    <small>Auditor</small>
+                  </div>
                 </div>
-                <div className="tree-line vertical" />
-                <div className="tree-level text-center">
-                  <div className="tree-node chairman-node">이사장</div>
+
+                <div className="org-connector-line" />
+
+                {/* 2. 최고 경영 및 자문 기구 */}
+                <div className="org-tier-center">
+                  <div className="org-card-head executive">
+                    <span className="gold-accent-badge">EXECUTIVE LEADERSHIP</span>
+                    <h3>이사장 / 연구원장</h3>
+                    <p>Korea Institute of Human Capability</p>
+                  </div>
+                  <div className="org-advisory-wing">
+                    <div className="advisory-pill">
+                      <span>ADVISORY</span>
+                      <strong>운영위원회</strong>
+                    </div>
+                    <div className="advisory-pill">
+                      <span>ACADEMIC</span>
+                      <strong>연구자문위원회</strong>
+                    </div>
+                  </div>
                 </div>
-                <div className="tree-line vertical" />
-                <div className="tree-level sub-top">
-                  <div className="tree-node sub">운영위원회</div>
-                  <div className="tree-node sub">감사</div>
-                </div>
-                <div className="tree-line vertical" />
-                <div className="tree-branches-v2">
-                  <div className="tree-branch-card">
-                    <span className="branch-tag">R&D</span>
+
+                <div className="org-connector-fork" />
+
+                {/* 3. 4대 전문 실행 본부 */}
+                <div className="org-grid-divisons">
+                  <div className="divison-card">
+                    <div className="divison-header">
+                      <span className="divison-num">01</span>
+                      <span className="divison-code">RESEARCH & POLICY</span>
+                    </div>
                     <h4>연구기획본부</h4>
-                    <p>정책 연구 수주, 연구과제 기획 및 과제 관리</p>
+                    <span className="divison-sub">Research Planning Division</span>
+                    <ul className="divison-tasks">
+                      <li>정부·공공기관 정책과제 기획 및 수주</li>
+                      <li>중장기 연구 로드맵 수립 및 과제 관리</li>
+                      <li>B2B 산학협력 R&D 컨설팅 총괄</li>
+                    </ul>
                   </div>
-                  <div className="tree-branch-card">
-                    <span className="branch-tag">RESEARCH</span>
+
+                  <div className="divison-card highlight">
+                    <div className="divison-header">
+                      <span className="divison-num">02</span>
+                      <span className="divison-code">CAPABILITY CENTER</span>
+                    </div>
                     <h4>인재역량연구센터</h4>
-                    <p>메타인지, 회복탄력성, 가치판단 학술 연구</p>
+                    <span className="divison-sub">Human Capability Research Lab</span>
+                    <ul className="divison-tasks">
+                      <li>메타인지 · 회복탄력성 메커니즘 학술 연구</li>
+                      <li>가치판단 역량 및 의사결정 모델링</li>
+                      <li>연구 보고서 발간 및 정기 학술 세미나</li>
+                    </ul>
                   </div>
-                  <div className="tree-branch-card">
-                    <span className="branch-tag">EVALUATION</span>
-                    <h4>진단지표개발실</h4>
-                    <p>역량 진단 모델 개발 및 데이터 분석 표준화</p>
+
+                  <div className="divison-card">
+                    <div className="divison-header">
+                      <span className="divison-num">03</span>
+                      <span className="divison-code">METRICS & METROLOGY</span>
+                    </div>
+                    <h4>역량진단평가실</h4>
+                    <span className="divison-sub">Assessment & Metric Lab</span>
+                    <ul className="divison-tasks">
+                      <li>객관적 데이터 기반 역량 진단 도구 개발</li>
+                      <li>기업/기관 맞춤형 진단 표준화 지표 설계</li>
+                      <li>빅데이터 기반 역량 성과분석 및 솔루션</li>
+                    </ul>
                   </div>
-                  <div className="tree-branch-card">
-                    <span className="branch-tag">PARTNERSHIP</span>
-                    <h4>대외협력사업팀</h4>
-                    <p>B2B 연구용역 수주, 정부·기업 제휴 및 홍보</p>
+
+                  <div className="divison-card">
+                    <div className="divison-header">
+                      <span className="divison-num">04</span>
+                      <span className="divison-code">GLOBAL PARTNERSHIP</span>
+                    </div>
+                    <h4>대외협력·사업팀</h4>
+                    <span className="divison-sub">Partnership & Expansion Team</span>
+                    <ul className="divison-tasks">
+                      <li>연구 용역 프로젝트 계약 및 파트너십</li>
+                      <li>교육 솔루션 보급 및 전문 강연 자문</li>
+                      <li>연구 성과 확산 및 대외 브랜딩</li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -223,7 +246,7 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        {/* 6. 핵심 역량 및 수주 문의 CTA */}
+        {/* 5. 핵심 역량 및 수주 문의 CTA */}
         <section className="about-cta-section" id="capabilities">
           <div className="container cta-box">
             <div className="cta-content">
@@ -243,4 +266,5 @@ export default async function AboutPage() {
     </>
   );
 }
+
 
