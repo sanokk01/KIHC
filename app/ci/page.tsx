@@ -50,7 +50,7 @@ export default function CiPage() {
             {/* 2. 메인 로고 버라이어티 */}
             <div className="ci-showcase-box">
               <div className="ci-showcase-header">
-                <h3>공식 로고 조합 (Official Combinations)</h3>
+                <h3>공식 로고 조합 (Official Logo Combinations)</h3>
                 <span>Digital & Print Usage Guidelines</span>
               </div>
               <div className="ci-preview-grid-v2">
@@ -63,13 +63,40 @@ export default function CiPage() {
                     <p>홈페이지 상단, 공식 서식 및 학술 보고서 표지에 사용하는 메인 로고 조합입니다.</p>
                   </div>
                 </article>
+
                 <article className="ci-card-item">
                   <div className="ci-preview-box dark">
                     <img src="/kihc-logo-horizontal.png" alt="어두운 배경 적용 KIHC 로고" />
                   </div>
                   <div className="ci-card-info">
-                    <h4>어두운 배경용 시그니처 (Dark Background)</h4>
+                    <h4>어두운 배경용 시그니처 (Dark Reverse Signature)</h4>
                     <p>어두운 톤의 템플릿 및 프레젠테이션 표지에 사용하는 반전 조합입니다.</p>
+                  </div>
+                </article>
+
+                <article className="ci-card-item">
+                  <div className="ci-preview-box light emblem-box">
+                    <div className="emblem-symbol-preview">
+                      <span>KIHC</span>
+                      <small>EST. 2024</small>
+                    </div>
+                  </div>
+                  <div className="ci-card-info">
+                    <h4>엠블럼 심볼 마크 (Emblem & Symbol Mark)</h4>
+                    <p>파비콘, 소셜 미디어 아바타, 학술 논문 직인에 사용하는 단독 심볼 조합입니다.</p>
+                  </div>
+                </article>
+
+                <article className="ci-card-item">
+                  <div className="ci-preview-box warm vertical-box">
+                    <div className="stacked-logo-preview">
+                      <div className="stacked-symbol">KIHC</div>
+                      <div className="stacked-text">한국인재역량연구회</div>
+                    </div>
+                  </div>
+                  <div className="ci-card-info">
+                    <h4>수직 세로형 조합 (Vertical Stacked Signature)</h4>
+                    <p>배너, 간판, 좁은 너비의 간행물 표지에 적용하는 세로형 조합입니다.</p>
                   </div>
                 </article>
               </div>

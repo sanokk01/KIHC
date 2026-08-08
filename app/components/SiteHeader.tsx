@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppLink as Link } from "./AppLink";
 import { Logo } from "./Logo";
 
@@ -23,6 +23,29 @@ const newsLinks = [
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [lang, setLang] = useState<"ko" | "en">("ko");
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem("kihc-language");
+    if (stored === "en" || window.location.search.includes("lang=en")) {
+      setLang("en");
+    } else {
+      setLang("ko");
+    }
+  }, []);
+
+  const changeLanguage = (nextLang: "ko" | "en") => {
+    setLang(nextLang);
+    window.localStorage.setItem("kihc-language", nextLang);
+    const url = new URL(window.location.href);
+    if (nextLang === "en") {
+      url.searchParams.set("lang", "en");
+    } else {
+      url.searchParams.delete("lang");
+    }
+    window.history.replaceState({}, "", url.toString());
+    window.location.reload();
+  };
 
   const closeAll = () => {
     setOpen(false);
@@ -37,16 +60,39 @@ export function SiteHeader() {
     <header className="site-header">
       <div className="container header-inner">
         <Logo />
-        <button
-          className={`menu-toggle ${open ? "is-open" : ""}`}
-          type="button"
-          aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
-          aria-expanded={open}
-          onClick={() => { setOpen((v) => !v); setOpenGroup(null); }}
-        >
-          <span />
-          <span />
-        </button>
+
+        <div className="header-actions-right">
+          {/* 다국어 번역 스위처 */}
+          <div className="header-lang-switcher" aria-label="언어 선택">
+            <button
+              type="button"
+              className={lang === "ko" ? "active" : ""}
+              onClick={() => changeLanguage("ko")}
+            >
+              KOR
+            </button>
+            <span className="lang-sep">|</span>
+            <button
+              type="button"
+              className={lang === "en" ? "active" : ""}
+              onClick={() => changeLanguage("en")}
+            >
+              ENG
+            </button>
+          </div>
+
+          <button
+            className={`menu-toggle ${open ? "is-open" : ""}`}
+            type="button"
+            aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
+            aria-expanded={open}
+            onClick={() => { setOpen((v) => !v); setOpenGroup(null); }}
+          >
+            <span />
+            <span />
+          </button>
+        </div>
+
         <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="주요 메뉴">
           <div className="nav-group">
             <Link prefetch={false} href="/about" onClick={closeAll}>KIHC 소개</Link>
@@ -88,3 +134,4 @@ export function SiteHeader() {
     </header>
   );
 }
+
