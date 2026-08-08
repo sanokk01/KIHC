@@ -1,5 +1,7 @@
 export type PublicationStatus = "published" | "draft";
 
+import { contentStore } from "../db/content-store";
+
 export interface NewsPost {
   id: string;
   slug: string;
@@ -341,9 +343,13 @@ export const defaultSettings: SiteSettings = {
 };
 
 export const contentRepository: ContentRepository = {
-  listNews: async () => publishedNews(),
+  listNews: async () => {
+    const rows = await contentStore.listContent("news");
+    return rows.map(mapStoredToNews);
+  },
   searchNews: async ({ query = "", field = "title", page = 1, pageSize = 10 } = {}) => {
-    const posts = publishedNews();
+    const rows = await contentStore.listContent("news");
+    const posts = rows.map(mapStoredToNews);
     const normalizedQuery = query.trim();
     const safePageSize = Math.min(50, Math.max(1, Math.trunc(pageSize) || 10));
     const filtered = posts.filter((post) => matchesNews(post, normalizedQuery, field));
@@ -359,14 +365,84 @@ export const contentRepository: ContentRepository = {
       totalPages,
     };
   },
-  getNewsBySlug: async (slug) => publishedNews().find((post) => post.slug === slug),
-  listResearch: async () => defaultResearchMaterials.filter((item) => item.status === "published"),
-  getResearchBySlug: async (slug) => defaultResearchMaterials.find((item) => item.slug === slug && item.status === "published"),
+  getNewsBySlug: async (slug) => {
+    const row = await contentStore.getContentBySlug("news", slug);
+    return row ? mapStoredToNews(row) : undefined;
+  },
+  listResearch: async () => {
+    const rows = await contentStore.listContent("research");
+    return rows.map(mapStoredToResearch);
+  },
+  getResearchBySlug: async (slug) => {
+    const row = await contentStore.getContentBySlug("research", slug);
+    return row ? mapStoredToResearch(row) : undefined;
+  },
   listPromotionalMaterials: async () => defaultPromotionalMaterials.filter((item) => item.status === "published"),
   getPromotionalMaterialBySlug: async (slug) => defaultPromotionalMaterials.find((item) => item.slug === slug && item.status === "published"),
   listEvents: async () => defaultEvents.filter((item) => item.status === "published"),
   getEventBySlug: async (slug) => defaultEvents.find((item) => item.slug === slug && item.status === "published"),
-  getActivePopup: async () => popupIsVisible(defaultPopup) ? defaultPopup : undefined,
+  getActivePopup: async () => {
+    const rows = await contentStore.listContent("popup");
+    if (rows.length === 0) return undefined;
+    // Just take the first active popup
+    const popup = mapStoredToPopup(rows[0]);
+    return popupIsVisible(popup) ? popup : undefined;
+  },
   getAbout: async () => defaultAbout,
   getSettings: async () => defaultSettings,
 };
+
+// --- Mappers ---
+function mapStoredToNews(row: any): NewsPost {
+  let payload: any = {};
+  try { payload = JSON.parse(row.payload); } catch (e) {}
+  return {
+    id: row.id,
+    slug: row.slug || "",
+    title: row.title,
+    excerpt: payload.excerpt || "",
+    content: payload.content || [],
+    imageUrl: row.imageUrl || undefined,
+    status: row.status,
+    publishedAt: row.publishedAt || "",
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+  };
+}
+
+function mapStoredToResearch(row: any): ResearchMaterial {
+  let payload: any = {};
+  try { payload = JSON.parse(row.payload); } catch (e) {}
+  return {
+    id: row.id,
+    slug: row.slug || "",
+    title: row.title,
+    author: payload.author || "",
+    publishedAt: row.publishedAt || "",
+    tableOfContents: payload.tableOfContents || [],
+    summary: payload.summary || "",
+    keywords: payload.keywords || [],
+    imageUrl: row.imageUrl || undefined,
+    status: row.status,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+  };
+}
+
+function mapStoredToPopup(row: any): PopupNotice {
+  let payload: any = {};
+  try { payload = JSON.parse(row.payload); } catch (e) {}
+  return {
+    id: row.id,
+    title: row.title,
+    content: payload.content || "",
+    link: payload.link || undefined,
+    imageUrl: row.imageUrl || undefined,
+    imageDisplay: payload.imageDisplay || "banner",
+    active: row.status === "published",
+    startsAt: payload.startsAt,
+    endsAt: payload.endsAt,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+  };
+}
