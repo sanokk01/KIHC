@@ -344,49 +344,82 @@ export const defaultSettings: SiteSettings = {
 
 export const contentRepository: ContentRepository = {
   listNews: async () => {
-    const rows = await contentStore.listContent("news");
-    return rows.map(mapStoredToNews);
+    try {
+      const rows = await contentStore.listContent("news");
+      return rows.map(mapStoredToNews);
+    } catch (error) {
+      console.error("DB Error in listNews:", error);
+      return [];
+    }
   },
   searchNews: async ({ query = "", field = "title", page = 1, pageSize = 10 } = {}) => {
-    const rows = await contentStore.listContent("news");
-    const posts = rows.map(mapStoredToNews);
-    const normalizedQuery = query.trim();
-    const safePageSize = Math.min(50, Math.max(1, Math.trunc(pageSize) || 10));
-    const filtered = posts.filter((post) => matchesNews(post, normalizedQuery, field));
-    const totalPages = Math.max(1, Math.ceil(filtered.length / safePageSize));
-    const safePage = Math.min(totalPages, Math.max(1, Math.trunc(page) || 1));
-    const offset = (safePage - 1) * safePageSize;
-    return {
-      items: filtered.slice(offset, offset + safePageSize),
-      total: posts.length,
-      filteredTotal: filtered.length,
-      page: safePage,
-      pageSize: safePageSize,
-      totalPages,
-    };
+    try {
+      const rows = await contentStore.listContent("news");
+      const posts = rows.map(mapStoredToNews);
+      const normalizedQuery = query.trim();
+      const safePageSize = Math.min(50, Math.max(1, Math.trunc(pageSize) || 10));
+      const filtered = posts.filter((post) => matchesNews(post, normalizedQuery, field));
+      const totalPages = Math.max(1, Math.ceil(filtered.length / safePageSize));
+      const safePage = Math.min(totalPages, Math.max(1, Math.trunc(page) || 1));
+      const offset = (safePage - 1) * safePageSize;
+      return {
+        items: filtered.slice(offset, offset + safePageSize),
+        total: posts.length,
+        filteredTotal: filtered.length,
+        page: safePage,
+        pageSize: safePageSize,
+        totalPages,
+      };
+    } catch (error) {
+      console.error("DB Error in searchNews:", error);
+      return { items: [], total: 0, filteredTotal: 0, page: 1, pageSize: 10, totalPages: 1 };
+    }
   },
   getNewsBySlug: async (slug) => {
-    const row = await contentStore.getContentBySlug("news", slug);
-    return row ? mapStoredToNews(row) : undefined;
+    try {
+      const row = await contentStore.getContentBySlug("news", slug);
+      return row ? mapStoredToNews(row) : undefined;
+    } catch (error) {
+      console.error("DB Error in getNewsBySlug:", error);
+      return undefined;
+    }
   },
   listResearch: async () => {
-    const rows = await contentStore.listContent("research");
-    return rows.map(mapStoredToResearch);
+    try {
+      const rows = await contentStore.listContent("research");
+      return rows.map(mapStoredToResearch);
+    } catch (error) {
+      console.error("DB Error in listResearch:", error);
+      return [];
+    }
   },
   getResearchBySlug: async (slug) => {
-    const row = await contentStore.getContentBySlug("research", slug);
-    return row ? mapStoredToResearch(row) : undefined;
+    try {
+      const row = await contentStore.getContentBySlug("research", slug);
+      return row ? mapStoredToResearch(row) : undefined;
+    } catch (error) {
+      console.error("DB Error in getResearchBySlug:", error);
+      return undefined;
+    }
   },
-  listPromotionalMaterials: async () => defaultPromotionalMaterials.filter((item) => item.status === "published"),
+  listPromotionalMaterials: async () => {
+    try {
+      return defaultPromotionalMaterials.filter((item) => item.status === "published");
+    } catch(e) { return []; }
+  },
   getPromotionalMaterialBySlug: async (slug) => defaultPromotionalMaterials.find((item) => item.slug === slug && item.status === "published"),
   listEvents: async () => defaultEvents.filter((item) => item.status === "published"),
   getEventBySlug: async (slug) => defaultEvents.find((item) => item.slug === slug && item.status === "published"),
   getActivePopup: async () => {
-    const rows = await contentStore.listContent("popup");
-    if (rows.length === 0) return undefined;
-    // Just take the first active popup
-    const popup = mapStoredToPopup(rows[0]);
-    return popupIsVisible(popup) ? popup : undefined;
+    try {
+      const rows = await contentStore.listContent("popup");
+      if (rows.length === 0) return undefined;
+      const popup = mapStoredToPopup(rows[0]);
+      return popupIsVisible(popup) ? popup : undefined;
+    } catch (error) {
+      console.error("DB Error in getActivePopup:", error);
+      return undefined;
+    }
   },
   getAbout: async () => defaultAbout,
   getSettings: async () => defaultSettings,

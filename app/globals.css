@@ -57,10 +57,14 @@ button { cursor: pointer; }
 
 /* Page & Home Hero Floating Language Switcher */
 .page-hero-inner, .home-hero-lang-box { position: relative; }
-.hero-lang-switcher { position: absolute; top: 32px; right: 0; z-index: 20; display: inline-flex; border-radius: 8px; overflow: hidden; border: 1px solid rgba(197, 160, 89, 0.4); background: #0a192f; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
-.hero-lang-switcher button { padding: 9px 20px; border: 0; background: #0a192f; color: #94a3b8; font-size: 13.5px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
-.hero-lang-switcher button.active { background: var(--gold-accent); color: var(--navy-950); font-weight: 800; }
-.hero-lang-switcher button:hover:not(.active) { color: white; background: #153b66; }
+.lang-switcher-inline { display: inline-flex; align-items: center; gap: 8px; margin-left: 20px; font-size: 13px; font-weight: 700; color: #64748b; }
+.lang-switcher-inline .lang-label { color: var(--navy-950); margin-right: 4px; }
+.lang-switcher-inline .lang-btn { background: transparent; border: 0; padding: 0; color: #64748b; font-weight: 600; cursor: pointer; transition: color .2s; }
+.lang-switcher-inline .lang-btn:hover { color: var(--navy-950); }
+.lang-switcher-inline .lang-btn.active { color: var(--gold-hover); font-weight: 800; }
+.lang-switcher-inline .lang-divider { color: #cbd5e1; font-size: 11px; }
+
+.hero-lang-switcher { display: none; /* Removed as requested */ }
 .main-nav > a, .nav-group > a { display: flex; align-items: center; height: 100%; font-size: 15px; font-weight: 700; color: var(--navy-950); }
 .nav-group { position: relative; height: 100%; }
 .nav-group > a::after { content: ""; width: 5px; height: 5px; margin: 0 0 4px 9px; border-right: 1px solid; border-bottom: 1px solid; transform: rotate(45deg); }

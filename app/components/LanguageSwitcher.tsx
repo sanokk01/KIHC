@@ -30,25 +30,26 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
     router.refresh();
   };
 
-  if (!isClient) return <div className={`language-dropdown-wrapper ${className}`} aria-hidden="true" />;
+  if (!isClient) return <div className={`lang-switcher-inline ${className}`} aria-hidden="true" />;
 
   return (
-    <div className={`language-dropdown-wrapper ${className}`}>
-      <label htmlFor="lang-select" className="lang-label">
-        {lang === "ko" ? "언어:" : "Lang:"}
-      </label>
-      <div className="lang-select-box">
-        <select
-          id="lang-select"
-          className="lang-select"
-          value={lang}
-          onChange={(e) => changeLanguage(e.target.value as "ko" | "en")}
-          aria-label="언어 선택"
-        >
-          <option value="ko">한국어</option>
-          <option value="en">English</option>
-        </select>
-      </div>
+    <div className={`lang-switcher-inline ${className}`}>
+      <span className="lang-label">{lang === "ko" ? "언어:" : "Lang:"}</span>
+      <button 
+        className={`lang-btn ${lang === "ko" ? "active" : ""}`} 
+        onClick={() => changeLanguage("ko")}
+        aria-label="한국어로 변경"
+      >
+        KO
+      </button>
+      <span className="lang-divider">|</span>
+      <button 
+        className={`lang-btn ${lang === "en" ? "active" : ""}`} 
+        onClick={() => changeLanguage("en")}
+        aria-label="Change to English"
+      >
+        EN
+      </button>
     </div>
   );
 }
