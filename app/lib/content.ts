@@ -1,5 +1,3 @@
-import { getContentRowBySlug, getSingletonPayload, listContentRows, type StoredContentRow } from "../../db/content-store";
-
 export type PublicationStatus = "published" | "draft";
 
 export interface NewsPost {
@@ -200,82 +198,12 @@ export const defaultSettings: SiteSettings = {
   email: "대표 이메일 준비 중",
 };
 
-function parsePayload<T>(payload: string, fallback: T): T {
-  try { return { ...fallback, ...JSON.parse(payload) } as T; } catch { return fallback; }
-}
-
-function rowToNews(row: StoredContentRow): NewsPost {
-  const payload = parsePayload(row.payload, { excerpt: "", content: [] as string[] });
-  return { id: row.id, slug: row.slug ?? row.id, title: row.title, excerpt: payload.excerpt, content: payload.content, imageUrl: row.imageUrl ?? undefined, status: row.status, publishedAt: row.publishedAt ?? "", createdAt: row.createdAt, updatedAt: row.updatedAt };
-}
-
-function rowToResearch(row: StoredContentRow): ResearchMaterial {
-  const payload = parsePayload(row.payload, { author: "", tableOfContents: [] as string[], summary: "", keywords: [] as string[] });
-  return { id: row.id, slug: row.slug ?? row.id, title: row.title, author: payload.author, publishedAt: row.publishedAt ?? "", tableOfContents: payload.tableOfContents, summary: payload.summary, keywords: payload.keywords, imageUrl: row.imageUrl ?? undefined, status: row.status, createdAt: row.createdAt, updatedAt: row.updatedAt };
-}
-
-function rowToPopup(row: StoredContentRow): PopupNotice {
-  const payload = parsePayload(row.payload, { content: "", link: undefined as string | undefined, active: false, startsAt: undefined as string | undefined, endsAt: undefined as string | undefined });
-  return { id: row.id, title: row.title, content: payload.content, link: payload.link, imageUrl: row.imageUrl ?? undefined, active: payload.active, startsAt: payload.startsAt, endsAt: payload.endsAt, createdAt: row.createdAt, updatedAt: row.updatedAt };
-}
-
-async function databaseSectionInitialized(section: "news" | "research" | "popup") {
-  return (await getSingletonPayload(`content:${section}:initialized`)) === "true";
-}
-
 export const contentRepository: ContentRepository = {
-  listNews: async () => {
-    try {
-      const rows = await listContentRows("news");
-      if (rows.length || await databaseSectionInitialized("news")) return rows.map(rowToNews);
-    } catch { /* local/test fallback */ }
-    return defaultNewsPosts.filter((post) => post.status === "published");
-  },
-  getNewsBySlug: async (slug) => {
-    try {
-      const row = await getContentRowBySlug("news", slug);
-      if (row) return rowToNews(row);
-      if (await databaseSectionInitialized("news")) return undefined;
-    } catch { /* local/test fallback */ }
-    return defaultNewsPosts.find((post) => post.slug === slug);
-  },
-  listResearch: async () => {
-    try {
-      const rows = await listContentRows("research");
-      if (rows.length || await databaseSectionInitialized("research")) return rows.map(rowToResearch);
-    } catch { /* local/test fallback */ }
-    return defaultResearchMaterials.filter((item) => item.status === "published");
-  },
-  getResearchBySlug: async (slug) => {
-    try {
-      const row = await getContentRowBySlug("research", slug);
-      if (row) return rowToResearch(row);
-      if (await databaseSectionInitialized("research")) return undefined;
-    } catch { /* local/test fallback */ }
-    return defaultResearchMaterials.find((item) => item.slug === slug);
-  },
-  getActivePopup: async () => {
-    try {
-      const rows = await listContentRows("popup", true);
-      if (rows.length || await databaseSectionInitialized("popup")) {
-        const now = new Date();
-        return rows.map(rowToPopup).find((item) => item.active && (!item.startsAt || new Date(item.startsAt) <= now) && (!item.endsAt || new Date(item.endsAt) >= now));
-      }
-    } catch { /* local/test fallback */ }
-    return defaultPopup.active ? defaultPopup : undefined;
-  },
-  getAbout: async () => {
-    try {
-      const payload = await getSingletonPayload("about");
-      if (payload) return parsePayload(payload, defaultAbout);
-    } catch { /* local/test fallback */ }
-    return defaultAbout;
-  },
-  getSettings: async () => {
-    try {
-      const payload = await getSingletonPayload("settings");
-      if (payload) return parsePayload(payload, defaultSettings);
-    } catch { /* local/test fallback */ }
-    return defaultSettings;
-  },
+  listNews: async () => defaultNewsPosts.filter((post) => post.status === "published"),
+  getNewsBySlug: async (slug) => defaultNewsPosts.find((post) => post.slug === slug),
+  listResearch: async () => defaultResearchMaterials.filter((item) => item.status === "published"),
+  getResearchBySlug: async (slug) => defaultResearchMaterials.find((item) => item.slug === slug),
+  getActivePopup: async () => defaultPopup.active ? defaultPopup : undefined,
+  getAbout: async () => defaultAbout,
+  getSettings: async () => defaultSettings,
 };

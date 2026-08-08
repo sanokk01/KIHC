@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element -- R2 media is served by the app's immutable media route. */
+/* eslint-disable @next/next/no-img-element -- future uploaded media may be served by the app's media route. */
 import type { Metadata } from "next";
 import { AppLink as Link } from "../../components/AppLink";
 import { Footer } from "../../components/Footer";

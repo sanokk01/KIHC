@@ -1,4 +1,4 @@
-import { isContentSection, removeAdminRecord } from "../../../../../lib/admin-data";
+import { isContentSection, removeAdminRecord, unavailableStorageResponse } from "../../../../../lib/admin-data";
 import { isAuthorizedAdminRequest, unauthorizedResponse } from "../../../../../lib/admin-auth";
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ section: string; id: string }> }) {
@@ -9,6 +9,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ s
     await removeAdminRecord(section, id);
     return Response.json({ ok: true });
   } catch (error) {
-    return Response.json({ error: error instanceof Error ? error.message : "삭제하지 못했습니다." }, { status: 500 });
+    return unavailableStorageResponse(error);
   }
 }

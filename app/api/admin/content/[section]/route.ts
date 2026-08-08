@@ -1,4 +1,4 @@
-import { getAdminRecords, isContentSection, saveAdminRecord } from "../../../../lib/admin-data";
+import { getAdminRecords, isContentSection, saveAdminRecord, unavailableStorageResponse } from "../../../../lib/admin-data";
 import { isAuthorizedAdminRequest, unauthorizedResponse } from "../../../../lib/admin-auth";
 import type { AdminContentRecord } from "../../../../lib/admin-types";
 
@@ -22,6 +22,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ sec
     if (!record.title?.trim()) return Response.json({ error: "제목을 입력하세요." }, { status: 400 });
     return Response.json({ record: await saveAdminRecord(section, record) });
   } catch (error) {
-    return Response.json({ error: error instanceof Error ? error.message : "저장하지 못했습니다." }, { status: 500 });
+    return unavailableStorageResponse(error);
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element -- R2 media is served by the app's immutable media route. */
+/* eslint-disable @next/next/no-img-element -- future uploaded media may be served by the app's media route. */
 
 import { useEffect, useState } from "react";
 import type { PopupNotice } from "../lib/content";

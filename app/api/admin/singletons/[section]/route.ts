@@ -1,4 +1,4 @@
-import { getAdminSingleton, saveAdminSingleton } from "../../../../lib/admin-data";
+import { getAdminSingleton, saveAdminSingleton, unavailableStorageResponse } from "../../../../lib/admin-data";
 import { isAuthorizedAdminRequest, unauthorizedResponse } from "../../../../lib/admin-auth";
 import type { AdminContentRecord } from "../../../../lib/admin-types";
 
@@ -25,6 +25,6 @@ export async function PUT(request: Request, { params }: { params: Promise<{ sect
     const record = await request.json() as AdminContentRecord;
     return Response.json({ record: await saveAdminSingleton(section, record) });
   } catch (error) {
-    return Response.json({ error: error instanceof Error ? error.message : "설정을 저장하지 못했습니다." }, { status: 500 });
+    return unavailableStorageResponse(error);
   }
 }

@@ -26,11 +26,11 @@
 
 - 관리자 접속 주소: `https://kihc-research.gangstar1273.chatgpt.site/adminpage1`
 - `/adminpage1/login`: ChatGPT 계정 로그인 안내 화면
-- `/adminpage1`: D1 콘텐츠 현황 대시보드
-- `/adminpage1/news`, `/adminpage1/research`, `/adminpage1/popup`: D1 기반 검색·등록·수정·삭제 및 R2 이미지 업로드
-- `/adminpage1/about`, `/adminpage1/settings`: D1 기반 소개·사이트 정보 수정 및 이사장·조직도 이미지 업로드
+- `/adminpage1`: 외부 DB 연결 대기 상태와 기본 콘텐츠 현황 대시보드
+- `/adminpage1/news`, `/adminpage1/research`, `/adminpage1/popup`: 관리 UI와 검색은 유지하되 저장·삭제·이미지 업로드는 외부 DB 연결 전까지 비활성화
+- `/adminpage1/about`, `/adminpage1/settings`: 편집 UI는 유지하되 저장·이미지 업로드는 외부 DB 연결 전까지 비활성화
 - 공개 Header/Footer에는 관리자 링크를 노출하지 않으며 기존 `/admin` 경로는 제거함
-- 저장 결과는 공동 관리자에게 공유되고 공개 홈페이지에 바로 반영됨
+- 공개 홈페이지는 현재 `app/lib/content.ts`의 기본 데이터를 사용하며 연결되지 않은 DB를 호출하지 않음
 - 공개 홈페이지는 GPT 로그인 없이 접속 가능하며, 관리자 쓰기는 ChatGPT 로그인 사용자에게만 허용됨. 특정 개인 계정 ID를 소스에 고정하지 않음
 
 ### Git 공동 작업
@@ -40,23 +40,23 @@
 - 소스 수정과 GitHub/Netlify 배포에는 프로젝트 소유자의 GPT 계정 로그인이 필요하지 않음. 각 팀원은 본인의 GitHub 및 배포 서비스 계정을 사용한다.
 - 시작 전 `00_readFrist.md`, `git status`, 최근 commit을 확인하고 완료 후 이 문서를 갱신할 것
 - 개인 계정 ID, DB ID, R2 bucket ID, 인증 토큰은 소스에 직접 기록하지 않음. `.openai/hosting.json`에는 논리 binding 이름만 유지
-- 현재 로컬 최신 기능 commit `7145cba`는 이 PC의 GitHub 인증 부재로 `origin/main`에 push되지 않음. GitHub 권한이 있는 작업자가 `git push origin main`을 실행해야 다른 팀원이 받을 수 있다.
+- 이 PC에서는 GitHub 인증이 완료되지 않아 최신 로컬 commit이 `origin/main`에 push되지 않을 수 있음. 인수인계 전 `git rev-list --left-right --count origin/main...HEAD`를 확인한다.
 
 ### 배포 플랫폼 호환성
 
-- ChatGPT Sites/Cloudflare 배포: 현재 구조 그대로 D1 `DB`, R2 `MEDIA`, ChatGPT 로그인 기반 관리자 기능을 모두 사용한다.
-- Netlify 배포: 현재 저장소를 그대로 연결하면 전체 기능이 동작한다고 보장할 수 없다. 이 프로젝트는 표준 Next.js 서버가 아니라 vinext + Cloudflare Worker 구조이고, 관리자 데이터/이미지가 Cloudflare D1·R2 binding에 의존한다.
-- 따라서 Netlify에서 공개 화면뿐 아니라 관리자 CRUD·이미지·팝업까지 운영하려면 표준 Next.js/OpenNext 호환 구조로 전환하고 DB, 파일 저장소, 관리자 인증을 Netlify 호환 서비스로 교체하는 별도 작업이 필요하다.
+- ChatGPT Sites/Cloudflare 배포: D1/R2 binding 없이 기본 콘텐츠로 동작하며 ChatGPT 로그인 기반 관리자 화면은 유지한다.
+- Netlify 배포: 현재 저장소는 vinext + Cloudflare Worker 구조이므로 그대로 연결한 전체 기능 동작을 보장할 수 없다.
+- Netlify에서 관리자 CRUD·이미지·팝업까지 운영하려면 런타임을 호환 구조로 전환하고 팀 DB, 파일 저장소, 관리자 인증을 연결하는 별도 작업이 필요하다.
 - Netlify 링크를 만드는 행위 자체에는 GPT 로그인이 필요 없지만, 위 이식 작업 전에는 해당 링크를 KIHC 완전판 배포로 간주하지 않는다.
 
 ### 공통 구조
 
 - Public 콘텐츠 Repository와 기본 fallback 데이터: `app/lib/content.ts`
-- 관리자 공통 타입·변환: `app/lib/admin-types.ts`, `app/lib/admin-data.ts`
-- DB/R2 접근 경계: `db/content-store.ts`
-- D1 Drizzle 스키마: `db/schema.ts`, migration: `drizzle/0000_skinny_viper.sql`
+- 관리자 공통 타입과 연결 대기 처리: `app/lib/admin-types.ts`, `app/lib/admin-data.ts`, `app/lib/storage-status.ts`
+- 외부 DB/파일 저장소 어댑터 계약: `db/content-store.ts` (`contentStore`는 현재 `null`)
+- 이전 D1 스키마 참고본: `db/schema.ts`, `drizzle/0000_skinny_viper.sql` — 현재 런타임에서는 사용하지 않음
 - 관리자 API: `app/api/admin/**`, 공개 이미지 route: `app/api/media/[id]`
-- 논리 binding: D1 `DB`, R2 `MEDIA` (`.openai/hosting.json`)
+- Sites 저장소 binding: D1 `null`, R2 `null` (`.openai/hosting.json`)
 - 공식 로고 원본: `public/kihc-logo.png`
 - 가로형 투명 로고: `public/kihc-logo-horizontal.png`
 - 공유 이미지: `public/og.png`
@@ -68,18 +68,19 @@
 - 문의 이메일/API 전송
 - 검색 결과 필터링과 실제 pagination
 - 관리자 역할 구분(소유자/편집자/열람자)과 초대 관리 UI
-- 사용하지 않는 R2 이미지 정리 기능
+- 팀이 보유한 외부 DB와 파일 저장소 어댑터 연결
 - 확정 기관 정보, 대표 연락처, 개인정보처리방침 및 저작권 전문
 - 실제 운영용 이사장 사진, 조직도 이미지, 연구자료 썸네일 데이터 입력
 
 ## 4. DB/API 및 권한 연결 지점
 
-- DB: 공개 읽기는 `app/lib/content.ts`, 관리자 쓰기는 `app/lib/admin-data.ts`가 `db/content-store.ts`를 통해 D1에 접근한다.
-- 이미지: `POST /api/admin/upload`가 R2 `MEDIA`에 파일을 저장하고 D1 `media_assets`에 메타데이터를 기록한다. 공개 URL은 `/api/media/[id]`이다.
+- DB: 현재 연결 해제 상태다. 공개 읽기는 `app/lib/content.ts`의 기본 데이터를 반환하고, 관리자 쓰기 API는 명확한 안내와 함께 HTTP 503을 반환한다.
+- 이미지: 업로드 API는 외부 저장소 연결 전 HTTP 503을 반환하고 `/api/media/[id]`는 404를 반환한다. 파일 선택 UI도 비활성화되어 잘못된 저장 성공을 표시하지 않는다.
+- 연결 지점: `db/content-store.ts`의 `ContentStore` 계약을 팀 DB에 맞게 구현한 뒤 `app/lib/content.ts`, `app/lib/admin-data.ts`, 업로드·미디어 route에 주입한다.
 - 인증: `app/lib/admin-auth.ts`가 관리자 page/API를 보호한다. 배포 환경에서는 ChatGPT 인증 header가 필요하고 localhost는 개발 편의를 위해 허용한다.
 - 협업: 소스 수정 권한은 GitHub 저장소 권한으로 관리하고, 배포 관리자 접근 권한은 Sites 공유 설정으로 관리한다.
 - 문의: `app/components/ContactForm.tsx`의 submit 경계에 문의 API를 연결한다.
-- DB가 없는 Node test 환경에서는 `app/lib/content.ts`의 기본 데이터로 fallback한다. 배포 환경의 D1이 authoritative source이다.
+- 현재 모든 환경은 기본 데이터를 사용한다. 팀 DB 연결이 완료된 뒤에만 외부 DB를 authoritative source로 전환한다.
 
 ## 5. 검증 기준
 
@@ -108,9 +109,9 @@
 
 1. `C:\GitHub_clone\KIHC\00_readFrist.md` 전체를 먼저 읽는다.
 2. `git status --short`, `git log -5 --oneline`, `.openai/hosting.json`을 확인한다.
-3. DB 스키마 변경 시 `db/schema.ts` 수정 후 `drizzle-kit generate`를 실행하고 생성 SQL을 검토한다.
-4. 콘텐츠 도메인 필드는 `app/lib/content.ts`, 관리자 입력 타입은 `app/lib/admin-types.ts`, DB 변환은 `app/lib/admin-data.ts`를 함께 맞춘다.
-5. 이미지 파일 자체를 D1에 넣지 말고 R2 `MEDIA`에 저장한다.
+3. 팀이 제공하는 DB 종류, 접속 방식, 환경 변수 이름과 파일 저장소를 먼저 확인한다. 접속 정보와 비밀값은 Git에 기록하지 않는다.
+4. `db/content-store.ts`의 `ContentStore` 계약을 실제 저장소로 구현하고 `app/lib/content.ts`, `app/lib/admin-data.ts`, 관리자 API를 함께 연결한다.
+5. `.openai/hosting.json`의 D1/R2 값은 팀 저장소가 실제로 필요하다고 확인되기 전까지 `null`로 유지한다.
 6. 관리자 API는 `app/lib/admin-auth.ts`의 권한 검사를 반드시 유지한다.
 7. TypeScript, ESLint, production build, `tests/rendered-html.test.mjs`를 통과시킨다.
 8. 완료 후 진행 기록, 남은 작업, 검증 결과를 이 문서에 추가한다.
@@ -180,6 +181,16 @@
 - Sites 접근 모드를 `public`으로 변경하고 비로그인 HTTP 요청에서 `/` 응답 200, `/adminpage1`의 ChatGPT 인증 이동을 확인
 - GitHub `origin/main` push는 이 PC의 GitHub 인증 부재로 실패했으며 기능 구현 commit은 `7145cba`
 
+### 2026-08-08 — D1/R2 연결 해제 및 외부 DB 인수인계 준비
+
+- `.openai/hosting.json`의 D1/R2 binding을 모두 `null`로 변경
+- Public Repository에서 D1 조회를 제거하고 기본 콘텐츠만 반환하도록 전환
+- 관리자 조회 화면은 기본 콘텐츠로 유지하고 저장·삭제·이미지 업로드 UI를 연결 대기 상태로 비활성화
+- 인증된 쓰기·업로드 API는 잘못된 성공이나 서버 오류 대신 외부 DB 연결 대기 안내와 HTTP 503을 반환
+- `/api/media/[id]`는 외부 파일 저장소 연결 전 404를 반환
+- `db/content-store.ts`를 특정 DB에 종속되지 않은 `ContentStore` 인수인계 계약으로 정리
+- TypeScript, ESLint, production build 및 렌더링/API 테스트 6건 통과
+
 ## 9. 다음 우선순위
 
 다음 상세 지시를 받기 전 임의 구현하지 않는다. 우선 검토 대상은 다음과 같다.
@@ -188,4 +199,4 @@
 2. 문의 이메일/API 연결
 3. 공개 검색·pagination 연결
 4. 운영 이미지와 확정 기관 정보 입력
-5. 미사용 R2 이미지 정리 기능
+5. 외부 파일 저장소의 미사용 이미지 정리 기능

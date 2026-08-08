@@ -45,7 +45,7 @@ test("renders functional admin content managers", async () => {
   const responses = await Promise.all(["news", "research", "popup", "about", "settings"].map((section) => render(`/adminpage1/${section}`)));
   responses.forEach((response) => assert.equal(response.status, 200));
   const html = await responses[0].text();
-  assert.match(html, /DB 연결됨/);
+  assert.match(html, /외부 DB 연결 대기/);
   assert.match(html, /새 콘텐츠/);
   assert.doesNotMatch(html, /PDF 다운로드|PDF viewer/i);
 });
@@ -55,6 +55,23 @@ test("protects admin write APIs while allowing authenticated reads", async () =>
   assert.equal(authorized.status, 200);
   assert.equal(unauthorized.status, 401);
   assert.match(await authorized.text(), /2026년 한국인재역량연구회 연구 방향 안내/);
+});
+
+test("returns a clear service-unavailable response while external storage is disconnected", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-storage-write`);
+  const { default: worker } = await import(workerUrl.href);
+  const response = await worker.fetch(
+    new Request("http://localhost/api/admin/content/news", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "oai-authenticated-user-id": "test-user" },
+      body: JSON.stringify({ title: "저장 테스트" }),
+    }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
+  assert.equal(response.status, 503);
+  assert.match(await response.text(), /외부 데이터베이스 연결 대기/);
 });
 
 test("does not expose PDF routes or links", async () => {
