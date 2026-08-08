@@ -123,37 +123,6 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="section research-section">
-          <div className="container">
-            <div className="section-heading compact">
-              <div>
-                <p className="eyebrow">Research & Policy</p>
-                <h2>연구 정책자료</h2>
-                <p className="section-subcopy">KIHC의 주요 연구자료를 소개합니다.</p>
-              </div>
-              <Link prefetch={false} className="text-link" href="/research">
-                전체 자료 보기 <span aria-hidden="true">→</span>
-              </Link>
-            </div>
-            <div className="research-grid home-research-scroll">
-              {research.map((item, index) => (
-                <Link prefetch={false} className="research-card" href={`/research/${item.slug}`} key={item.id}>
-                  <div className={`research-cover cover-${index + 1}`}>
-                    {item.imageUrl ? <img className="content-cover-image" src={item.imageUrl} alt="" /> : null}
-                    <span>KIHC RESEARCH REPORT</span>
-                    <strong>{String(index + 1).padStart(2, "0")}</strong>
-                  </div>
-                  <div className="research-card-body">
-                    <p>{item.publishedAt}</p>
-                    <h3>{item.title}</h3>
-                    <span className="card-arrow" aria-hidden="true">↗</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <section className="section featured-section">
           <div className="container">
             <div className="featured-heading">
@@ -183,28 +152,34 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="section news-section">
-          <div className="container news-layout">
-            <div className="news-intro">
-              <p className="eyebrow">KIHC News</p>
-              <h2>연구회 소식</h2>
-              <p>KIHC의 새로운 소식과 주요 안내를 빠르게 확인하세요.</p>
-              <Link prefetch={false} className="button button-outline" href="/news">소식 더보기</Link>
+        <section className="section news-events-section">
+          <div className="container news-events-layout">
+            {/* 왼쪽: 연구회 소식 */}
+            <div className="news-events-col">
+              <div className="news-events-col-head">
+                <div>
+                  <p className="eyebrow">KIHC News</p>
+                  <h2>연구회 소식</h2>
+                  <p className="news-events-desc">KIHC의 새로운 소식과 주요 안내를 빠르게 확인하세요.</p>
+                </div>
+                <Link prefetch={false} className="button button-outline" href="/news">소식 더보기</Link>
+              </div>
+              <div className="news-list">
+                {news.map((item, index) => (
+                  <Link prefetch={false} href={`/news/${item.slug}`} key={item.id}>
+                    <span className="news-no">{String(index + 1).padStart(2, "0")}</span>
+                    <time>{item.publishedAt}</time>
+                    <strong>{item.title}</strong>
+                    <span className="news-arrow" aria-hidden="true">↗</span>
+                  </Link>
+                ))}
+              </div>
             </div>
-            <div className="news-list">
-              {news.map((item, index) => (
-                <Link prefetch={false} href={`/news/${item.slug}`} key={item.id}>
-                  <span className="news-no">{String(index + 1).padStart(2, "0")}</span>
-                  <time>{item.publishedAt}</time>
-                  <strong>{item.title}</strong>
-                  <span className="news-arrow" aria-hidden="true">↗</span>
-                </Link>
-              ))}
-            </div>
+
+            {/* 오른쪽: 행사일정 */}
+            <HomeEventCalendar events={events} inline />
           </div>
         </section>
-
-        <HomeEventCalendar events={events} />
 
         <nav className="quick-section" aria-label="주요 바로가기">
           <div className="container quick-grid">
