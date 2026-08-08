@@ -19,7 +19,7 @@ export function AdminShell({ children, active = "Dashboard" }: { children: React
         <nav aria-label="관리자 메뉴">
           {navigation.map((item) => <Link prefetch={false} className={active === item.label ? "active" : ""} href={item.href} key={item.href}><span>{item.icon}</span>{item.label}</Link>)}
         </nav>
-        <Link prefetch={false} className="admin-logout" href="/signout-with-chatgpt?return_to=%2F">로그아웃</Link>
+        <Link prefetch={false} className="admin-logout" href="/">공개 사이트로 이동</Link>
       </aside>
       <div className="admin-workspace">
         <header className="admin-topbar"><span>KIHC Content Management</span><div className="admin-user"><span>관리자</span><b>AD</b></div></header>

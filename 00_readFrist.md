@@ -24,14 +24,14 @@
 
 ### Admin
 
-- 관리자 접속 주소: `https://kihc-research.gangstar1273.chatgpt.site/adminpage1`
-- `/adminpage1/login`: ChatGPT 계정 로그인 안내 화면
+- 로컬 관리자 접속 주소: `http://localhost:3000/adminpage1`
+- `/adminpage1/login`: 로컬 개발 관리자 진입 및 운영 인증 연결 대기 안내 화면
 - `/adminpage1`: 외부 DB 연결 대기 상태와 기본 콘텐츠 현황 대시보드
 - `/adminpage1/news`, `/adminpage1/research`, `/adminpage1/popup`: 관리 UI와 검색은 유지하되 저장·삭제·이미지 업로드는 외부 DB 연결 전까지 비활성화
 - `/adminpage1/about`, `/adminpage1/settings`: 편집 UI는 유지하되 저장·이미지 업로드는 외부 DB 연결 전까지 비활성화
 - 공개 Header/Footer에는 관리자 링크를 노출하지 않으며 기존 `/admin` 경로는 제거함
 - 공개 홈페이지는 현재 `app/lib/content.ts`의 기본 데이터를 사용하며 연결되지 않은 DB를 호출하지 않음
-- 공개 홈페이지는 GPT 로그인 없이 접속 가능하며, 관리자 쓰기는 ChatGPT 로그인 사용자에게만 허용됨. 특정 개인 계정 ID를 소스에 고정하지 않음
+- localhost에서는 개발용 관리자 접근을 허용하고 외부 주소에서는 운영 인증 연결 전 관리자 접근을 차단함
 
 ### Git 공동 작업
 
@@ -44,7 +44,9 @@
 
 ### 배포 플랫폼 호환성
 
-- ChatGPT Sites/Cloudflare 배포: D1/R2 binding 없이 기본 콘텐츠로 동작하며 ChatGPT 로그인 기반 관리자 화면은 유지한다.
+- 현재 작업 기준은 `http://localhost:3000` 로컬 실행이며 ChatGPT Sites로 자동 배포하지 않는다.
+- 내부 페이지·관리자 링크는 상대 경로이므로 이후 구매한 도메인을 연결해도 소스의 링크 주소를 다시 바꿀 필요가 없다.
+- 운영 배포 시 `.env.example`의 `NEXT_PUBLIC_SITE_URL`을 실제 `https://도메인` 값으로 설정한다.
 - Netlify 배포: 현재 저장소는 vinext + Cloudflare Worker 구조이므로 그대로 연결한 전체 기능 동작을 보장할 수 없다.
 - Netlify에서 관리자 CRUD·이미지·팝업까지 운영하려면 런타임을 호환 구조로 전환하고 팀 DB, 파일 저장소, 관리자 인증을 연결하는 별도 작업이 필요하다.
 - Netlify 링크를 만드는 행위 자체에는 GPT 로그인이 필요 없지만, 위 이식 작업 전에는 해당 링크를 KIHC 완전판 배포로 간주하지 않는다.
@@ -60,8 +62,9 @@
 - 공식 로고 원본: `public/kihc-logo.png`
 - 가로형 투명 로고: `public/kihc-logo-horizontal.png`
 - 공유 이미지: `public/og.png`
-- 배포 주소: `https://kihc-research.gangstar1273.chatgpt.site`
-- 배포 접근 모드: `public` — 일반 방문자는 GPT 로그인 없이 공개 페이지 열람 가능, `/adminpage1`은 로그인 필요
+- 로컬 주소: `http://localhost:3000`
+- 로컬 관리자 주소: `http://localhost:3000/adminpage1`
+- 운영 도메인: 미정 — 도메인 구매 및 배포 환경 결정 후 `.env.local` 또는 호스팅 환경 변수에 설정
 
 ## 3. 아직 미구현 또는 후속 작업인 부분
 
@@ -77,7 +80,7 @@
 - DB: 현재 연결 해제 상태다. 공개 읽기는 `app/lib/content.ts`의 기본 데이터를 반환하고, 관리자 쓰기 API는 명확한 안내와 함께 HTTP 503을 반환한다.
 - 이미지: 업로드 API는 외부 저장소 연결 전 HTTP 503을 반환하고 `/api/media/[id]`는 404를 반환한다. 파일 선택 UI도 비활성화되어 잘못된 저장 성공을 표시하지 않는다.
 - 연결 지점: `db/content-store.ts`의 `ContentStore` 계약을 팀 DB에 맞게 구현한 뒤 `app/lib/content.ts`, `app/lib/admin-data.ts`, 업로드·미디어 route에 주입한다.
-- 인증: `app/lib/admin-auth.ts`가 관리자 page/API를 보호한다. 배포 환경에서는 ChatGPT 인증 header가 필요하고 localhost는 개발 편의를 위해 허용한다.
+- 인증: `app/lib/admin-auth.ts`가 localhost 개발 접근만 허용한다. 외부 도메인에서는 팀이 선택한 운영 인증을 연결하기 전 page/API 접근을 차단한다.
 - 협업: 소스 수정 권한은 GitHub 저장소 권한으로 관리하고, 배포 관리자 접근 권한은 Sites 공유 설정으로 관리한다.
 - 문의: `app/components/ContactForm.tsx`의 submit 경계에 문의 API를 연결한다.
 - 현재 모든 환경은 기본 데이터를 사용한다. 팀 DB 연결이 완료된 뒤에만 외부 DB를 authoritative source로 전환한다.
@@ -112,7 +115,7 @@
 3. 팀이 제공하는 DB 종류, 접속 방식, 환경 변수 이름과 파일 저장소를 먼저 확인한다. 접속 정보와 비밀값은 Git에 기록하지 않는다.
 4. `db/content-store.ts`의 `ContentStore` 계약을 실제 저장소로 구현하고 `app/lib/content.ts`, `app/lib/admin-data.ts`, 관리자 API를 함께 연결한다.
 5. `.openai/hosting.json`의 D1/R2 값은 팀 저장소가 실제로 필요하다고 확인되기 전까지 `null`로 유지한다.
-6. 관리자 API는 `app/lib/admin-auth.ts`의 권한 검사를 반드시 유지한다.
+6. 관리자 API는 `app/lib/admin-auth.ts`의 권한 검사를 반드시 유지하고, 실제 도메인 배포 전에 팀 인증 방식으로 교체한다.
 7. TypeScript, ESLint, production build, `tests/rendered-html.test.mjs`를 통과시킨다.
 8. 완료 후 진행 기록, 남은 작업, 검증 결과를 이 문서에 추가한다.
 
@@ -190,6 +193,18 @@
 - `/api/media/[id]`는 외부 파일 저장소 연결 전 404를 반환
 - `db/content-store.ts`를 특정 DB에 종속되지 않은 `ContentStore` 인수인계 계약으로 정리
 - TypeScript, ESLint, production build 및 렌더링/API 테스트 6건 통과
+
+### 2026-08-08 — localhost 우선 실행 및 향후 도메인 준비
+
+- ChatGPT 전용 로그인·로그아웃 경로 의존성 제거
+- `.openai/hosting.json`에서 기존 ChatGPT Sites `project_id`를 제거해 로컬 소스와 이전 배포 프로젝트의 고정 연결을 해제
+- localhost 관리자 자동 접근과 외부 주소 관리자 차단으로 인증 경계 정리
+- Windows에서도 `npm run dev`, `npm run build`, `npm run start`가 동작하도록 package script의 POSIX 환경 변수 문법 제거
+- 기본 메타데이터 URL은 `http://localhost:3000`, 운영 시 `NEXT_PUBLIC_SITE_URL` 환경 변수로 구매 도메인을 주입하도록 유지
+- `.env.example`과 프로젝트 전용 `README.md`에 로컬 실행·도메인·DB 인수인계 절차 문서화
+- 이번 단계는 로컬 전용이며 ChatGPT Sites 재배포를 진행하지 않음
+- TypeScript, ESLint, production build, 렌더링/API 테스트 6건 통과
+- 새 production server에서 `/`와 `/adminpage1` 응답 200, Local Admin 표시, 외부 DB 연결 대기 표시, ChatGPT 로그인·로그아웃 경로 0건 확인
 
 ## 9. 다음 우선순위
 

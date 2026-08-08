@@ -7,7 +7,7 @@ async function render(pathname = "/", authenticated = true) {
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request(`http://${authenticated ? "localhost" : "kihc.example"}${pathname}`, { headers: authenticated ? { accept: "text/html", "oai-authenticated-user-id": "test-user", "oai-authenticated-user-email": "admin@kihc.test" } : { accept: "application/json" } }),
+    new Request(`http://${authenticated ? "localhost" : "kihc.example"}${pathname}`, { headers: authenticated ? { accept: "text/html", host: "localhost" } : { accept: "application/json" } }),
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
     { waitUntil() {}, passThroughOnException() {} },
   );
@@ -39,6 +39,7 @@ test("renders public and admin route shells", async () => {
   assert.match(aboutHtml, /설립목적 · 비전/);
   assert.match(adminHtml, /KIHC Content Management/);
   assert.match(adminHtml, /현재 활성 팝업/);
+  assert.doesNotMatch(adminHtml, /signin-with-chatgpt|signout-with-chatgpt/i);
 });
 
 test("renders functional admin content managers", async () => {
@@ -64,7 +65,7 @@ test("returns a clear service-unavailable response while external storage is dis
   const response = await worker.fetch(
     new Request("http://localhost/api/admin/content/news", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "oai-authenticated-user-id": "test-user" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: "저장 테스트" }),
     }),
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
