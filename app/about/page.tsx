@@ -8,27 +8,51 @@ import { contentRepository } from "../lib/content";
 
 export const metadata: Metadata = { title: "KIHC 소개 | 한국인재역량연구회" };
 
-export default async function AboutPage() {
+export default async function AboutPage({ searchParams }: { searchParams?: Promise<{ lang?: string }> }) {
+  const params = await searchParams;
+  const isEn = params?.lang === "en";
   const about = await contentRepository.getAbout();
+
+  const dict = {
+    eyebrow: "THINK-TANK OVERVIEW",
+    title: isEn ? "KIHC Korea Institute of Human Capability" : "KIHC 한국인재역량연구회",
+    description: isEn
+      ? "Diagnosing human capability and growth conditions to deliver trusted policies and solutions for government, corporate, and academia."
+      : "인간 고유의 사고와 내면 성장의 조건을 진단하고, 정부·기업·학계가 신뢰할 수 있는 정책과 솔루션을 제안하는 인재역량 전문 연구기관입니다.",
+    nav: {
+      institute: isEn ? "About Institute" : "연구회 소개",
+      vision: isEn ? "Purpose & Vision" : "설립목적 · 비전",
+      chairman: isEn ? "Chairman's Message" : "이사장 인사말",
+      organization: isEn ? "Organization" : "조직 체계",
+      capabilities: isEn ? "Capabilities & Contact" : "핵심 역량 및 문의",
+    },
+    whoWeAre: isEn ? "An Intellectual Research Community Exploring Human Potential" : "사람의 가능성을 탐구하는 지적 연구 공동체",
+    m1Title: isEn ? "B2B & Government Policy Research" : "B2B · 정부 정책연구 수주",
+    m1Desc: isEn ? "Designing national human resource development and corporate capability models." : "국가 인적자원 개발 및 기업 맞춤형 인재 진단 모델을 설계합니다.",
+    m2Title: isEn ? "Scientific Capability Metrics" : "역량 평가 지표 과학화",
+    m2Desc: isEn ? "Measuring metacognition and resilience based on objective data." : "메타인지와 회복탄력성을 객관적인 데이터 기반으로 측정합니다.",
+    m3Title: isEn ? "Field-Oriented Solutions" : "현장 중심 교육 솔루션",
+    m3Desc: isEn ? "Applying research results directly to education and organizational diagnosis." : "연구 결과를 실제 교육 및 조직 진단 현장에 즉시 적용할 수 있도록 지원합니다.",
+  };
 
   return (
     <>
       <SiteHeader />
       <main className="about-main">
         <PageHero
-          eyebrow="THINK-TANK OVERVIEW"
-          title="KIHC 한국인재역량연구회"
-          description="인간 고유의 사고와 내면 성장의 조건을 진단하고, 정부·기업·학계가 신뢰할 수 있는 정책과 솔루션을 제안하는 인재역량 전문 연구기관입니다."
+          eyebrow={dict.eyebrow}
+          title={dict.title}
+          description={dict.description}
         />
 
         {/* 앵커 네비게이션 */}
         <nav className="anchor-nav" aria-label="소개 페이지 바로가기">
           <div className="container">
-            <a href="#institute">연구회 소개</a>
-            <a href="#vision">설립목적 · 비전</a>
-            <a href="#chairman">이사장 인사말</a>
-            <a href="#organization">조직 체계</a>
-            <a href="#capabilities">핵심 역량 및 문의</a>
+            <a href="#institute">{dict.nav.institute}</a>
+            <a href="#vision">{dict.nav.vision}</a>
+            <a href="#chairman">{dict.nav.chairman}</a>
+            <a href="#organization">{dict.nav.organization}</a>
+            <a href="#capabilities">{dict.nav.capabilities}</a>
           </div>
         </nav>
 
@@ -37,7 +61,7 @@ export default async function AboutPage() {
           <div className="container split-section">
             <div className="split-intro">
               <p className="eyebrow">Who We Are</p>
-              <h2>사람의 가능성을 탐구하는<br />지적 연구 공동체</h2>
+              <h2>{dict.whoWeAre}</h2>
               <span className="gold-divider" />
             </div>
             <div className="large-copy">
@@ -47,18 +71,18 @@ export default async function AboutPage() {
               <div className="mission-cards-grid">
                 <div className="mission-card">
                   <span className="mission-num">01</span>
-                  <h3>B2B · 정부 정책연구 수주</h3>
-                  <p>국가 인적자원 개발 및 기업 맞춤형 인재 진단 모델을 설계합니다.</p>
+                  <h3>{dict.m1Title}</h3>
+                  <p>{dict.m1Desc}</p>
                 </div>
                 <div className="mission-card">
                   <span className="mission-num">02</span>
-                  <h3>역량 평가 지표 과학화</h3>
-                  <p>메타인지와 회복탄력성을 객관적인 데이터 기반으로 측정합니다.</p>
+                  <h3>{dict.m2Title}</h3>
+                  <p>{dict.m2Desc}</p>
                 </div>
                 <div className="mission-card">
                   <span className="mission-num">03</span>
-                  <h3>현장 중심 교육 솔루션</h3>
-                  <p>연구 결과를 실제 교육 및 조직 진단 현장에 즉시 적용할 수 있도록 지원합니다.</p>
+                  <h3>{dict.m3Title}</h3>
+                  <p>{dict.m3Desc}</p>
                 </div>
               </div>
             </div>

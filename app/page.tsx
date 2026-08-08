@@ -2,31 +2,81 @@
 import { AppLink as Link } from "./components/AppLink";
 import { Footer } from "./components/Footer";
 import { HomeEventCalendar } from "./components/HomeEventCalendar";
+import { LanguageSwitcher } from "./components/LanguageSwitcher";
 import { NoticePopup } from "./components/NoticePopup";
 import { SiteHeader } from "./components/SiteHeader";
 import { contentRepository } from "./lib/content";
 
-const focusAreas = [
+const aiResearchFramework = [
   {
     number: "01",
-    title: "자아확립",
-    description: "자기 이해를 토대로 삶과 배움의 방향을 세우는 힘을 연구합니다.",
-    keywords: ["자기이해", "방향설정"],
-    className: "focus-identity",
+    badge: "AI DIFFERENTIATION",
+    title: "AI 차별화 역량 정의",
+    summary: "인공지능이 대체할 수 없는 인간 고유의 사고 및 행동 특성 집중 연구",
+    details: [
+      "비판적 사고력",
+      "창의적 문제해결력",
+      "공감과 소통 능력",
+      "윤리적 판단과 책임 의식",
+      "복합적 맥락 이해력",
+    ],
+    icon: "🧠",
   },
   {
     number: "02",
-    title: "메타인지 · 회복탄력성",
-    description: "생각을 점검하고 변화에 유연하게 대응하는 역량을 살핍니다.",
-    keywords: ["자기조절", "변화대응"],
-    className: "focus-resilience",
+    badge: "SCIENTIFIC MODEL",
+    title: "과학적 역량 모델 구축",
+    summary: "심리학·인지과학·행동과학 기반의 객관적 역량 진단 체계 및 성장 모델 개발",
+    details: [
+      "심리학 기반 역량 분석",
+      "인지과학 기반 역량 측정",
+      "행동과학 기반 행동 분석",
+      "객관적 역량 진단 체계",
+      "개인별 성장 모델 개발",
+    ],
+    icon: "📈",
   },
   {
     number: "03",
-    title: "가치판단 · 창의적 사고",
-    description: "더 나은 선택과 새로운 해법을 만드는 사고의 토대를 탐구합니다.",
-    keywords: ["의사결정", "문제해결"],
-    className: "focus-creativity",
+    badge: "PRACTICAL PROGRAM",
+    title: "연구 기반 프로그램 보급",
+    summary: "기업, 공공기관, 학교, 청년 현장에 즉시 적용 가능한 실전 교육 보급",
+    details: [
+      "기업 맞춤형 교육 프로그램",
+      "공공기관 역량 강화 프로그램",
+      "학교 교육과정 및 교사 연수",
+      "청년 대상 실전 역량 교육",
+      "연구 기반 실전 교육 보급",
+    ],
+    icon: "📚",
+  },
+  {
+    number: "04",
+    badge: "NATIONAL POLICY",
+    title: "국가 인재정책 제안",
+    summary: "AI 시대 패러다임 전환에 맞춘 국가 제도 개선 및 교육 정책 수립",
+    details: [
+      "AI 시대 인재상 정립",
+      "교육 정책 패러다임 전환 제안",
+      "제도 개선 및 정책 연구",
+      "국가 인재 경쟁력 강화",
+      "미래 사회 대비 인재 육성",
+    ],
+    icon: "🏛️",
+  },
+  {
+    number: "05",
+    badge: "GLOBAL NETWORK",
+    title: "글로벌 연구 네트워크",
+    summary: "정부·대학·기업 및 해외 선도 연구기관을 잇는 인재역량 생태계 조성",
+    details: [
+      "정부 기관 협력",
+      "국내 대학 및 연구기관 협력",
+      "기업 파트너십 강화",
+      "해외 선도 연구기관 협력",
+      "글로벌 인재역량 생태계 조성",
+    ],
+    icon: "🌐",
   },
 ];
 
@@ -44,12 +94,14 @@ export default async function Home() {
   const featuredResearch = sortedResearch.slice(0, 2);
   const news = sortedNews.slice(0, 5);
 
-
   return (
     <>
       <SiteHeader />
       <main className="home-main">
         <section className="home-hero">
+          <div className="container home-hero-lang-box">
+            <LanguageSwitcher className="main-hero-lang" />
+          </div>
           <div className="hero-visual-placeholder" aria-hidden="true">
             <span className="hero-visual-grid" />
             <span className="hero-visual-core" />
@@ -103,24 +155,11 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* AI 시대 5대 핵심 연구분야 섹션 */}
         <section className="section focus-section">
           <div className="container">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">Research Focus</p>
-                <h2>연구분야</h2>
-              </div>
-              <p>한 사람의 성장에서 출발해 건강한 공동체로 이어지는 핵심 역량을 연구합니다.</p>
-            </div>
-            <div className="focus-grid">
-              {focusAreas.map((area) => (
-                <article className={`focus-card ${area.className}`} key={area.title}>
-                  <div className="focus-visual" aria-hidden="true"><span /></div>
-                  <span className="focus-number">{area.number}</span>
-                  <div className="focus-copy">
-                    <h3>{area.title}</h3>
-                    <p>{area.description}</p>
-                    <div className="focus-tags" aria-label={`${area.title} 핵심어`}>
                       {area.keywords.map((keyword) => <span key={keyword}>{keyword}</span>)}
                     </div>
                   </div>

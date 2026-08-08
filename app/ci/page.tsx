@@ -7,15 +7,30 @@ import { SiteHeader } from "../components/SiteHeader";
 
 export const metadata: Metadata = { title: "CI 소개 | KIHC 한국인재역량연구회" };
 
-export default function CiPage() {
+export default async function CiPage({ searchParams }: { searchParams?: Promise<{ lang?: string }> }) {
+  const params = await searchParams;
+  const isEn = params?.lang === "en";
+
+  const dict = {
+    title: isEn ? "CI Overview & Brand Guide" : "CI 소개 및 브랜드 가이드",
+    description: isEn
+      ? "Official visual assets representing the identity and academic credibility of KIHC."
+      : "KIHC 한국인재역량연구회의 정체성과 학술적 신뢰를 상징하는 공식 시각 자산을 소개합니다.",
+    conceptHeading: isEn ? "Brand Symbol & Identity" : "브랜드 심볼 및 정체성",
+    conceptDesc: isEn
+      ? "Harmonizing deep academic insight with sustainable human capability growth."
+      : "깊이 있는 학술적 통찰과 지속 가능한 인재 역량의 성장을 조화로운 조형으로 형상화했습니다.",
+    combHeading: isEn ? "Official Logo Combinations" : "공식 로고 조합 (Official Logo Combinations)",
+  };
+
   return (
     <>
       <SiteHeader />
       <main className="ci-main">
         <PageHero
           eyebrow="Corporate Identity"
-          title="CI 소개 및 브랜드 가이드"
-          description="KIHC 한국인재역량연구회의 정체성과 학술적 신뢰를 상징하는 공식 시각 자산을 소개합니다."
+          title={dict.title}
+          description={dict.description}
         />
 
         <section className="section ci-section">
@@ -24,9 +39,9 @@ export default function CiPage() {
             <div className="section-heading">
               <div>
                 <p className="eyebrow">Identity Concept</p>
-                <h2>브랜드 심볼 및 정체성</h2>
+                <h2>{dict.conceptHeading}</h2>
               </div>
-              <p>깊이 있는 학술적 통찰과 지속 가능한 인재 역량의 성장을 조화로운 조형으로 형상화했습니다.</p>
+              <p>{dict.conceptDesc}</p>
             </div>
 
             <div className="ci-concept-grid">
