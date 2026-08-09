@@ -578,6 +578,70 @@ button { cursor: pointer; }
 .article-attachment:hover { background: white; border-color: var(--blue-600); color: var(--blue-600); }
 .research-detail-main { padding: 90px 0 120px; background: var(--sky-50); }
 
+/* Research Advanced Search */
+.research-advanced-search { background: white; border: 1px solid var(--line); margin-bottom: 40px; }
+.search-row { display: flex; border-bottom: 1px dashed var(--line); }
+.search-row:last-child { border-bottom: none; }
+.search-label { width: 140px; padding: 20px; background: #f8fafc; font-weight: 600; color: var(--navy-950); display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--line); text-align: center; font-size: 14px; }
+.search-fields { flex: 1; padding: 20px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.radio-group label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 15px; }
+.date-group input { padding: 8px 12px; border: 1px solid var(--line); border-radius: 4px; }
+.select-group select { padding: 8px 12px; border: 1px solid var(--line); border-radius: 4px; min-width: 150px; }
+.search-bottom-bar { display: flex; padding: 20px; background: white; gap: 10px; border-top: 1px solid var(--line); align-items: center; justify-content: center; }
+.search-bottom-bar select { padding: 10px 16px; border: 1px solid var(--line); border-radius: 4px; min-width: 120px; }
+.search-bottom-bar input { flex: 1; max-width: 400px; padding: 10px 16px; border: 1px solid var(--line); border-radius: 4px; }
+.btn-search-submit { background: #333; color: white; padding: 10px 32px; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; }
+
+/* Research Vertical List */
+.research-list-vertical { display: flex; flex-direction: column; gap: 40px; margin-top: 20px; }
+.research-list-item { display: flex; gap: 30px; align-items: flex-start; padding-bottom: 40px; border-bottom: 1px solid #e2e8f0; }
+.research-list-item:last-child { border-bottom: none; padding-bottom: 0; }
+.research-list-thumb { position: relative; width: 180px; height: 250px; flex-shrink: 0; display: block; overflow: hidden; background: #f1f5f9; border: 1px solid var(--line); }
+.research-list-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.placeholder-thumb { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: #cbd5e1; }
+.hover-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; opacity: 0; transition: opacity 0.3s; }
+.research-list-thumb:hover .hover-overlay { opacity: 1; }
+.plus-icon { font-size: 40px; font-weight: 300; line-height: 1; margin-bottom: 10px; }
+.research-list-info { flex: 1; padding-top: 10px; }
+.doc-type { color: var(--blue-600); font-weight: 600; font-size: 15px; margin-bottom: 12px; display: inline-block; }
+.research-list-info h2 { font-size: 20px; color: #1e293b; margin: 0 0 16px; font-weight: 700; line-height: 1.4; word-break: keep-all; }
+.research-list-info h2 a { color: inherit; text-decoration: none; }
+.research-list-info h2 a:hover { text-decoration: underline; }
+.doc-meta { display: flex; align-items: center; gap: 16px; color: #64748b; font-size: 14px; }
+.doc-meta span::before { content: "·"; margin-right: 16px; color: #cbd5e1; }
+.doc-meta span:first-child::before { display: none; }
+
+/* Research Detail - New Design */
+.research-tab-banner { background: white; border-bottom: 1px solid var(--line); }
+.research-tabs { display: flex; gap: 40px; list-style: none; padding: 0; margin: 0; overflow-x: auto; }
+.research-tabs li a { display: inline-block; padding: 20px 0; color: #64748b; font-weight: 500; font-size: 16px; position: relative; white-space: nowrap; text-decoration: none; }
+.research-tabs li a:hover, .research-tabs li a.active { color: var(--navy-950); font-weight: 700; }
+.research-tabs li a.active::after { content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--navy-950); }
+
+.research-detail-main.new-design { padding: 40px 0 120px; background: white; }
+.research-detail-header { margin-bottom: 40px; border-bottom: 2px solid var(--navy-950); padding-bottom: 20px; }
+.doc-type-badge { color: var(--blue-600); font-size: 14px; font-weight: 700; margin-bottom: 10px; display: inline-block; }
+.title-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.research-detail-title { font-size: 28px; font-weight: 700; color: #1e293b; margin: 0; line-height: 1.4; }
+.btn-text-size { border: 1px solid var(--line); background: white; border-radius: 20px; padding: 6px 12px; display: flex; align-items: center; gap: 6px; cursor: pointer; color: #64748b; }
+.btn-text-size .large { font-size: 18px; font-weight: 700; color: #333; }
+
+.research-metadata-box { display: flex; gap: 40px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 40px; border-radius: 8px; margin-bottom: 60px; }
+.metadata-thumb { width: 220px; height: 310px; flex-shrink: 0; background: white; border: 1px solid var(--line); }
+.metadata-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.metadata-info dl { margin: 0; display: flex; flex-direction: column; gap: 16px; }
+.meta-row { display: flex; align-items: flex-start; gap: 20px; font-size: 16px; border-bottom: 1px dashed var(--line); padding-bottom: 16px; }
+.meta-row:last-child { border-bottom: none; }
+.meta-row dt { width: 100px; font-weight: 600; color: #64748b; }
+.meta-row dd { color: #1e293b; font-weight: 500; margin: 0; flex: 1; }
+
+.research-content-sections { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 60px; }
+.section-header h2 { font-size: 22px; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 24px; position: relative; }
+.section-header h2::after { content: ""; position: absolute; bottom: -2px; left: 0; width: 60px; height: 2px; background: var(--blue-600); }
+.section-body p { line-height: 1.8; color: #334155; font-size: 16px; }
+.section-body ol { padding-left: 20px; line-height: 1.8; color: #334155; }
+.section-body li { margin-bottom: 8px; }
+
 /* Research focus & values Custom CSS */
 .research-focus-main { background: white; }
 .research-focus-hero { padding: 90px 0 100px; background: linear-gradient(135deg, #0a192f 0%, #153b66 100%); color: white; border-bottom: 1px solid rgba(197, 160, 89, 0.3); }

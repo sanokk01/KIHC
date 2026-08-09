@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "관리자 대시보드" };
 
 export default async function AdminPage() {
   const user = await requireAdminUser("/adminpage1");
-  const [news, research, popup] = await Promise.all([contentRepository.listNews(), contentRepository.listResearch(), contentRepository.getActivePopup()]);
+  const [news, research, promotions, popup] = await Promise.all([contentRepository.listNews(), contentRepository.listResearch(), contentRepository.listPromotionalMaterials(), contentRepository.getActivePopup()]);
   return (
     <AdminShell>
       <div className="admin-title"><div><p>DASHBOARD</p><h1>안녕하세요, {user.displayName}님.</h1><span>KIHC 홈페이지의 콘텐츠 현황과 관리 메뉴를 확인하세요.</span></div><Link prefetch={false} href="/" target="_blank">사이트 보기 ↗</Link></div>
@@ -16,6 +16,7 @@ export default async function AdminPage() {
       <div className="stat-grid">
         <article><span>연구회 소식</span><strong>{news.length}</strong><Link prefetch={false} href="/adminpage1/news">관리하기 →</Link></article>
         <article><span>연구정책자료</span><strong>{research.length}</strong><Link prefetch={false} href="/adminpage1/research">관리하기 →</Link></article>
+        <article><span>홍보물</span><strong>{promotions.length}</strong><Link prefetch={false} href="/adminpage1/promotions">관리하기 →</Link></article>
         <article><span>현재 활성 팝업</span><strong>{popup ? 1 : 0}</strong><Link prefetch={false} href="/adminpage1/popup">관리하기 →</Link></article>
       </div>
       <section className="admin-card recent-card">

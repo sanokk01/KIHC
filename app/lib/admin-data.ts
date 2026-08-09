@@ -1,12 +1,13 @@
 import { contentStore, type StoredContentRow, type StoredSection } from "../../db/content-store";
 import type { AdminContentRecord, AdminSection } from "./admin-types";
-import { defaultAbout, defaultNewsPosts, defaultPopup, defaultResearchMaterials, defaultSettings } from "./content";
+import { defaultAbout, defaultNewsPosts, defaultPopup, defaultResearchMaterials, defaultSettings, defaultPromotionalMaterials } from "./content";
 
 export { databaseConnected, databasePendingMessage } from "./storage-status";
 
 function defaultRecords(section: StoredSection): AdminContentRecord[] {
   if (section === "news") return defaultNewsPosts.map((item) => ({ id: item.id, slug: item.slug, title: item.title, publishedAt: item.publishedAt, status: item.status, imageUrl: item.imageUrl, excerpt: item.excerpt, content: item.content.join("\n\n"), category1: item.category1 || "공지사항", category2: item.category2 || "", heldAt: item.heldAt || "", attachmentUrl: item.attachmentUrl || "", views: item.views || 0 }));
-  if (section === "research") return defaultResearchMaterials.map((item) => ({ id: item.id, slug: item.slug, title: item.title, publishedAt: item.publishedAt, status: item.status, imageUrl: item.imageUrl, author: item.author, summary: item.summary, tableOfContents: item.tableOfContents.join("\n"), keywords: item.keywords.join(", ") }));
+  if (section === "research") return defaultResearchMaterials.map((item) => ({ id: item.id, slug: item.slug, title: item.title, publishedAt: item.publishedAt, status: item.status, imageUrl: item.imageUrl, author: item.author, summary: item.summary, tableOfContents: item.tableOfContents.join("\n"), keywords: item.keywords.join(", "), researchType: item.researchType, category1: item.category1, category2: item.category2, views: item.views || 0 }));
+  if (section === "promotions") return defaultPromotionalMaterials.map((item) => ({ id: item.id, slug: item.slug, title: item.title, publishedAt: item.publishedAt, status: item.status, imageUrl: item.imageUrl, thumbnailLabel: item.thumbnailLabel, category1: item.category, protectedDetails: item.protectedDetails }));
 
   return [{ id: defaultPopup.id, title: defaultPopup.title, content: defaultPopup.content, imageUrl: defaultPopup.imageUrl, imageDisplay: defaultPopup.imageDisplay, link: defaultPopup.link, active: defaultPopup.active, startsAt: defaultPopup.startsAt, endsAt: defaultPopup.endsAt }];
 }

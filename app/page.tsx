@@ -84,8 +84,7 @@ export default async function Home() {
   // 최신순 정렬 (publishedAt 내림차순)
   const sortedResearch = [...allResearch].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
   const sortedNews = [...allNews].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
-  // TODO: featuredResearch는 DB 연결 후 조회수(viewCount) 기준으로 변경 예정
-  const featuredResearch = sortedResearch.slice(0, 2);
+  const featuredResearch = [...allResearch].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 6);
   const news = sortedNews.slice(0, 5);
 
   return (
