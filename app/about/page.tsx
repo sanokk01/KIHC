@@ -28,8 +28,8 @@ export default async function AboutPage() {
       capabilities: isEn ? "Capabilities & Contact" : "핵심 역량 및 문의",
     },
     whoWeAre: isEn ? "An Intellectual Research Community Exploring Human Potential" : "사람의 가능성을 탐구하는 지적 연구 공동체",
-    m1Title: isEn ? "B2B & Government Policy Research" : "B2B · 정부 정책연구 수주",
-    m1Desc: isEn ? "Designing national human resource development and corporate capability models." : "국가 인적자원 개발 및 기업 맞춤형 인재 진단 모델을 설계합니다.",
+    m1Title: isEn ? "Customized Policy Model Design for Public & Private Sectors" : "공공 · 민간 맞춤형 정책 모델 설계",
+    m1Desc: isEn ? "Designing national human resource development and corporate capability models." : "국가 단위 인적자원 개발 및 기업 맞춤형 역량 진단 모델을 설계합니다.",
     m2Title: isEn ? "Scientific Capability Metrics" : "역량 평가 지표 과학화",
     m2Desc: isEn ? "Measuring metacognition and resilience based on objective data." : "메타인지와 회복탄력성을 객관적인 데이터 기반으로 측정합니다.",
     m3Title: isEn ? "Field-Oriented Solutions" : "현장 중심 교육 솔루션",
@@ -126,10 +126,25 @@ export default async function AboutPage() {
               </div>
             </div>
           </div>
+          <div className="container impact-stats-row">
+            <div className="impact-stat">
+              <span className="stat-num">EST. 2024</span>
+              <span className="stat-label">{isEn ? "Founded" : "설립 연도"}</span>
+            </div>
+            <div className="impact-stat">
+              <span className="stat-num">100+</span>
+              <span className="stat-label">{isEn ? "Research Reports" : "누적 연구 보고서"}</span>
+            </div>
+            <div className="impact-stat">
+              <span className="stat-num">30+</span>
+              <span className="stat-label">{isEn ? "Global Partners" : "글로벌 파트너십"}</span>
+            </div>
+          </div>
         </section>
 
+
         {/* 2. 설립목적 · 비전 */}
-        <section className="about-section muted-bg" id="vision">
+        <section className="about-section vision-section-bg" id="vision">
           <div className="container">
             <div className="section-heading compact">
               <div>

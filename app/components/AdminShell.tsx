@@ -8,7 +8,6 @@ const navigation = [
   { label: "행사 일정", href: "/adminpage1/events", icon: "E" },
   { label: "팝업 관리", href: "/adminpage1/popup", icon: "P" },
   { label: "KIHC 소개 관리", href: "/adminpage1/about", icon: "A" },
-  { label: "연구소 통합 안내 (신규)", href: "/adminpage1/institute", icon: "I" },
   { label: "사이트 설정", href: "/adminpage1/settings", icon: "S" },
 ];
 
