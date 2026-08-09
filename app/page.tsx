@@ -75,10 +75,9 @@ export default async function Home() {
     quick4: isEn ? "Contact Us" : "문의"
   };
 
-  const [allResearch, allNews, events, popup, settings] = await Promise.all([
+  const [allResearch, allNews, popup, settings] = await Promise.all([
     contentRepository.listResearch(),
     contentRepository.listNews(),
-    contentRepository.listEvents(),
     contentRepository.getActivePopup(),
     contentRepository.getSettings(),
   ]);
@@ -213,7 +212,7 @@ export default async function Home() {
             </div>
 
             {/* 오른쪽: 행사일정 */}
-            <HomeEventCalendar events={events} inline />
+            <HomeEventCalendar events={allNews.filter(n => n.category1 === "행사일정")} inline />
           </div>
         </section>
 

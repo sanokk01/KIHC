@@ -1,4 +1,4 @@
-export type AdminSection = "news" | "research" | "events" | "popup" | "about" | "settings";
+export type AdminSection = "news" | "research" | "popup" | "about" | "settings";
 
 export interface AdminContentRecord {
   id: string;
@@ -7,6 +7,8 @@ export interface AdminContentRecord {
   publishedAt?: string;
   status?: "published" | "draft";
   imageUrl?: string;
+  attachmentUrl?: string;
+  views?: number;
   imageDisplay?: "banner" | "full";
   excerpt?: string;
   content?: string;

@@ -1,10 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { EventRecord } from "../lib/content";
+import type { NewsPost } from "../lib/content";
 import { AppLink as Link } from "./AppLink";
 
-type CalendarEvent = EventRecord & { date: Date };
+type CalendarEvent = NewsPost & { date: Date };
 
 function parseEventDate(value: string) {
   const match = value.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
@@ -18,10 +18,10 @@ function initialCalendarMonth(events: CalendarEvent[]) {
   return latest ? new Date(latest.getFullYear(), latest.getMonth(), 1) : new Date(2026, 0, 1);
 }
 
-export function HomeEventCalendar({ events, inline = false }: { events: EventRecord[]; inline?: boolean }) {
+export function HomeEventCalendar({ events, inline = false }: { events: NewsPost[]; inline?: boolean }) {
   const parsedEvents = useMemo(
     () => events.flatMap((event) => {
-      const date = parseEventDate(event.heldAt);
+      const date = event.heldAt ? parseEventDate(event.heldAt) : null;
       return date ? [{ ...event, date }] : [];
     }),
     [events],
@@ -46,7 +46,7 @@ export function HomeEventCalendar({ events, inline = false }: { events: EventRec
           <h2 id="home-events-title">행사일정</h2>
           <p className="news-events-desc">KIHC의 세미나, 간담회와 연구 교류 일정을 확인하세요.</p>
         </div>
-        <Link prefetch={false} className="text-link" href="/events">전체 행사 보기 <span aria-hidden="true">→</span></Link>
+        <Link prefetch={false} className="text-link" href="/news?category=행사일정">전체 행사 보기 <span aria-hidden="true">→</span></Link>
       </div>
       <div className="home-calendar-layout">
         <div className="home-calendar" aria-label={`${year}년 ${month + 1}월 행사 달력`}>
@@ -63,7 +63,7 @@ export function HomeEventCalendar({ events, inline = false }: { events: EventRec
               const dayEvents = day ? monthEvents.filter((event) => event.date.getDate() === day) : [];
               return (
                 <div className={`calendar-day ${dayEvents.length ? "has-event" : ""}`} key={`${year}-${month}-${index}`}>
-                  {day ? <><span>{day}</span>{dayEvents.map((event) => <Link prefetch={false} href={`/events/${event.slug}`} aria-label={`${day}일 ${event.title}`} title={event.title} key={event.id}>{event.eventType}</Link>)}</> : null}
+                  {day ? <><span>{day}</span>{dayEvents.map((event) => <Link prefetch={false} href={`/news/${event.slug}`} aria-label={`${day}일 ${event.title}`} title={event.title} key={event.id}>{event.category2 || "행사"}</Link>)}</> : null}
                 </div>
               );
             })}
@@ -87,7 +87,7 @@ export function HomeEventCalendar({ events, inline = false }: { events: EventRec
             <h2 id="home-events-title">행사일정</h2>
             <p className="section-subcopy">KIHC의 세미나, 간담회와 연구 교류 일정을 확인하세요.</p>
           </div>
-          <Link prefetch={false} className="text-link" href="/events">전체 행사 보기 <span aria-hidden="true">→</span></Link>
+          <Link prefetch={false} className="text-link" href="/news?category=행사일정">전체 행사 보기 <span aria-hidden="true">→</span></Link>
         </div>
         <div className="home-calendar-layout">
           <div className="home-calendar" aria-label={`${year}년 ${month + 1}월 행사 달력`}>
@@ -104,7 +104,7 @@ export function HomeEventCalendar({ events, inline = false }: { events: EventRec
                 const dayEvents = day ? monthEvents.filter((event) => event.date.getDate() === day) : [];
                 return (
                   <div className={`calendar-day ${dayEvents.length ? "has-event" : ""}`} key={`${year}-${month}-${index}`}>
-                    {day ? <><span>{day}</span>{dayEvents.map((event) => <Link prefetch={false} href={`/events/${event.slug}`} aria-label={`${day}일 ${event.title}`} title={event.title} key={event.id}>{event.eventType}</Link>)}</> : null}
+                    {day ? <><span>{day}</span>{dayEvents.map((event) => <Link prefetch={false} href={`/news/${event.slug}`} aria-label={`${day}일 ${event.title}`} title={event.title} key={event.id}>{event.category2 || "행사"}</Link>)}</> : null}
                   </div>
                 );
               })}
@@ -114,9 +114,9 @@ export function HomeEventCalendar({ events, inline = false }: { events: EventRec
           <aside className="calendar-event-list" aria-label="선택한 달의 행사">
             <div className="calendar-list-title"><span>{String(month + 1).padStart(2, "0")}월</span><strong>{monthEvents.length}건의 일정</strong></div>
             {monthEvents.length ? monthEvents.map((event) => (
-              <Link prefetch={false} href={`/events/${event.slug}`} key={event.id}>
+              <Link prefetch={false} href={`/news/${event.slug}`} key={event.id}>
                 <time>{String(event.date.getDate()).padStart(2, "0")}</time>
-                <div><span>{event.eventType}</span><strong>{event.title}</strong></div>
+                <div><span>{event.category2 || "행사"}</span><strong>{event.title}</strong></div>
                 <i aria-hidden="true">→</i>
               </Link>
             )) : <p className="calendar-empty">등록된 행사가 없습니다.<br />이전·다음 달 버튼으로 다른 일정을 확인할 수 있습니다.</p>}

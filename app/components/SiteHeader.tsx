@@ -25,7 +25,7 @@ export function SiteHeader() {
     [isEn ? "News" : "연구회 소식", "/news"],
     [isEn ? "Research Materials" : "연구정책자료", "/research"],
     [isEn ? "Promotional Materials" : "홍보물", "/promotional-materials"],
-    [isEn ? "Events" : "강연·학회", "/events"],
+    [isEn ? "Events" : "강연·학회", "/news?category=행사일정"],
   ];
 
   useEffect(() => {

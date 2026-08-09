@@ -9,6 +9,10 @@ export interface NewsPost {
   excerpt: string;
   content: string[];
   category1?: string;
+  category2?: string;
+  heldAt?: string;
+  attachmentUrl?: string;
+  views?: number;
   imageUrl?: string;
   status: PublicationStatus;
   publishedAt: string;
@@ -165,6 +169,7 @@ export const defaultNewsPosts: NewsPost[] = [
       "구체적인 연구 일정과 공개 자료는 준비되는 대로 홈페이지를 통해 안내하겠습니다.",
     ],
     category1: "공지사항",
+    views: 0,
     status: "published",
     publishedAt: "2026. 07. 28",
     createdAt: "2026-07-28T09:00:00+09:00",
@@ -176,6 +181,10 @@ export const defaultNewsPosts: NewsPost[] = [
     title: "인재역량 연구를 위한 여름 세미나 개최",
     excerpt: "연구회원이 함께하는 여름 세미나 소식입니다.",
     content: ["인재역량의 개념과 현장 적용을 함께 논의하는 세미나를 진행했습니다."],
+    category1: "행사일정",
+    category2: "학회",
+    heldAt: "2026. 07. 12",
+    views: 0,
     status: "published",
     publishedAt: "2026. 07. 12",
     createdAt: "2026-07-12T09:00:00+09:00",
@@ -187,6 +196,8 @@ export const defaultNewsPosts: NewsPost[] = [
     title: "KIHC 연구정책자료 발간 시리즈 안내",
     excerpt: "새로운 연구정책자료 시리즈를 소개합니다.",
     content: ["주요 연구 결과를 이해하기 쉬운 형태로 정리한 자료를 순차적으로 소개합니다."],
+    category1: "뉴스레터",
+    views: 0,
     status: "published",
     publishedAt: "2026. 06. 24",
     createdAt: "2026-06-24T09:00:00+09:00",
@@ -198,6 +209,10 @@ export const defaultNewsPosts: NewsPost[] = [
     title: "인재역량 연구 네트워크 간담회",
     excerpt: "연구 협력의 방향을 나누었습니다.",
     content: ["다양한 연구 현장의 목소리를 듣고 협력 가능성을 논의했습니다."],
+    category1: "행사일정",
+    category2: "기타",
+    heldAt: "2026. 05. 30",
+    views: 0,
     status: "published",
     publishedAt: "2026. 05. 30",
     createdAt: "2026-05-30T09:00:00+09:00",
@@ -209,6 +224,8 @@ export const defaultNewsPosts: NewsPost[] = [
     title: "한국인재역량연구회 홈페이지 개편 안내",
     excerpt: "KIHC 홈페이지가 새로운 모습으로 준비되고 있습니다.",
     content: ["연구회의 방향과 자료를 더 편리하게 살펴볼 수 있도록 홈페이지를 개편하고 있습니다."],
+    category1: "공지사항",
+    views: 0,
     status: "published",
     publishedAt: "2026. 05. 08",
     createdAt: "2026-05-08T09:00:00+09:00",
@@ -486,6 +503,10 @@ function mapStoredToNews(row: any): NewsPost {
     excerpt: payload.excerpt || "",
     content: payload.content || [],
     category1: payload.category1 || "공지사항",
+    category2: payload.category2 || "",
+    heldAt: payload.heldAt || "",
+    attachmentUrl: payload.attachmentUrl || "",
+    views: typeof payload.views === "number" ? payload.views : 0,
     imageUrl: row.imageUrl || undefined,
     status: row.status,
     publishedAt: row.publishedAt || "",

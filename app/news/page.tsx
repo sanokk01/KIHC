@@ -9,7 +9,7 @@ import { contentRepository, type NewsSearchField } from "../lib/content";
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: "연구회 소식" };
 
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 10;
 
 function single(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] ?? "" : value ?? "";
@@ -35,7 +35,7 @@ export default async function NewsPage({ searchParams }: { searchParams?: Promis
     total: isEn ? "Total " : "전체 ",
     count: isEn ? " items" : "건",
     searchResult: isEn ? "Search Results: " : "검색 결과 ",
-    searchTotal: isEn ? " / Total: " : "건 · 전체 ",
+    searchTotal: isEn ? " / Total: " : "건 · 현재 페이지 ",
     searchFieldLabel: isEn ? "Search criteria" : "검색 조건",
     optTitle: isEn ? "Title" : "제목",
     optContent: isEn ? "Content" : "내용",
@@ -52,7 +52,7 @@ export default async function NewsPage({ searchParams }: { searchParams?: Promis
     resetBtn: isEn ? "View all news" : "전체 소식 보기"
   };
 
-  const categories = ["전체", "공지사항", "보도자료", "NRC 동정", "뉴스레터", "채용정보", "행사일정"];
+  const categories = ["전체", "공지사항", "뉴스레터", "행사일정"];
 
   const parameters = await searchParams;
   const query = single(parameters?.q).trim();
@@ -96,8 +96,8 @@ export default async function NewsPage({ searchParams }: { searchParams?: Promis
                       {post.title}
                     </Link>
                     <time>{post.publishedAt}</time>
-                    <span className="attach-icon">{post.imageUrl ? "📎" : ""}</span>
-                    <span className="views-count">{Math.floor(Math.random() * 500) + 100}</span>
+                    <span className="attach-icon">{post.attachmentUrl ? "📎" : ""}</span>
+                    <span className="views-count">{post.views ?? 0}</span>
                   </div>
                 ))}
                 {!result.items.length ? <div className="board-empty" role="status"><strong>{dict.emptyTitle}</strong><span>{dict.emptyDesc}</span></div> : null}
