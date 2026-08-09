@@ -17,7 +17,7 @@ const sectionInfo: Record<AdminSection, { label: string; eyebrow: string; descri
 };
 
 async function recordsFor(section: AdminSection): Promise<AdminContentRecord[]> {
-  if (section === "news" || section === "research" || section === "popup") return getAdminRecords(section);
+  if (section === "news" || section === "research" || section === "promotions" || section === "popup") return getAdminRecords(section);
   return [await getAdminSingleton(section)];
 }
 

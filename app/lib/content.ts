@@ -447,10 +447,22 @@ export const contentRepository: ContentRepository = {
   },
   listPromotionalMaterials: async () => {
     try {
-      return defaultPromotionalMaterials.filter((item) => item.status === "published");
-    } catch(e) { return []; }
+      const rows = await contentStore.listContent("promotions");
+      return rows.map(mapStoredToPromotionalMaterial);
+    } catch (error) {
+      console.error("DB Error in listPromotionalMaterials:", error);
+      return [];
+    }
   },
-  getPromotionalMaterialBySlug: async (slug) => defaultPromotionalMaterials.find((item) => item.slug === slug && item.status === "published"),
+  getPromotionalMaterialBySlug: async (slug) => {
+    try {
+      const row = await contentStore.getContentBySlug("promotions", slug);
+      return row ? mapStoredToPromotionalMaterial(row) : undefined;
+    } catch (error) {
+      console.error("DB Error in getPromotionalMaterialBySlug:", error);
+      return undefined;
+    }
+  },
   listEvents: async () => {
     try {
       const rows = await contentStore.listContent("events");
@@ -570,6 +582,24 @@ function mapStoredToEvent(row: any): EventRecord {
     heldAt: payload.heldAt || "",
     thumbnailLabel: payload.thumbnailLabel || "",
     protectedDetails: payload.protectedDetails || [],
+    imageUrl: row.imageUrl || undefined,
+    status: row.status,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+  };
+}
+
+function mapStoredToPromotionalMaterial(row: any): PromotionalMaterial {
+  let payload: any = {};
+  try { payload = JSON.parse(row.payload); } catch (e) {}
+  return {
+    id: row.id,
+    slug: row.slug || "",
+    title: row.title,
+    category: payload.category1 || "기관 소개",
+    publishedAt: row.publishedAt || "",
+    thumbnailLabel: payload.thumbnailLabel || "",
+    protectedDetails: Array.isArray(payload.protectedDetails) ? payload.protectedDetails : (payload.protectedDetails ? payload.protectedDetails.split('\n') : []),
     imageUrl: row.imageUrl || undefined,
     status: row.status,
     createdAt: row.createdAt,

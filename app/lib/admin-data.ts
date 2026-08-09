@@ -100,7 +100,7 @@ export function unavailableStorageResponse(error: unknown) {
 }
 
 export function isContentSection(section: string): section is StoredSection {
-  return section === "news" || section === "research" || section === "popup" || section === "events";
+  return section === "news" || section === "research" || section === "popup" || section === "events" || section === "promotions";
 }
 
 export function isAdminSection(section: string): section is AdminSection {

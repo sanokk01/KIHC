@@ -2,7 +2,7 @@ import { eq, and } from "drizzle-orm";
 import { getDb } from "./index";
 import { contentRecords, siteSingletons, mediaAssets } from "./schema";
 
-export type StoredSection = "news" | "research" | "popup" | "events";
+export type StoredSection = "news" | "research" | "popup" | "events" | "promotions";
 
 export interface StoredContentRow {
   id: string;
