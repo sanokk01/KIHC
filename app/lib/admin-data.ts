@@ -74,11 +74,11 @@ export async function removeAdminRecord(section: StoredSection, id: string): Pro
   await contentStore.deleteContent(section, id);
 }
 
-export async function getAdminSingleton(section: "about" | "settings"): Promise<AdminContentRecord> {
+export async function getAdminSingleton(section: "about" | "settings" | "institute"): Promise<AdminContentRecord> {
   try {
     const payload = await contentStore.getSingleton(section);
     if (!payload) {
-      const defaultData = section === "about" ? { id: "about", title: "KIHC 소개", chairmanMessage: defaultAbout.chairmanMessage.join("\n\n"), chairmanImageUrl: defaultAbout.chairmanImageUrl, organizationIntroduction: defaultAbout.organizationIntroduction.join("\n\n"), organizationImageUrl: defaultAbout.organizationImageUrl, purpose: defaultAbout.purpose, vision: defaultAbout.vision } : { id: "settings", title: "사이트 설정", siteName: defaultSettings.siteName, footerInformation: defaultSettings.footerInformation, email: defaultSettings.email, searchKeywords: defaultSettings.searchKeywords };
+      const defaultData = section === "about" ? { id: "about", title: "KIHC 소개", chairmanMessage: defaultAbout.chairmanMessage.join("\n\n"), chairmanImageUrl: defaultAbout.chairmanImageUrl, organizationIntroduction: defaultAbout.organizationIntroduction.join("\n\n"), organizationImageUrl: defaultAbout.organizationImageUrl, purpose: defaultAbout.purpose, vision: defaultAbout.vision } : section === "institute" ? { id: "institute", title: "연구소 통합 안내 (신규)", impactStats: "EST. 2024 : 설립 연도\n120+ : 누적 보고서\n45+ : 글로벌 파트너", historyTimeline: "2024 : KIHC 한국인재역량연구회 설립\n2025 : 제1회 글로벌 인재역량 포럼 개최", expertRoster: "Dr. Kim : 연구원장\nDr. Lee : 수석연구원", annualReports: "2024 연차보고서 : /docs/2024-report.pdf" } : { id: "settings", title: "사이트 설정", siteName: defaultSettings.siteName, footerInformation: defaultSettings.footerInformation, email: defaultSettings.email, searchKeywords: defaultSettings.searchKeywords };
       await contentStore.upsertSingleton(section, JSON.stringify(defaultData));
       return defaultData;
     }
@@ -86,11 +86,12 @@ export async function getAdminSingleton(section: "about" | "settings"): Promise<
   } catch (error) {
     console.error("Failed to get singleton from DB:", error);
     if (section === "about") return { id: "about", title: "KIHC 소개", chairmanMessage: defaultAbout.chairmanMessage.join("\n\n"), chairmanImageUrl: defaultAbout.chairmanImageUrl, organizationIntroduction: defaultAbout.organizationIntroduction.join("\n\n"), organizationImageUrl: defaultAbout.organizationImageUrl, purpose: defaultAbout.purpose, vision: defaultAbout.vision };
+    if (section === "institute") return { id: "institute", title: "연구소 통합 안내 (신규)", impactStats: "EST. 2024 : 설립 연도\n120+ : 누적 보고서\n45+ : 글로벌 파트너", historyTimeline: "2024 : KIHC 한국인재역량연구회 설립\n2025 : 제1회 글로벌 인재역량 포럼 개최", expertRoster: "Dr. Kim : 연구원장\nDr. Lee : 수석연구원", annualReports: "2024 연차보고서 : /docs/2024-report.pdf" };
     return { id: "settings", title: "사이트 설정", siteName: defaultSettings.siteName, footerInformation: defaultSettings.footerInformation, email: defaultSettings.email, searchKeywords: defaultSettings.searchKeywords };
   }
 }
 
-export async function saveAdminSingleton(section: "about" | "settings", record: AdminContentRecord): Promise<AdminContentRecord> {
+export async function saveAdminSingleton(section: "about" | "settings" | "institute", record: AdminContentRecord): Promise<AdminContentRecord> {
   await contentStore.upsertSingleton(section, JSON.stringify(record));
   return record;
 }
@@ -106,6 +107,6 @@ export function isContentSection(section: string): section is StoredSection {
 }
 
 export function isAdminSection(section: string): section is AdminSection {
-  return isContentSection(section) || section === "about" || section === "settings";
+  return isContentSection(section) || section === "about" || section === "settings" || section === "institute";
 }
 

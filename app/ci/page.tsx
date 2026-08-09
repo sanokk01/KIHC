@@ -37,7 +37,11 @@ export default async function CiPage() {
     colorPalette: isEn ? "KIHC Color Palette" : "KIHC Color Palette",
     colorDesc: isEn ? "The core colors reflecting the KIHC brand's philosophy and trust." : "KIHC 브랜드의 철학과 신뢰감을 담아낸 핵심 색상표입니다.",
     fontPalette: isEn ? "KIHC Typography System" : "KIHC Typography System",
-    fontDesc: isEn ? "Brand typeface strictly selected for academic readability and authority." : "학술적 가독성과 권위를 위해 엄격하게 선별된 브랜드 서체입니다."
+    fontDesc: isEn ? "Brand typeface strictly selected for academic readability and authority." : "학술적 가독성과 권위를 위해 엄격하게 선별된 브랜드 서체입니다.",
+    logo4Title: isEn ? "Vertical Stacked Signature" : "수직 세로형 조합 (Vertical Stacked Signature)",
+    logo4Desc: isEn ? "Vertical combination applied to banners, signs, and narrow publication covers." : "배너, 간판, 좁은 너비의 간행물 표지에 적용하는 세로형 조합입니다.",
+    gateItemName: isEn ? "KIHC CI Original Package (AI/SVG/PNG) & Brand Guidelines" : "KIHC CI 원본 패키지 (AI/SVG/PNG) 및 브랜드 사용 규정",
+    gateDesc: isEn ? "Original vector files and typography guidelines are provided to official partners and research affiliates." : "CI 원본 벡터 파일과 서체 사용 규칙은 공식 제휴 및 연구 협력 기관에 제공됩니다."
   };
 
   return (
@@ -127,8 +131,8 @@ export default async function CiPage() {
                     </div>
                   </div>
                   <div className="ci-card-info">
-                    <h4>수직 세로형 조합 (Vertical Stacked Signature)</h4>
-                    <p>배너, 간판, 좁은 너비의 간행물 표지에 적용하는 세로형 조합입니다.</p>
+                    <h4>{dict.logo4Title}</h4>
+                    <p>{dict.logo4Desc}</p>
                   </div>
                 </article>
               </div>
@@ -180,8 +184,8 @@ export default async function CiPage() {
 
             {/* 4. 제한 다운로드 및 가이드 게이트 */}
             <RestrictedDetailGate
-              itemName="KIHC CI 원본 패키지 (AI/SVG/PNG) 및 브랜드 사용 규정"
-              description="CI 원본 벡터 파일과 서체 사용 규칙은 공식 제휴 및 연구 협력 기관에 제공됩니다."
+              itemName={dict.gateItemName}
+              description={dict.gateDesc}
             />
           </div>
         </section>

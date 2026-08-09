@@ -1,21 +1,27 @@
 import { cookies } from "next/headers";
 import { AppLink as Link } from "./AppLink";
 import { Logo } from "./Logo";
+import { getAdminSingleton } from "../lib/admin-data";
 
 export async function Footer() {
   const cookieStore = await cookies();
   const isEn = cookieStore.get("kihc-language")?.value === "en";
 
+  const settings = await getAdminSingleton("settings");
+
   const dict = {
-    corp: isEn ? "KIHC (Korea Institute of Human Capability)" : "한국인재역량연구회",
-    ceo: isEn ? "President: OOO" : "이사장: OOO",
-    address: isEn ? "Seoul, Republic of Korea" : "서울특별시 중구 세종대로 00",
+    corp: isEn ? "Korea Institute of Human Capability (KIHC)" : (settings.siteName || "사단법인 한국인재역량연구회"),
+    ceo: isEn ? "President: OOO" : "대표자: OOO",
+    address: isEn ? "Seoul, Republic of Korea" : (settings.footerInformation || "서울특별시 중구 세종대로 00"),
     tel: "T. 02-000-0000",
     fax: "F. 02-000-0000",
-    email: "E. info@kihc.org",
+    email: `E. ${settings.email || "info@kihc.org"}`,
+    bizNo: isEn ? "Biz Reg No: 000-00-00000" : "사업자등록번호: 000-00-00000",
+    privacyInfo: isEn ? "Privacy Officer: OOO" : "개인정보보호책임자: OOO",
     link1: isEn ? "Privacy Policy" : "개인정보처리방침",
     link2: isEn ? "Terms of Use" : "이용약관",
-    link3: isEn ? "Contact Us" : "이메일무단수집거부"
+    link3: isEn ? "Anti-Spam Policy" : "이메일무단수집거부",
+    familySite: isEn ? "Family Sites +" : "관련 기관 사이트 +"
   };
 
   return (
@@ -34,19 +40,28 @@ export async function Footer() {
         {/* Bottom: Info & Logo */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "32px" }}>
           <div>
-            <div style={{ marginBottom: "16px", filter: "brightness(0) invert(1)" }}><Logo /></div>
-            <div style={{ fontSize: "13px", lineHeight: "1.7", color: "#64748b" }}>
-              <span style={{ color: "#94a3b8", fontWeight: "600", marginRight: "12px" }}>{dict.corp}</span>
-              <span style={{ marginRight: "12px" }}>{dict.ceo}</span>
+            <div style={{ marginBottom: "20px", filter: "brightness(0) invert(1)" }}><Logo /></div>
+            <div style={{ fontSize: "13px", lineHeight: "1.8", color: "#64748b" }}>
+              <span style={{ color: "#94a3b8", fontWeight: "700", marginRight: "16px" }}>{dict.corp}</span>
+              <span style={{ marginRight: "16px" }}>{dict.ceo}</span>
+              <span style={{ marginRight: "16px" }}>{dict.bizNo}</span>
               <span>{dict.address}</span>
               <br />
-              <span style={{ marginRight: "12px" }}>{dict.tel}</span>
-              <span style={{ marginRight: "12px" }}>{dict.fax}</span>
-              <span>{dict.email}</span>
+              <span style={{ marginRight: "16px" }}>{dict.tel}</span>
+              <span style={{ marginRight: "16px" }}>{dict.fax}</span>
+              <span style={{ marginRight: "16px" }}>{dict.email}</span>
+              <span>{dict.privacyInfo}</span>
             </div>
           </div>
-          <div style={{ fontSize: "12px", color: "#475569" }}>
-            © {new Date().getFullYear()} KIHC. All rights reserved.
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "16px" }}>
+            <div style={{ position: "relative" }}>
+              <button style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "#94a3b8", padding: "8px 16px", borderRadius: "4px", fontSize: "12px", cursor: "pointer" }}>
+                {dict.familySite}
+              </button>
+            </div>
+            <div style={{ fontSize: "12px", color: "#475569" }}>
+              © {new Date().getFullYear()} KIHC. All rights reserved.
+            </div>
           </div>
         </div>
 

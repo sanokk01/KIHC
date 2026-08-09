@@ -1,5 +1,5 @@
-/* eslint-disable @next/next/no-img-element -- future uploaded media may be served by the app's media route. */
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Footer } from "../components/Footer";
 import { AppLink as Link } from "../components/AppLink";
 import { PageHero } from "../components/PageHero";
@@ -10,6 +10,17 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: "연구정책자료" };
 
 export default async function ResearchPage({ searchParams }: { searchParams: Promise<{ query?: string }> }) {
+  const cookieStore = await cookies();
+  const isEn = cookieStore.get("kihc-language")?.value === "en";
+
+  const dict = {
+    title: isEn ? "Research & Policy" : "연구정책자료",
+    desc: isEn ? "Introducing KIHC's research findings and policy implications on people and growth." : "사람과 성장에 관한 KIHC의 연구 결과와 정책적 시사점을 소개합니다.",
+    total: isEn ? "Total " : "전체 ",
+    count: isEn ? " items" : "건",
+    note: isEn ? "Original texts are available for viewing through separate inquiry." : "원문은 별도 문의를 통해 열람할 수 있습니다."
+  };
+
   const params = await searchParams;
   const query = params.query?.toLowerCase() || "";
   const allMaterials = await contentRepository.listResearch();
@@ -22,10 +33,10 @@ export default async function ResearchPage({ searchParams }: { searchParams: Pro
     <>
       <SiteHeader />
       <main>
-        <PageHero eyebrow="Research & Policy" title="연구정책자료" description="사람과 성장에 관한 KIHC의 연구 결과와 정책적 시사점을 소개합니다." />
+        <PageHero eyebrow="Research & Policy" title={dict.title} description={dict.desc} />
         <section className="section listing-section">
           <div className="container">
-            <div className="listing-heading"><p>전체 <strong>{materials.length}</strong>건</p><span>원문은 별도 문의를 통해 열람할 수 있습니다.</span></div>
+            <div className="listing-heading"><p>{dict.total}<strong>{materials.length}</strong>{dict.count}</p><span>{dict.note}</span></div>
             <div className="research-grid listing-grid">
               {materials.map((item, index) => (
                 <Link prefetch={false} className="research-card" href={`/research/${item.slug}`} key={item.id}>

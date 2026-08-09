@@ -13,6 +13,7 @@ const sectionInfo: Record<AdminSection, { label: string; eyebrow: string; descri
   events: { label: "행사 일정", eyebrow: "EVENTS MANAGEMENT", description: "세미나, 간담회 등 달력에 표시될 행사 일정을 관리합니다." },
   popup: { label: "팝업 관리", eyebrow: "POPUP MANAGEMENT", description: "홈에 노출할 공지 팝업의 내용, 링크와 기간을 관리합니다." },
   about: { label: "KIHC 소개 관리", eyebrow: "ABOUT MANAGEMENT", description: "이사장 인사말, 연구회 소개, 설립 목적과 비전을 관리합니다." },
+  institute: { label: "연구소 통합 안내 (신규)", eyebrow: "INSTITUTE OVERVIEW", description: "연구소의 핵심 성과, 연혁, 전문가 명단 및 연차보고서를 누적 관리합니다." },
   settings: { label: "사이트 설정", eyebrow: "SITE SETTINGS", description: "사이트명과 추천 키워드, Footer 기본 정보를 관리합니다." },
 };
 
