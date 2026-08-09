@@ -5,7 +5,7 @@ import { defaultAbout, defaultNewsPosts, defaultPopup, defaultResearchMaterials,
 export { databaseConnected, databasePendingMessage } from "./storage-status";
 
 function defaultRecords(section: StoredSection): AdminContentRecord[] {
-  if (section === "news") return defaultNewsPosts.map((item) => ({ id: item.id, slug: item.slug, title: item.title, publishedAt: item.publishedAt, status: item.status, imageUrl: item.imageUrl, excerpt: item.excerpt, content: item.content.join("\n\n") }));
+  if (section === "news") return defaultNewsPosts.map((item) => ({ id: item.id, slug: item.slug, title: item.title, publishedAt: item.publishedAt, status: item.status, imageUrl: item.imageUrl, excerpt: item.excerpt, content: item.content.join("\n\n"), category1: item.category1 || "공지사항" }));
   if (section === "research") return defaultResearchMaterials.map((item) => ({ id: item.id, slug: item.slug, title: item.title, publishedAt: item.publishedAt, status: item.status, imageUrl: item.imageUrl, author: item.author, summary: item.summary, tableOfContents: item.tableOfContents.join("\n"), keywords: item.keywords.join(", ") }));
   if (section === "events") {
     const { defaultEvents } = require("./content");

@@ -8,6 +8,7 @@ export interface NewsPost {
   title: string;
   excerpt: string;
   content: string[];
+  category1?: string;
   imageUrl?: string;
   status: PublicationStatus;
   publishedAt: string;
@@ -96,6 +97,7 @@ export type NewsSearchField = "title" | "content" | "all";
 export interface NewsListOptions {
   query?: string;
   field?: NewsSearchField;
+  category?: string;
   page?: number;
   pageSize?: number;
 }
@@ -138,6 +140,11 @@ function matchesNews(post: NewsPost, query: string, field: NewsSearchField) {
   return title.includes(normalizedQuery) || content.includes(normalizedQuery);
 }
 
+function matchesNewsCategory(post: NewsPost, category: string) {
+  if (!category || category === "전체") return true;
+  return post.category1 === category;
+}
+
 function popupIsVisible(popup: PopupNotice, now = Date.now()) {
   if (!popup.active) return false;
   const startsAt = popup.startsAt ? Date.parse(popup.startsAt) : Number.NaN;
@@ -157,6 +164,7 @@ export const defaultNewsPosts: NewsPost[] = [
       "한국인재역량연구회는 2026년에도 사람의 내면 역량과 지속 가능한 성장의 조건을 중심으로 연구를 이어갑니다.",
       "구체적인 연구 일정과 공개 자료는 준비되는 대로 홈페이지를 통해 안내하겠습니다.",
     ],
+    category1: "공지사항",
     status: "published",
     publishedAt: "2026. 07. 28",
     createdAt: "2026-07-28T09:00:00+09:00",
@@ -366,13 +374,13 @@ export const contentRepository: ContentRepository = {
       return [];
     }
   },
-  searchNews: async ({ query = "", field = "title", page = 1, pageSize = 10 } = {}) => {
+  searchNews: async ({ query = "", field = "title", category = "전체", page = 1, pageSize = 10 } = {}) => {
     try {
       const rows = await contentStore.listContent("news");
       const posts = rows.map(mapStoredToNews);
       const normalizedQuery = query.trim();
       const safePageSize = Math.min(50, Math.max(1, Math.trunc(pageSize) || 10));
-      const filtered = posts.filter((post) => matchesNews(post, normalizedQuery, field));
+      const filtered = posts.filter((post) => matchesNews(post, normalizedQuery, field) && matchesNewsCategory(post, category));
       const totalPages = Math.max(1, Math.ceil(filtered.length / safePageSize));
       const safePage = Math.min(totalPages, Math.max(1, Math.trunc(page) || 1));
       const offset = (safePage - 1) * safePageSize;
@@ -477,6 +485,7 @@ function mapStoredToNews(row: any): NewsPost {
     title: row.title,
     excerpt: payload.excerpt || "",
     content: payload.content || [],
+    category1: payload.category1 || "공지사항",
     imageUrl: row.imageUrl || undefined,
     status: row.status,
     publishedAt: row.publishedAt || "",
