@@ -11,6 +11,7 @@ export type { AdminContentRecord, AdminSection } from "../lib/admin-types";
 const emptyBySection: Record<AdminSection, AdminContentRecord> = {
   news: { id: "", slug: "", title: "", publishedAt: "", status: "draft", imageUrl: "", excerpt: "", content: "", category1: "공지사항", category2: "", heldAt: "", attachmentUrl: "", views: 0 },
   research: { id: "", slug: "", title: "", publishedAt: "", status: "draft", imageUrl: "", author: "", summary: "", tableOfContents: "", keywords: "", researchType: "자료집", category1: "", category2: "" },
+  promotions: { id: "", slug: "", title: "", publishedAt: "", status: "draft", imageUrl: "", thumbnailLabel: "", category1: "기관 소개", protectedDetails: "" },
   popup: { id: "", title: "", active: false, imageUrl: "", imageDisplay: "full", link: "", startsAt: "", endsAt: "", content: "" },
   about: { id: "about", title: "KIHC 소개", chairmanMessage: "", chairmanImageUrl: "", organizationIntroduction: "", organizationImageUrl: "", purpose: "", vision: "" },
   settings: { id: "settings", title: "사이트 설정", siteName: "", footerInformation: "", email: "" },
