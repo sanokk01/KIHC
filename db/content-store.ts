@@ -28,7 +28,7 @@ export interface StoredMediaRow {
 
 export interface ContentStore {
   listContent(section: StoredSection, includeDrafts?: boolean): Promise<StoredContentRow[]>;
-  getContentBySlug(section: "news" | "research" | "events", slug: string): Promise<StoredContentRow | null>;
+  getContentBySlug(section: StoredSection, slug: string): Promise<StoredContentRow | null>;
   upsertContent(rows: StoredContentRow[]): Promise<void>;
   deleteContent(section: StoredSection, id: string): Promise<void>;
   getSingleton(key: string): Promise<string | null>;
@@ -66,7 +66,7 @@ export class PostgresContentStore implements ContentStore {
     }));
   }
 
-  async getContentBySlug(section: "news" | "research" | "events", slug: string): Promise<StoredContentRow | null> {
+  async getContentBySlug(section: StoredSection, slug: string): Promise<StoredContentRow | null> {
     const db = getDb();
     const [row] = await db
       .select()
