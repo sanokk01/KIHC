@@ -126,25 +126,11 @@ export default async function AboutPage() {
               </div>
             </div>
           </div>
-          <div className="container impact-stats-row">
-            <div className="impact-stat">
-              <span className="stat-num">EST. 2024</span>
-              <span className="stat-label">{isEn ? "Founded" : "설립 연도"}</span>
-            </div>
-            <div className="impact-stat">
-              <span className="stat-num">100+</span>
-              <span className="stat-label">{isEn ? "Research Reports" : "누적 연구 보고서"}</span>
-            </div>
-            <div className="impact-stat">
-              <span className="stat-num">30+</span>
-              <span className="stat-label">{isEn ? "Global Partners" : "글로벌 파트너십"}</span>
-            </div>
-          </div>
         </section>
 
 
         {/* 2. 설립목적 · 비전 */}
-        <section className="about-section vision-section-bg" id="vision">
+        <section className="about-section muted-bg" id="vision">
           <div className="container">
             <div className="section-heading compact">
               <div>
