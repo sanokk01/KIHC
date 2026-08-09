@@ -24,12 +24,12 @@ export default async function ResearchDetailPage({ params }: { params: Promise<{
       <div className="research-tab-banner">
         <div className="container">
           <ul className="research-tabs">
-            <li><Link prefetch={false} href="/research?type=보고서 전체" className={!item.researchType || item.researchType === "보고서 전체" ? "active" : ""}>전체보기</Link></li>
-            <li><Link prefetch={false} href="/research?type=보고서" className={item.researchType === "보고서" ? "active" : ""}>보고서</Link></li>
-            <li><Link prefetch={false} href="/research?type=브리프" className={item.researchType === "브리프" ? "active" : ""}>브리프</Link></li>
-            <li><Link prefetch={false} href="/research?type=단행본" className={item.researchType === "단행본" ? "active" : ""}>단행본</Link></li>
-            <li><Link prefetch={false} href="/research?type=자료집" className={item.researchType === "자료집" ? "active" : ""}>자료집</Link></li>
-            <li><Link prefetch={false} href="/research?type=기타" className={item.researchType === "기타" ? "active" : ""}>기타연구보고서</Link></li>
+            <li><Link href="/research?type=보고서 전체" className={!item.researchType || item.researchType === "보고서 전체" ? "active" : ""}>전체보기</Link></li>
+            <li><Link href="/research?type=보고서" className={item.researchType === "보고서" ? "active" : ""}>보고서</Link></li>
+            <li><Link href="/research?type=브리프" className={item.researchType === "브리프" ? "active" : ""}>브리프</Link></li>
+            <li><Link href="/research?type=단행본" className={item.researchType === "단행본" ? "active" : ""}>단행본</Link></li>
+            <li><Link href="/research?type=자료집" className={item.researchType === "자료집" ? "active" : ""}>자료집</Link></li>
+            <li><Link href="/research?type=기타" className={item.researchType === "기타" ? "active" : ""}>기타연구보고서</Link></li>
           </ul>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default async function ResearchDetailPage({ params }: { params: Promise<{
 
           <div className="detail-actions">
             <OriginalInquiry />
-            <Link prefetch={false} className="button button-outline" href="/research">목록으로</Link>
+            <Link className="button button-outline" href="/research">목록으로</Link>
           </div>
         </article>
       </main>

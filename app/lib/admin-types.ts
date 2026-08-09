@@ -36,5 +36,5 @@ export interface AdminContentRecord {
   eventType?: string;
   heldAt?: string;
   thumbnailLabel?: string;
-  protectedDetails?: string[];
+  protectedDetails?: string;
 }

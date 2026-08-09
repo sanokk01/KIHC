@@ -126,14 +126,14 @@ export default async function Home() {
               </div>
               <div className="hero-panel-list">
                 {sortedResearch.slice(0, 4).map((item, index) => (
-                  <Link prefetch={false} href={`/research/${item.slug}`} key={item.id}>
+                  <Link className="research-card" href={`/research/${item.slug}`} key={item.id}>
                     <span>{String(index + 1).padStart(2, "0")}</span>
                     <strong>{item.title}</strong>
                     <time>{item.publishedAt}</time>
                   </Link>
                 ))}
               </div>
-              <Link prefetch={false} className="hero-panel-more" href="/research">
+              <Link className="hero-panel-more" href="/research">
                 {dict.recentResearchMore} <span aria-hidden="true">→</span>
               </Link>
             </aside>
@@ -173,7 +173,7 @@ export default async function Home() {
               ))}
             </div>
             <div className="focus-more">
-              <Link prefetch={false} className="text-link" href="/research-focus">
+              <Link className="text-link" href="/research-focus">
                 {dict.focusMore} <span aria-hidden="true">→</span>
               </Link>
             </div>
@@ -196,11 +196,11 @@ export default async function Home() {
                   <h2>{dict.newsTitle}</h2>
                   <p className="news-events-desc">{dict.newsDesc}</p>
                 </div>
-                <Link prefetch={false} className="button button-outline" href="/news">{dict.newsMore}</Link>
+                <Link className="button button-outline" href="/news">{dict.newsMore}</Link>
               </div>
               <div className="news-list">
                 {news.map((item, index) => (
-                  <Link prefetch={false} href={`/news/${item.slug}`} key={item.id}>
+                  <Link href={`/news/${item.slug}`} key={item.id}>
                     <span className="news-no">{String(index + 1).padStart(2, "0")}</span>
                     <time>{item.publishedAt}</time>
                     <strong>{item.title}</strong>

@@ -91,7 +91,7 @@ export default async function NewsPage({ searchParams }: { searchParams?: Promis
                 {result.items.map((post, index) => (
                   <div className="board-row" role="row" key={post.id}>
                     <span>{result.filteredTotal - ((result.page - 1) * result.pageSize) - index}</span>
-                    <Link prefetch={false} href={`/news/${post.slug}`} className="news-title-link">
+                    <Link href={`/news/${post.slug}`} className="news-title-link">
                       {post.category1 && post.category1 !== "전체" && <span className="news-cat-badge">[{post.category1}]</span>}
                       {post.title}
                     </Link>
@@ -103,13 +103,13 @@ export default async function NewsPage({ searchParams }: { searchParams?: Promis
                 {!result.items.length ? <div className="board-empty" role="status"><strong>{dict.emptyTitle}</strong><span>{dict.emptyDesc}</span></div> : null}
               </div>
               <nav className="pagination" aria-label="페이지 이동">
-                {result.page > 1 ? <Link prefetch={false} href={pageHref(result.page - 1, query, field, category)} aria-label="이전 페이지">‹</Link> : <span aria-hidden="true" className="disabled">‹</span>}
+                {result.page > 1 ? <Link href={pageHref(result.page - 1, query, field, category)} aria-label="이전 페이지">‹</Link> : <span aria-hidden="true" className="disabled">‹</span>}
                 {Array.from({ length: result.totalPages }, (_, index) => index + 1).map((page) => (
-                  <Link prefetch={false} className={page === result.page ? "active" : undefined} aria-current={page === result.page ? "page" : undefined} href={pageHref(page, query, field, category)} key={page}>{page}</Link>
+                  <Link className={page === result.page ? "active" : undefined} aria-current={page === result.page ? "page" : undefined} href={pageHref(page, query, field, category)} key={page}>{page}</Link>
                 ))}
-                {result.page < result.totalPages ? <Link prefetch={false} href={pageHref(result.page + 1, query, field, category)} aria-label="Next Page">›</Link> : <span aria-hidden="true" className="disabled">›</span>}
+                {result.page < result.totalPages ? <Link href={pageHref(result.page + 1, query, field, category)} aria-label="Next Page">›</Link> : <span aria-hidden="true" className="disabled">›</span>}
               </nav>
-              {query ? <p className="search-reset"><Link prefetch={false} href="/news">{dict.resetBtn}</Link></p> : null}
+              {query ? <p className="search-reset"><Link href="/news">{dict.resetBtn}</Link></p> : null}
             </div>
           </div>
         </section>
