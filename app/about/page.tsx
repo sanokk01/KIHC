@@ -163,17 +163,21 @@ export default async function AboutPage() {
         </section>
 
         {/* 3. 이사장 인사말 */}
-        <section className="about-section" id="chairman">
+        <section className="about-section chairman-section" id="chairman">
           <div className="container chairman-message-only">
-            <div className="about-copy">
+            <header className="chairman-message-heading">
               <p className="eyebrow">Chairman&apos;s Message</p>
-              <h2 style={{ whiteSpace: 'pre-line' }}>{dict.chairmanMsgTitle}</h2>
+              <h2>{dict.chairmanMsgTitle}</h2>
+            </header>
+            <div className="chairman-message-card">
+              <span className="chairman-quote" aria-hidden="true">“</span>
               <div className="message-paragraphs">
                 {about.chairmanMessage.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
               </div>
               <div className="chairman-signature">
+                <span className="signature-label">CHAIRMAN</span>
                 <div className="sig-info">
                   <strong>한국인재역량연구회 이사장</strong>
                   <span>Korea Institute of Human Capability</span>

@@ -1,8 +1,10 @@
+/* eslint-disable @next/next/no-img-element -- uploaded research images can use runtime media URLs. */
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Footer } from "../components/Footer";
 import { AppLink as Link } from "../components/AppLink";
 import { PageHero } from "../components/PageHero";
+import { ResearchTaxonomySelects } from "../components/ResearchTaxonomySelects";
 import { SiteHeader } from "../components/SiteHeader";
 import { contentRepository } from "../lib/content";
 
@@ -77,14 +79,11 @@ export default async function ResearchPage({ searchParams }: { searchParams: Pro
                 <div className="search-row">
                   <div className="search-label">표출 분류</div>
                   <div className="search-fields select-group">
-                    <select name="cat1" defaultValue={cat1}>
-                      <option value="">대분류 전체</option>
-                      <option value="대분류">대분류 (예시)</option>
-                    </select>
-                    <select name="cat2" defaultValue={cat2}>
-                      <option value="">중분류 전체</option>
-                      <option value="중분류">중분류 (예시)</option>
-                    </select>
+                    <ResearchTaxonomySelects
+                      initialCategory={cat1}
+                      initialSubcategory={cat2}
+                      isEn={isEn}
+                    />
                   </div>
                 </div>
                 <div className="search-bottom-bar">
@@ -101,7 +100,7 @@ export default async function ResearchPage({ searchParams }: { searchParams: Pro
             <div className="listing-heading" style={{ marginTop: 40 }}><p>{dict.total}<strong>{materials.length}</strong>{dict.count}</p><span>{dict.note}</span></div>
             
             <div className="research-list-vertical">
-              {materials.map((item, index) => (
+              {materials.map((item) => (
                 <article className="research-list-item" key={item.id}>
                   <Link href={`/research/${item.slug}`} className="research-list-thumb">
                     {item.imageUrl ? <img src={item.imageUrl} alt="" /> : <div className="placeholder-thumb">KIHC</div>}

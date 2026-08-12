@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element -- future uploaded media may be served by the app's media route. */
 import { cookies } from "next/headers";
 import { AppLink as Link } from "./components/AppLink";
 import { Footer } from "./components/Footer";
@@ -125,13 +124,21 @@ export default async function Home() {
                 <strong>{String(sortedResearch.length).padStart(2, "0")}</strong>
               </div>
               <div className="hero-panel-list">
-                {sortedResearch.slice(0, 4).map((item, index) => (
-                  <Link className="research-card" href={`/research/${item.slug}`} key={item.id}>
-                    <span>{String(index + 1).padStart(2, "0")}</span>
-                    <strong>{item.title}</strong>
-                    <time>{item.publishedAt}</time>
-                  </Link>
-                ))}
+                {sortedResearch.length > 0 ? (
+                  sortedResearch.slice(0, 4).map((item, index) => (
+                    <Link className="research-card" href={`/research/${item.slug}`} key={item.id}>
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      <strong>{item.title}</strong>
+                      <time>{item.publishedAt}</time>
+                    </Link>
+                  ))
+                ) : (
+                  <div className="hero-panel-empty">
+                    <span>Research Archive</span>
+                    <strong>{isEn ? "New research is being prepared." : "새로운 연구자료를 준비하고 있습니다."}</strong>
+                    <p>{isEn ? "Updates will be available here soon." : "등록되는 연구자료는 이곳에서 바로 확인하실 수 있습니다."}</p>
+                  </div>
+                )}
               </div>
               <Link className="hero-panel-more" href="/research">
                 {dict.recentResearchMore} <span aria-hidden="true">→</span>

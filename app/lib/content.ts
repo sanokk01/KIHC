@@ -1,6 +1,7 @@
 export type PublicationStatus = "published" | "draft";
 
 import { contentStore } from "../../db/content-store";
+import { normalizeResearchClassification } from "./research-taxonomy";
 
 export interface NewsPost {
   id: string;
@@ -245,8 +246,8 @@ export const defaultResearchMaterials: ResearchMaterial[] = [
     keywords: ["메타인지", "자기조절", "성장"],
     status: "published",
     researchType: "협동연구보고서",
-    category1: "대분류",
-    category2: "중분류",
+    category1: "인간 고유역량",
+    category2: "메타인지·자기조절",
     views: 350,
     createdAt: "2026-07-18T09:00:00+09:00",
     updatedAt: "2026-07-18T09:00:00+09:00",
@@ -262,8 +263,8 @@ export const defaultResearchMaterials: ResearchMaterial[] = [
     keywords: ["회복탄력성", "변화", "적응"],
     status: "published",
     researchType: "기타연구보고서",
-    category1: "대분류",
-    category2: "중분류",
+    category1: "인간 고유역량",
+    category2: "회복탄력성·적응",
     views: 120,
     createdAt: "2026-06-10T09:00:00+09:00",
     updatedAt: "2026-06-10T09:00:00+09:00",
@@ -279,8 +280,8 @@ export const defaultResearchMaterials: ResearchMaterial[] = [
     keywords: ["가치판단", "의사결정", "공동체"],
     status: "published",
     researchType: "협동연구보고서",
-    category1: "대분류",
-    category2: "중분류",
+    category1: "인간 고유역량",
+    category2: "가치판단·윤리",
     views: 550,
     createdAt: "2026-05-16T09:00:00+09:00",
     updatedAt: "2026-05-16T09:00:00+09:00",
@@ -381,7 +382,7 @@ export const defaultSettings: SiteSettings = {
   siteName: "KIHC 한국인재역량연구회",
   footerInformation: "기관 정보는 운영 준비 후 등록됩니다.",
   email: "대표 이메일 준비 중",
-  searchKeywords: "정책연구,미래전략,탄소중립,컨퍼런스,포럼",
+  searchKeywords: "메타인지,회복탄력성,가치판단,역량진단,인재정책",
 };
 
 export const contentRepository: ContentRepository = {
@@ -545,19 +546,31 @@ function mapStoredToNews(row: any): NewsPost {
 function mapStoredToResearch(row: any): ResearchMaterial {
   let payload: any = {};
   try { payload = JSON.parse(row.payload); } catch (e) {}
+  const keywords = Array.isArray(payload.keywords)
+    ? payload.keywords
+    : String(payload.keywords || "").split(",").map((item) => item.trim()).filter(Boolean);
+  const tableOfContents = Array.isArray(payload.tableOfContents)
+    ? payload.tableOfContents
+    : String(payload.tableOfContents || "").split("\n").map((item) => item.trim()).filter(Boolean);
+  const classification = normalizeResearchClassification(payload.category1, payload.category2, {
+    title: row.title,
+    summary: payload.summary,
+    keywords,
+  });
   return {
     id: row.id,
     slug: row.slug || "",
     title: row.title,
     author: payload.author || "",
     publishedAt: row.publishedAt || "",
-    tableOfContents: payload.tableOfContents || [],
+    tableOfContents,
     summary: payload.summary || "",
-    keywords: payload.keywords || [],
+    keywords,
     researchType: payload.researchType || "자료집",
-    category1: payload.category1 || "",
-    category2: payload.category2 || "",
+    category1: classification.category1,
+    category2: classification.category2,
     imageUrl: row.imageUrl || undefined,
+    views: typeof payload.views === "number" ? payload.views : Number(payload.views) || 0,
     status: row.status,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,

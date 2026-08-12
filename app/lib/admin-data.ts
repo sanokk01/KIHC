@@ -1,6 +1,7 @@
 import { contentStore, type StoredContentRow, type StoredSection } from "../../db/content-store";
 import type { AdminContentRecord, AdminSection } from "./admin-types";
 import { defaultAbout, defaultNewsPosts, defaultPopup, defaultResearchMaterials, defaultSettings, defaultPromotionalMaterials } from "./content";
+import { normalizeResearchClassification } from "./research-taxonomy";
 
 function defaultRecords(section: StoredSection): AdminContentRecord[] {
   if (section === "news") return defaultNewsPosts.map((item) => ({ id: item.id, slug: item.slug, title: item.title, publishedAt: item.publishedAt, status: item.status, imageUrl: item.imageUrl, excerpt: item.excerpt, content: item.content.join("\n\n"), category1: item.category1 || "공지사항", category2: item.category2 || "", heldAt: item.heldAt || "", attachmentUrl: item.attachmentUrl || "", views: item.views || 0 }));
@@ -27,13 +28,13 @@ function recordToRow(section: StoredSection, record: AdminContentRecord): Stored
 }
 
 function rowToRecord(row: StoredContentRow): AdminContentRecord {
-  let rest = {};
+  let rest: Partial<AdminContentRecord> = {};
   try {
-    rest = JSON.parse(row.payload);
+    rest = JSON.parse(row.payload) as Partial<AdminContentRecord>;
   } catch {
     rest = {};
   }
-  return {
+  const record: AdminContentRecord = {
     id: row.id,
     slug: row.slug || undefined,
     title: row.title,
@@ -41,6 +42,27 @@ function rowToRecord(row: StoredContentRow): AdminContentRecord {
     publishedAt: row.publishedAt || undefined,
     imageUrl: row.imageUrl || undefined,
     ...rest,
+  };
+  if (row.section !== "research") return record;
+
+  const keywords = Array.isArray(record.keywords)
+    ? record.keywords.join(", ")
+    : String(record.keywords || "");
+  const tableOfContents = Array.isArray(record.tableOfContents)
+    ? record.tableOfContents.join("\n")
+    : String(record.tableOfContents || "");
+  const classification = normalizeResearchClassification(record.category1, record.category2, {
+    title: record.title,
+    summary: record.summary,
+    keywords,
+  });
+  return {
+    ...record,
+    keywords,
+    tableOfContents,
+    researchType: record.researchType || "자료집",
+    category1: classification.category1,
+    category2: classification.category2,
   };
 }
 
@@ -89,6 +111,9 @@ export async function getAdminSingleton(section: "about" | "settings"): Promise<
         purpose: stored.purpose,
         vision: stored.vision,
       };
+    }
+    if (stored.searchKeywords === "정책연구,미래전략,탄소중립,컨퍼런스,포럼") {
+      stored.searchKeywords = "메타인지,회복탄력성,가치판단,역량진단,인재정책";
     }
     return stored;
   } catch (error) {

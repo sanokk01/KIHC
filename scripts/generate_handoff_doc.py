@@ -152,7 +152,13 @@ def add_table(doc, rows):
     if not rows:
         return
     table = doc.add_table(rows=len(rows), cols=len(rows[0]))
-    widths = table_widths(len(rows[0]))
+    header_key = tuple(value.strip() for value in rows[0])
+    if header_key == ("구분", "현재 상태", "다음 조치", "담당"):
+        widths = [1300, 2600, 3500, 1960]
+    elif header_key == ("결정 항목", "선택지", "권장안", "회신 내용"):
+        widths = [1600, 2860, 2800, 2100]
+    else:
+        widths = table_widths(len(rows[0]))
     for row_idx, values in enumerate(rows):
         for col_idx, value in enumerate(values):
             cell = table.cell(row_idx, col_idx)
@@ -334,7 +340,7 @@ def add_page_number(paragraph):
     paragraph._p.append(fld)
 
 
-def configure_page(doc):
+def configure_page(doc, brief=False):
     section = doc.sections[0]
     section.page_width = Inches(8.5)
     section.page_height = Inches(11)
@@ -348,7 +354,7 @@ def configure_page(doc):
     hp = section.header.paragraphs[0]
     hp.text = ""
     hp.alignment = WD_ALIGN_PARAGRAPH.LEFT
-    hr = hp.add_run("KIHC  |  웹사이트 개선·운영 가이드")
+    hr = hp.add_run("KIHC  |  실행용 작업지시서" if brief else "KIHC  |  웹사이트 개선·운영 가이드")
     set_run_font(hr, size=8.5, color=MUTED, bold=True)
 
     fp = section.footer.paragraphs[0]
@@ -356,21 +362,21 @@ def configure_page(doc):
     add_page_number(fp)
 
 
-def add_cover(doc):
+def add_cover(doc, brief=False):
     p = doc.add_paragraph()
     p.paragraph_format.space_before = Pt(22)
     p.paragraph_format.space_after = Pt(4)
-    r = p.add_run("PROJECT HANDOFF & OPERATIONS GUIDE")
+    r = p.add_run("ACTION BRIEF" if brief else "PROJECT HANDOFF & OPERATIONS GUIDE")
     set_run_font(r, size=9.5, color=GOLD, bold=True)
 
     p = doc.add_paragraph()
     p.paragraph_format.space_after = Pt(8)
-    r = p.add_run("KIHC 웹사이트 개선 작업 및 운영 적용 가이드")
+    r = p.add_run("KIHC 웹사이트 실행용 작업지시서" if brief else "KIHC 웹사이트 개선 작업 및 운영 적용 가이드")
     set_run_font(r, size=28, color=NAVY, bold=True)
 
     p = doc.add_paragraph()
     p.paragraph_format.space_after = Pt(22)
-    r = p.add_run("모바일 최적화 · 관리자 보안 · Supabase/Netlify 운영 절차")
+    r = p.add_run("담당자별 할 일 · 완료 기준 · 배포 체크리스트" if brief else "모바일 최적화 · 관리자 보안 · Supabase/Netlify 운영 절차")
     set_run_font(r, size=13.5, color=MUTED)
 
     metadata = [
@@ -479,12 +485,13 @@ def parse_markdown(doc, markdown):
 
 def build(markdown_path, output_path):
     markdown = Path(markdown_path).read_text(encoding="utf-8")
+    brief = "brief" in Path(output_path).stem.lower()
     doc = Document()
     configure_styles(doc)
-    configure_page(doc)
-    add_cover(doc)
+    configure_page(doc, brief=brief)
+    add_cover(doc, brief=brief)
     parse_markdown(doc, markdown)
-    doc.core_properties.title = "KIHC 웹사이트 개선 작업 및 운영 적용 가이드"
+    doc.core_properties.title = "KIHC 웹사이트 실행용 작업지시서" if brief else "KIHC 웹사이트 개선 작업 및 운영 적용 가이드"
     doc.core_properties.subject = "기획팀·운영팀 전달용 작업 및 배포 가이드"
     doc.core_properties.author = "KIHC Web Project"
     doc.core_properties.keywords = "KIHC, Supabase, Netlify, 모바일 최적화, 관리자"

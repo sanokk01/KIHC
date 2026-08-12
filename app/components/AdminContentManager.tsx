@@ -4,6 +4,12 @@
 
 import { useMemo, useState } from "react";
 import type { AdminContentRecord, AdminSection } from "../lib/admin-types";
+import {
+  DEFAULT_RESEARCH_CLASSIFICATION,
+  RESEARCH_TAXONOMY,
+  getResearchSubcategories,
+  isResearchClassification,
+} from "../lib/research-taxonomy";
 
 export type { AdminContentRecord, AdminSection } from "../lib/admin-types";
 
@@ -11,7 +17,7 @@ const storageConnected = false;
 
 const emptyBySection: Record<AdminSection, AdminContentRecord> = {
   news: { id: "", slug: "", title: "", publishedAt: "", status: "draft", imageUrl: "", excerpt: "", content: "", category1: "공지사항", category2: "", heldAt: "", attachmentUrl: "", views: 0 },
-  research: { id: "", slug: "", title: "", publishedAt: "", status: "draft", imageUrl: "", author: "", summary: "", tableOfContents: "", keywords: "", researchType: "자료집", category1: "", category2: "" },
+  research: { id: "", slug: "", title: "", publishedAt: "", status: "draft", imageUrl: "", author: "", summary: "", tableOfContents: "", keywords: "", researchType: "자료집", ...DEFAULT_RESEARCH_CLASSIFICATION },
   promotions: { id: "", slug: "", title: "", publishedAt: "", status: "draft", imageUrl: "", thumbnailLabel: "", category1: "기관 소개", protectedDetails: "" },
   popup: { id: "", title: "", active: false, imageUrl: "", imageDisplay: "full", link: "", startsAt: "", endsAt: "", content: "" },
   about: { id: "about", title: "KIHC 소개", chairmanMessage: "", organizationIntroduction: "", organizationImageUrl: "", purpose: "", vision: "" },
@@ -56,6 +62,8 @@ function AdminEditor({ section, value, onChange, onCancel, onSave, saving, datab
   databaseConnected: boolean;
 }) {
   const field = (name: keyof AdminContentRecord, next: string | boolean) => onChange({ ...value, [name]: next });
+  const researchSubcategories = getResearchSubcategories(value.category1 ?? "");
+  const researchClassificationValid = section !== "research" || isResearchClassification(value.category1 ?? "", value.category2 ?? "");
   return (
     <div className="admin-editor-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onCancel()}>
       <section className="admin-editor" role="dialog" aria-modal="true" aria-labelledby="admin-editor-title">
@@ -67,11 +75,53 @@ function AdminEditor({ section, value, onChange, onCancel, onSave, saving, datab
           {section !== "popup" && <label><span>공개 상태</span><select value={value.status ?? "draft"} onChange={(event) => field("status", event.target.value)}><option value="published">공개</option><option value="draft">초안</option></select></label>}
           <ImageUploadField label={section === "popup" ? "팝업 이미지" : "대표 이미지"} value={value.imageUrl} onChange={(url) => field("imageUrl", url)} allowUrl />
           {section === "news" && <><label><span>대분류 (Category)</span><select value={value.category1 ?? "공지사항"} onChange={(event) => field("category1", event.target.value)}><option value="공지사항">공지사항</option><option value="뉴스레터">뉴스레터</option><option value="행사일정">행사일정</option></select></label>{value.category1 === "행사일정" && <><label><span>소분류 (행사구분)</span><select value={value.category2 ?? "학회"} onChange={(event) => field("category2", event.target.value)}><option value="학회">학회</option><option value="강연">강연</option><option value="기타">기타</option></select></label><label><span>행사일정</span><input value={value.heldAt ?? ""} onChange={(event) => field("heldAt", event.target.value)} placeholder="2026. 08. 15" /></label></>}<label><span>조회수</span><input type="number" value={value.views ?? 0} onChange={(event) => field("views", event.target.value)} /></label><label className="wide"><span>첨부파일 주소</span><input value={value.attachmentUrl ?? ""} onChange={(event) => field("attachmentUrl", event.target.value)} placeholder="/assets/file.pdf 또는 https://..." /></label><label className="wide"><span>요약</span><textarea rows={3} value={value.excerpt ?? ""} onChange={(event) => field("excerpt", event.target.value)} /></label><label className="wide"><span>본문</span><textarea rows={8} value={value.content ?? ""} onChange={(event) => field("content", event.target.value)} /></label></>}
-          {section === "research" && <><label><span>문서 유형 (뱃지)</span><select value={value.researchType ?? "자료집"} onChange={(event) => field("researchType", event.target.value)}><option value="보고서 전체">보고서 전체</option><option value="협동연구보고서">협동연구보고서</option><option value="기타연구보고서">기타연구보고서</option><option value="브리프">브리프</option><option value="논문">논문</option><option value="단행본">단행본</option><option value="기타">기타</option></select></label><label><span>등록 날짜</span><input type="date" value={value.publishedAt ?? ""} onChange={(event) => field("publishedAt", event.target.value)} /></label><label><span>조회수</span><input type="number" value={value.views ?? 0} onChange={(event) => field("views", event.target.value)} /></label><label><span>저자</span><input value={value.author ?? ""} onChange={(event) => field("author", event.target.value)} /></label><label><span>대분류 (Category 1)</span><input value={value.category1 ?? ""} onChange={(event) => field("category1", event.target.value)} placeholder="예: 정책연구" /></label><label><span>중분류 (Category 2)</span><input value={value.category2 ?? ""} onChange={(event) => field("category2", event.target.value)} placeholder="예: 미래전략" /></label><label className="wide"><span>키워드</span><input value={value.keywords ?? ""} onChange={(event) => field("keywords", event.target.value)} placeholder="쉼표로 구분" /></label><label className="wide"><span>목차</span><textarea rows={4} value={value.tableOfContents ?? ""} onChange={(event) => field("tableOfContents", event.target.value)} placeholder="줄바꿈으로 구분" /></label><label className="wide"><span>요약</span><textarea rows={6} value={value.summary ?? ""} onChange={(event) => field("summary", event.target.value)} /></label></>}
+          {section === "research" && <>
+            <label>
+              <span>문서 유형 (뱃지)</span>
+              <select value={value.researchType ?? "자료집"} onChange={(event) => field("researchType", event.target.value)}>
+                <option value="보고서 전체">보고서 전체</option>
+                <option value="협동연구보고서">협동연구보고서</option>
+                <option value="기타연구보고서">기타연구보고서</option>
+                <option value="브리프">브리프</option>
+                <option value="논문">논문</option>
+                <option value="단행본">단행본</option>
+                <option value="기타">기타</option>
+              </select>
+            </label>
+            <label><span>등록 날짜</span><input type="date" value={value.publishedAt ?? ""} onChange={(event) => field("publishedAt", event.target.value)} /></label>
+            <label><span>조회수</span><input type="number" value={value.views ?? 0} onChange={(event) => field("views", event.target.value)} /></label>
+            <label><span>저자</span><input value={value.author ?? ""} onChange={(event) => field("author", event.target.value)} /></label>
+            <label>
+              <span>대분류</span>
+              <select
+                value={value.category1 ?? ""}
+                onChange={(event) => {
+                  const category1 = event.target.value;
+                  const category2 = getResearchSubcategories(category1)[0]?.value ?? "";
+                  onChange({ ...value, category1, category2 });
+                }}
+                required
+              >
+                <option value="">대분류 선택</option>
+                {RESEARCH_TAXONOMY.map((item) => <option value={item.value} key={item.value}>{item.value}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>소분류</span>
+              <select value={value.category2 ?? ""} onChange={(event) => field("category2", event.target.value)} disabled={!value.category1} required>
+                <option value="">소분류 선택</option>
+                {researchSubcategories.map((item) => <option value={item.value} key={item.value}>{item.value}</option>)}
+              </select>
+              {!researchClassificationValid && <small className="error">공개 검색에 사용될 대분류와 소분류를 선택해 주세요.</small>}
+            </label>
+            <label className="wide"><span>키워드</span><input value={value.keywords ?? ""} onChange={(event) => field("keywords", event.target.value)} placeholder="쉼표로 구분 · 예: 메타인지, 자기조절, 성장" /></label>
+            <label className="wide"><span>목차</span><textarea rows={4} value={value.tableOfContents ?? ""} onChange={(event) => field("tableOfContents", event.target.value)} placeholder="줄바꿈으로 구분" /></label>
+            <label className="wide"><span>요약</span><textarea rows={6} value={value.summary ?? ""} onChange={(event) => field("summary", event.target.value)} /></label>
+          </>}
           {section === "promotions" && <><label><span>구분(분류)</span><select value={value.category1 ?? "기관 소개"} onChange={(event) => field("category1", event.target.value)}><option value="기관 소개">기관 소개</option><option value="사업 소개">사업 소개</option><option value="홍보 자료">홍보 자료</option></select></label><label><span>등록 날짜</span><input type="date" value={value.publishedAt ?? ""} onChange={(event) => field("publishedAt", event.target.value)} /></label><label><span>썸네일 라벨(텍스트)</span><input value={value.thumbnailLabel ?? ""} onChange={(event) => field("thumbnailLabel", event.target.value)} placeholder="예: KIHC INTRODUCTION" /></label><label className="wide"><span>보호된 상세 정보 (목차 등)</span><textarea rows={5} value={value.protectedDetails ?? ""} onChange={(event) => field("protectedDetails", event.target.value)} placeholder="줄바꿈으로 구분" /></label></>}
           {section === "popup" && <><label><span>이미지 표시 방식</span><select value={value.imageDisplay ?? "full"} onChange={(event) => field("imageDisplay", event.target.value)}><option value="full">이미지 전체 표시</option><option value="banner">상단 이미지 + 공지 내용</option></select><small>전체 표시는 원본 비율을 유지하며 이미지를 자르지 않습니다.</small></label><label className="admin-check"><input type="checkbox" checked={Boolean(value.active)} onChange={(event) => field("active", event.target.checked)} /><span>홈에서 팝업 활성화</span></label><label><span>연결 주소</span><input value={value.link ?? ""} onChange={(event) => field("link", event.target.value)} placeholder="/news/example 또는 https://..." /></label><label><span>노출 시작</span><input type="datetime-local" value={value.startsAt ?? ""} onChange={(event) => field("startsAt", event.target.value)} /></label><label><span>노출 종료</span><input type="datetime-local" value={value.endsAt ?? ""} onChange={(event) => field("endsAt", event.target.value)} /></label><label className="wide"><span>내용</span><textarea rows={7} value={value.content ?? ""} onChange={(event) => field("content", event.target.value)} /></label></>}
         </div>
-        <div className="admin-editor-actions"><button type="button" className="secondary" onClick={onCancel}>취소</button><button type="button" onClick={onSave} disabled={!databaseConnected || !value.title.trim() || saving}>{saving ? "저장 중..." : (databaseConnected ? "DB에 저장" : "DB 연결 후 저장 가능")}</button></div>
+        <div className="admin-editor-actions"><button type="button" className="secondary" onClick={onCancel}>취소</button><button type="button" onClick={onSave} disabled={!databaseConnected || !value.title.trim() || !researchClassificationValid || saving}>{saving ? "저장 중..." : (databaseConnected ? "DB에 저장" : "DB 연결 후 저장 가능")}</button></div>
       </section>
     </div>
   );
