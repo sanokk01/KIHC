@@ -524,17 +524,24 @@ export const contentRepository: ContentRepository = {
 function mapStoredToNews(row: any): NewsPost {
   let payload: any = {};
   try { payload = JSON.parse(row.payload); } catch (e) {}
+  // content: DB에는 textarea 문자열 또는 배열로 저장될 수 있음
+  const rawContent = payload.content;
+  const content: string[] = Array.isArray(rawContent)
+    ? rawContent
+    : typeof rawContent === "string" && rawContent.trim()
+      ? rawContent.split(/\n\n+/).map((s: string) => s.trim()).filter(Boolean)
+      : [];
   return {
     id: row.id,
     slug: row.slug || "",
     title: row.title,
     excerpt: payload.excerpt || "",
-    content: payload.content || [],
+    content,
     category1: payload.category1 || "공지사항",
     category2: payload.category2 || "",
     heldAt: payload.heldAt || "",
-    attachmentUrl: payload.attachmentUrl || "",
-    views: typeof payload.views === "number" ? payload.views : 0,
+    attachmentUrl: typeof payload.attachmentUrl === "string" ? payload.attachmentUrl : "",
+    views: typeof payload.views === "number" ? payload.views : Number(payload.views) || 0,
     imageUrl: row.imageUrl || undefined,
     status: row.status,
     publishedAt: row.publishedAt || "",
