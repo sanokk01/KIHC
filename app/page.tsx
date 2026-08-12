@@ -207,7 +207,7 @@ export default async function Home() {
               </div>
               <div className="news-list">
                 {news.map((item) => (
-                  <Link href={`/news/${item.slug}`} key={item.id}>
+                  <Link href={`/news/${item.slug || item.id}`} key={item.id}>
                     <time>{item.publishedAt}</time>
                     <strong>{item.title}</strong>
                     <span className="news-arrow" aria-hidden="true">↗</span>

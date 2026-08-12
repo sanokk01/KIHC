@@ -32,13 +32,18 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
             </div>
           </header>
 
+          {post.imageUrl && (
+            <div className="article-featured-image">
+              <img className="article-image" src={post.imageUrl} alt={`${post.title} 대표 이미지`} />
+            </div>
+          )}
+
           <div className="article-body">
             {post.attachmentUrl && (
               <a href={post.attachmentUrl} target="_blank" rel="noreferrer" className="article-attachment">
                 📎 첨부파일 다운로드
               </a>
             )}
-            {post.imageUrl ? <img className="article-image" src={post.imageUrl} alt={`${post.title} 대표 이미지`} /> : null}
             {post.content.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           </div>
           
