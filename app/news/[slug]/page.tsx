@@ -24,7 +24,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
       <main className="article-main">
         <article className="container article-shell">
           <header className="article-detail-header">
-            {post.category1 && <p className="news-cat-badge" style={{ marginBottom: 12 }}>[{post.category1}]</p>}
+            {post.category1 && <p className="news-cat-badge article-category">[{post.category1}]</p>}
             <h1>{post.title}</h1>
             <div className="article-detail-meta">
               <span>작성일시 {post.publishedAt} {post.heldAt && `(개최일: ${post.heldAt})`}</span>

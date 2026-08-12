@@ -41,12 +41,6 @@ export default async function ResearchDetailPage({ params }: { params: Promise<{
             <span className="doc-type-badge">{item.researchType || "자료집"}</span>
             <div className="title-row">
               <h1 className="research-detail-title">{item.title}</h1>
-              <div className="title-tools">
-                <button type="button" className="btn-text-size" aria-label="본문 크기 조절">
-                  <span className="icon-font">A</span>
-                  <span className="icon-font large">A</span>
-                </button>
-              </div>
             </div>
           </div>
 

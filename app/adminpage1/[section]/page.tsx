@@ -4,6 +4,7 @@ import { AdminContentManager, type AdminContentRecord, type AdminSection } from 
 import { AdminShell } from "../../components/AdminShell";
 import { getAdminRecords, getAdminSingleton } from "../../lib/admin-data";
 import { requireAdminUser } from "../../lib/admin-auth";
+import { getDatabaseStatus } from "../../lib/storage-status";
 
 export const metadata: Metadata = { title: "콘텐츠 관리" };
 
@@ -25,12 +26,13 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
   const { section: rawSection } = await params;
   if (!(rawSection in sectionInfo)) notFound();
   const section = rawSection as AdminSection;
-  await requireAdminUser(`/adminpage1/${section}`);
+  const user = await requireAdminUser(`/adminpage1/${section}`);
+  const databaseStatus = await getDatabaseStatus();
   const info = sectionInfo[section];
   return (
-    <AdminShell active={info.label}>
+    <AdminShell active={info.label} user={user}>
       <div className="admin-title"><div><p>{info.eyebrow}</p><h1>{info.label}</h1><span>{info.description}</span></div></div>
-      <AdminContentManager section={section} initialRecords={await recordsFor(section)} />
+      <AdminContentManager section={section} initialRecords={await recordsFor(section)} databaseConnected={databaseStatus.connected} databaseMessage={databaseStatus.message} />
     </AdminShell>
   );
 }

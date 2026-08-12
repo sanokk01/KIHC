@@ -2,8 +2,6 @@ import { contentStore, type StoredContentRow, type StoredSection } from "../../d
 import type { AdminContentRecord, AdminSection } from "./admin-types";
 import { defaultAbout, defaultNewsPosts, defaultPopup, defaultResearchMaterials, defaultSettings, defaultPromotionalMaterials } from "./content";
 
-export { databaseConnected, databasePendingMessage } from "./storage-status";
-
 function defaultRecords(section: StoredSection): AdminContentRecord[] {
   if (section === "news") return defaultNewsPosts.map((item) => ({ id: item.id, slug: item.slug, title: item.title, publishedAt: item.publishedAt, status: item.status, imageUrl: item.imageUrl, excerpt: item.excerpt, content: item.content.join("\n\n"), category1: item.category1 || "공지사항", category2: item.category2 || "", heldAt: item.heldAt || "", attachmentUrl: item.attachmentUrl || "", views: item.views || 0 }));
   if (section === "research") return defaultResearchMaterials.map((item) => ({ id: item.id, slug: item.slug, title: item.title, publishedAt: item.publishedAt, status: item.status, imageUrl: item.imageUrl, author: item.author, summary: item.summary, tableOfContents: item.tableOfContents.join("\n"), keywords: item.keywords.join(", "), researchType: item.researchType, category1: item.category1, category2: item.category2, views: item.views || 0 }));
@@ -76,21 +74,44 @@ export async function getAdminSingleton(section: "about" | "settings"): Promise<
   try {
     const payload = await contentStore.getSingleton(section);
     if (!payload) {
-      const defaultData = section === "about" ? { id: "about", title: "KIHC 소개", chairmanMessage: defaultAbout.chairmanMessage.join("\n\n"), chairmanImageUrl: defaultAbout.chairmanImageUrl, organizationIntroduction: defaultAbout.organizationIntroduction.join("\n\n"), organizationImageUrl: defaultAbout.organizationImageUrl, purpose: defaultAbout.purpose, vision: defaultAbout.vision } : { id: "settings", title: "사이트 설정", siteName: defaultSettings.siteName, footerInformation: defaultSettings.footerInformation, email: defaultSettings.email, searchKeywords: defaultSettings.searchKeywords };
+      const defaultData = section === "about" ? { id: "about", title: "KIHC 소개", chairmanMessage: defaultAbout.chairmanMessage.join("\n\n"), organizationIntroduction: defaultAbout.organizationIntroduction.join("\n\n"), organizationImageUrl: defaultAbout.organizationImageUrl, purpose: defaultAbout.purpose, vision: defaultAbout.vision } : { id: "settings", title: "사이트 설정", siteName: defaultSettings.siteName, footerInformation: defaultSettings.footerInformation, email: defaultSettings.email, searchKeywords: defaultSettings.searchKeywords };
       await contentStore.upsertSingleton(section, JSON.stringify(defaultData));
       return defaultData;
     }
-    return JSON.parse(payload);
+    const stored = JSON.parse(payload) as AdminContentRecord;
+    if (section === "about") {
+      return {
+        id: "about",
+        title: stored.title,
+        chairmanMessage: stored.chairmanMessage,
+        organizationIntroduction: stored.organizationIntroduction,
+        organizationImageUrl: stored.organizationImageUrl,
+        purpose: stored.purpose,
+        vision: stored.vision,
+      };
+    }
+    return stored;
   } catch (error) {
     console.error("Failed to get singleton from DB:", error);
-    if (section === "about") return { id: "about", title: "KIHC 소개", chairmanMessage: defaultAbout.chairmanMessage.join("\n\n"), chairmanImageUrl: defaultAbout.chairmanImageUrl, organizationIntroduction: defaultAbout.organizationIntroduction.join("\n\n"), organizationImageUrl: defaultAbout.organizationImageUrl, purpose: defaultAbout.purpose, vision: defaultAbout.vision };
+    if (section === "about") return { id: "about", title: "KIHC 소개", chairmanMessage: defaultAbout.chairmanMessage.join("\n\n"), organizationIntroduction: defaultAbout.organizationIntroduction.join("\n\n"), organizationImageUrl: defaultAbout.organizationImageUrl, purpose: defaultAbout.purpose, vision: defaultAbout.vision };
     return { id: "settings", title: "사이트 설정", siteName: defaultSettings.siteName, footerInformation: defaultSettings.footerInformation, email: defaultSettings.email, searchKeywords: defaultSettings.searchKeywords };
   }
 }
 
 export async function saveAdminSingleton(section: "about" | "settings", record: AdminContentRecord): Promise<AdminContentRecord> {
-  await contentStore.upsertSingleton(section, JSON.stringify(record));
-  return record;
+  const sanitized = section === "about"
+    ? {
+        id: "about",
+        title: record.title,
+        chairmanMessage: record.chairmanMessage,
+        organizationIntroduction: record.organizationIntroduction,
+        organizationImageUrl: record.organizationImageUrl,
+        purpose: record.purpose,
+        vision: record.vision,
+      }
+    : record;
+  await contentStore.upsertSingleton(section, JSON.stringify(sanitized));
+  return sanitized;
 }
 
 export function unavailableStorageResponse(error: unknown) {

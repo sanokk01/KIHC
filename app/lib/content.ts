@@ -83,7 +83,6 @@ export interface PopupNotice {
 
 export interface AboutContent {
   chairmanMessage: string[];
-  chairmanImageUrl?: string;
   organizationIntroduction: string[];
   organizationImageUrl?: string;
   purpose: string;
@@ -495,7 +494,19 @@ export const contentRepository: ContentRepository = {
   getAbout: async () => {
     try {
       const raw = await contentStore.getSingleton("about");
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const stored = JSON.parse(raw) as Partial<AboutContent> & { chairmanMessage?: string | string[]; organizationIntroduction?: string | string[] };
+        const paragraphs = (value: string | string[] | undefined, fallback: string[]) => Array.isArray(value)
+          ? value
+          : value?.split(/\n\s*\n/).map((item) => item.trim()).filter(Boolean) ?? fallback;
+        return {
+          chairmanMessage: paragraphs(stored.chairmanMessage, defaultAbout.chairmanMessage),
+          organizationIntroduction: paragraphs(stored.organizationIntroduction, defaultAbout.organizationIntroduction),
+          organizationImageUrl: stored.organizationImageUrl,
+          purpose: stored.purpose ?? defaultAbout.purpose,
+          vision: stored.vision ?? defaultAbout.vision,
+        };
+      }
     } catch (e) {}
     return defaultAbout;
   },

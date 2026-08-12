@@ -1,13 +1,15 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { submitContactInquiry } from "../lib/contact";
+
+const CONTACT_EMAIL = "annjae52@gmail.com";
 
 export function ContactForm({ isEn = false }: { isEn?: boolean }) {
   const [message, setMessage] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-
   const dict = {
+    formEyebrow: isEn ? "Tell us about your project" : "문의 내용 보내기",
+    formTitle: isEn ? "Start a conversation with KIHC" : "KIHC와 협업을 시작해 보세요",
+    formDesc: isEn ? "Complete the form and your email app will open with the details filled in." : "내용을 작성하면 대표 이메일로 보낼 수 있도록 메일 앱이 열립니다.",
     typeLabel: isEn ? "Inquiry Type" : "문의 유형",
     typeGeneral: isEn ? "General Inquiry" : "일반 문의",
     typeResearch: isEn ? "Research Partnership / Consulting" : "연구 제휴 및 용역",
@@ -23,14 +25,13 @@ export function ContactForm({ isEn = false }: { isEn?: boolean }) {
     posPlaceholder: isEn ? "Enter your position" : "직급을 입력하세요",
     msgLabel: isEn ? "Message" : "문의사항",
     msgPlaceholder: isEn ? "Enter your message" : "문의 내용을 입력하세요",
-    submitBtn: isEn ? "Submit Inquiry" : "문의하기",
-    submittingBtn: isEn ? "Submitting..." : "확인 중...",
+    submitBtn: isEn ? "Continue in email" : "이메일 문의 작성",
     privacyLabel: isEn ? "I agree to the collection and use of personal information." : "개인정보 수집 및 이용에 동의합니다.",
-    errorMsg: isEn ? "Failed to verify submission status. Please try again later." : "문의 접수 상태를 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.",
-    successMsg: isEn ? "Your inquiry has been submitted successfully." : "문의가 성공적으로 접수되었습니다." // Though server might override this
+    readyMsg: isEn ? "Your email app is opening. Please review the message and send it." : "메일 앱이 열리면 내용을 확인한 뒤 전송해 주세요.",
+    privacyHelp: isEn ? "The website does not store your form data." : "작성 내용은 웹사이트에 저장되지 않습니다.",
   };
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     if (!form.checkValidity()) {
@@ -38,25 +39,36 @@ export function ContactForm({ isEn = false }: { isEn?: boolean }) {
       return;
     }
     const data = new FormData(form);
-    setSubmitting(true);
-    try {
-      const result = await submitContactInquiry({
-        name: String(data.get("name") ?? "").trim(),
-        email: String(data.get("email") ?? "").trim(),
-        organization: String(data.get("organization") ?? "").trim() || undefined,
-        message: String(data.get("message") ?? "").trim(),
-      });
-      // Ideally server returns a translated message, or we override it here based on success.
-      setMessage(isEn && result.message.includes("접수") ? dict.successMsg : result.message);
-    } catch {
-      setMessage(dict.errorMsg);
-    } finally {
-      setSubmitting(false);
-    }
+    const inquiryType = String(data.get("inquiryType") ?? "general");
+    const inquiryLabels: Record<string, string> = {
+      general: dict.typeGeneral,
+      research: dict.typeResearch,
+      seminar: dict.typeSeminar,
+      press: dict.typePress,
+    };
+    const subject = `[KIHC ${isEn ? "Inquiry" : "문의"}] ${inquiryLabels[inquiryType] ?? dict.typeGeneral}`;
+    const body = [
+      `${dict.typeLabel}: ${inquiryLabels[inquiryType] ?? dict.typeGeneral}`,
+      `${dict.nameLabel}: ${String(data.get("name") ?? "").trim()}`,
+      `${dict.emailLabel}: ${String(data.get("email") ?? "").trim()}`,
+      `${dict.orgLabel}: ${String(data.get("organization") ?? "").trim() || "-"}`,
+      `${dict.posLabel}: ${String(data.get("position") ?? "").trim() || "-"}`,
+      "",
+      `${dict.msgLabel}:`,
+      String(data.get("message") ?? "").trim(),
+    ].join("\n");
+
+    setMessage(dict.readyMsg);
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
   return (
     <form className="contact-form" onSubmit={handleSubmit} noValidate>
+      <div className="contact-form-heading">
+        <span>{dict.formEyebrow}</span>
+        <h2>{dict.formTitle}</h2>
+        <p>{dict.formDesc}</p>
+      </div>
       <label>
         <span>{dict.typeLabel} <b>*</b></span>
         <select name="inquiryType" required defaultValue="">
@@ -76,13 +88,13 @@ export function ContactForm({ isEn = false }: { isEn?: boolean }) {
         <label><span>{dict.posLabel}</span><input name="position" placeholder={dict.posPlaceholder} /></label>
       </div>
       <label><span>{dict.msgLabel} <b>*</b></span><textarea name="message" required rows={6} placeholder={dict.msgPlaceholder} /></label>
-      <label className="checkbox-label" style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "12px", fontSize: "13px", color: "#64748b" }}>
-        <input type="checkbox" required name="privacy" style={{ width: "16px", height: "16px" }} />
-        <span>{dict.privacyLabel}</span>
+      <label className="checkbox-label">
+        <input type="checkbox" required name="privacy" />
+        <span>{dict.privacyLabel}<small>{dict.privacyHelp}</small></span>
       </label>
-      <div className="form-submit" style={{ marginTop: "24px" }}>
-        <button className="button button-primary" type="submit" disabled={submitting}>{submitting ? dict.submittingBtn : dict.submitBtn}</button>
-        {message ? <p role="status" aria-live="polite" style={{ marginTop: "12px", color: "#3b82f6", fontWeight: "600" }}>{message}</p> : null}
+      <div className="form-submit">
+        <button className="button button-primary" type="submit">{dict.submitBtn}</button>
+        {message ? <p role="status" aria-live="polite">{message}</p> : null}
       </div>
     </form>
   );

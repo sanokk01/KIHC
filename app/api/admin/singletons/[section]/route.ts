@@ -7,7 +7,7 @@ function isSingletonSection(section: string): section is "about" | "settings" {
 }
 
 export async function GET(request: Request, { params }: { params: Promise<{ section: string }> }) {
-  if (!isAuthorizedAdminRequest(request)) return unauthorizedResponse();
+  if (!(await isAuthorizedAdminRequest(request))) return unauthorizedResponse();
   const { section } = await params;
   if (!isSingletonSection(section)) return Response.json({ error: "지원하지 않는 설정 구분입니다." }, { status: 404 });
   try {
@@ -18,7 +18,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ sect
 }
 
 export async function PUT(request: Request, { params }: { params: Promise<{ section: string }> }) {
-  if (!isAuthorizedAdminRequest(request)) return unauthorizedResponse();
+  if (!(await isAuthorizedAdminRequest(request))) return unauthorizedResponse();
   const { section } = await params;
   if (!isSingletonSection(section)) return Response.json({ error: "지원하지 않는 설정 구분입니다." }, { status: 404 });
   try {

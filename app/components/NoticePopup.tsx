@@ -36,9 +36,14 @@ export function NoticePopup({ popup }: { popup: PopupNotice }) {
 
   useEffect(() => {
     if (!visible) return;
+    const previousOverflow = document.body.style.overflow;
     const closeOnEscape = (event: KeyboardEvent) => event.key === "Escape" && setVisible(false);
+    document.body.style.overflow = "hidden";
     document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", closeOnEscape);
+    };
   }, [visible]);
 
   const hideToday = () => {

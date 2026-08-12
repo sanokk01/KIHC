@@ -1,5 +1,7 @@
-import { Logo } from "./Logo";
+import type { AdminUser } from "../lib/admin-auth";
+import { logoutAdminAction } from "../lib/admin-auth-actions";
 import { AppLink as Link } from "./AppLink";
+import { Logo } from "./Logo";
 
 const navigation = [
   { label: "Dashboard", href: "/adminpage1", icon: "D" },
@@ -11,7 +13,7 @@ const navigation = [
   { label: "사이트 설정", href: "/adminpage1/settings", icon: "S" },
 ];
 
-export function AdminShell({ children, active = "Dashboard" }: { children: React.ReactNode; active?: string }) {
+export function AdminShell({ children, user, active = "Dashboard" }: { children: React.ReactNode; user: AdminUser; active?: string }) {
   return (
     <div className="admin-shell">
       <aside className="admin-sidebar">
@@ -20,10 +22,13 @@ export function AdminShell({ children, active = "Dashboard" }: { children: React
         <nav aria-label="관리자 메뉴">
           {navigation.map((item) => <Link prefetch={false} className={active === item.label ? "active" : ""} href={item.href} key={item.href}><span>{item.icon}</span>{item.label}</Link>)}
         </nav>
-        <Link prefetch={false} className="admin-logout" href="/">공개 사이트로 이동</Link>
+        <div className="admin-sidebar-actions">
+          <Link prefetch={false} href="/">공개 사이트로 이동</Link>
+          <form action={logoutAdminAction}><button type="submit">로그아웃</button></form>
+        </div>
       </aside>
       <div className="admin-workspace">
-        <header className="admin-topbar"><span>KIHC Content Management</span><div className="admin-user"><span>관리자</span><b>AD</b></div></header>
+        <header className="admin-topbar"><span>KIHC Content Management</span><div className="admin-user"><span>{user.displayName}</span><b>AD</b></div></header>
         <main className="admin-content">{children}</main>
       </div>
     </div>

@@ -43,7 +43,6 @@ export default async function AboutPage() {
     visionV1: isEn ? "Leap to a global-level human capability think-tank" : "글로벌 수준의 인재역량 씽크탱크 도약",
     visionV2: isEn ? "A knowledge network where researchers and practitioners coexist" : "연구자와 현장 실무자가 상생하는 지식 네트워크",
     visionV3: isEn ? "Creating reliable academic value centered on data and people" : "데이터와 사람 중심의 신뢰할 수 있는 학술 가치 창출",
-    chairmanAlt: isEn ? "KIHC Chairman" : "한국인재역량연구회 이사장",
     chairmanMsgTitle: isEn ? "We begin our research with deep respect for people and scientific insight." : "사람에 대한 깊은 존중과\n과학적 통찰에서 연구를 시작합니다.",
     orgTitle: isEn ? "Organization" : "조직 체계",
     orgDesc: isEn ? "KIHC's specialized and flexible research and operational organizational structure." : "전문성과 유연성을 갖춘 KIHC의 연구 및 운영 조직 구조입니다.",
@@ -165,17 +164,7 @@ export default async function AboutPage() {
 
         {/* 3. 이사장 인사말 */}
         <section className="about-section" id="chairman">
-          <div className="container about-chairman">
-            {about.chairmanImageUrl ? (
-              <div className="portrait-image">
-                <img src={about.chairmanImageUrl} alt={dict.chairmanAlt} />
-              </div>
-            ) : (
-              <div className="portrait-placeholder" aria-label="이사장 사진">
-                <div className="portrait-badge">KIHC CHAIRMAN</div>
-                <span>{dict.chairmanAlt}</span>
-              </div>
-            )}
+          <div className="container chairman-message-only">
             <div className="about-copy">
               <p className="eyebrow">Chairman&apos;s Message</p>
               <h2 style={{ whiteSpace: 'pre-line' }}>{dict.chairmanMsgTitle}</h2>

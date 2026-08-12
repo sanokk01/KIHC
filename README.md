@@ -78,3 +78,27 @@ DB 접속 정보와 비밀값은 Git에 커밋하지 않습니다. 실제 DB와 
 연구분야와 핵심 가치는 `/research-focus`에서 확인할 수 있으며 한국어와 영어를 즉시 전환할 수 있습니다. 영어 공유 주소는 `/research-focus?lang=en`입니다.
 
 CI 미리보기는 `/ci`, 홍보물은 `/promotional-materials`, 강연·학회 기록은 `/events`에서 확인합니다. 상세자료는 `app/lib/partner-access.ts`의 기업 인증이 연결되기 전까지 서버에서 비공개 처리하고 문의 페이지로 안내합니다.
+
+## Supabase DB와 단일 관리자 계정
+
+Supabase Dashboard의 연결 문자열을 로컬 `.env.local`과 배포 서비스의 환경 변수에 등록합니다. 접속 문자열은 소스 코드에 직접 작성하지 않습니다.
+
+```env
+DATABASE_URL=postgresql://...
+DB_POOL_MAX=1
+```
+
+Netlify에서는 `DATABASE_URL`을 사이트 환경 변수로 등록하고 Builds와 Functions 범위에서 사용할 수 있게 설정합니다. Supabase Dashboard의 Transaction pooler 주소(포트 `6543`)를 사용하며, 비밀번호의 특수문자는 URL 인코딩된 값을 사용합니다. 값을 변경한 뒤에는 새 배포를 실행해야 런타임 함수에도 반영됩니다.
+
+스키마를 Supabase에 반영한 뒤 `/adminpage1/login`에서 SQL로 등록한 단일 관리자 계정으로 로그인합니다. 웹에서 임의의 관리자 계정을 추가로 생성할 수 없습니다.
+
+```bash
+npm run db:push
+```
+
+이미 기본 테이블을 SQL Editor에서 만든 프로젝트라면 `drizzle/0002_supabase_security.sql`만 실행해 관리자 테이블과 RLS 보호를 추가할 수 있습니다.
+
+- 관리자 계정은 DB 제약조건과 애플리케이션 양쪽에서 한 개로 제한됩니다.
+- 비밀번호는 scrypt 해시로 저장되며 원문은 저장하지 않습니다.
+- 로그인 세션은 12시간 동안 유효한 HttpOnly 쿠키와 DB 세션으로 관리됩니다.
+- 이후 `/adminpage1/login`에는 계정 생성 화면 대신 로그인 화면만 표시됩니다.

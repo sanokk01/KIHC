@@ -30,17 +30,39 @@ export function SiteHeader() {
 
   useEffect(() => {
     const match = document.cookie.match(new RegExp('(^| )kihc-language=([^;]+)'));
-    if (match) {
-      setLang(match[2] as "ko" | "en");
-    } else {
-      const stored = window.localStorage.getItem("kihc-language");
-      if (stored === "en" || window.location.search.includes("lang=en")) {
-        setLang("en");
-      } else {
-        setLang("ko");
-      }
-    }
+    const stored = window.localStorage.getItem("kihc-language");
+    const nextLang = match?.[2] === "en" || (!match && (stored === "en" || window.location.search.includes("lang=en"))) ? "en" : "ko";
+    const frame = window.requestAnimationFrame(() => setLang(nextLang));
+    return () => window.cancelAnimationFrame(frame);
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        setOpenGroup(null);
+      }
+    };
+    const closeOnDesktop = () => {
+      if (window.innerWidth > 900) {
+        setOpen(false);
+        setOpenGroup(null);
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", closeOnEscape);
+    window.addEventListener("resize", closeOnDesktop);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", closeOnEscape);
+      window.removeEventListener("resize", closeOnDesktop);
+    };
+  }, [open]);
 
   // changeLanguage is no longer needed here since LanguageSwitcher handles it
   const closeAll = () => {
@@ -61,19 +83,20 @@ export function SiteHeader() {
           type="button"
           aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
           aria-expanded={open}
+          aria-controls="site-navigation"
           onClick={() => { setOpen((v) => !v); setOpenGroup(null); }}
         >
           <span />
           <span />
         </button>
-        <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label={isEn ? "Main Menu" : "주요 메뉴"}>
+        <nav id="site-navigation" className={`main-nav ${open ? "is-open" : ""}`} aria-label={isEn ? "Main Menu" : "주요 메뉴"}>
           <div className="nav-group">
             <Link prefetch={false} href="/about" onClick={closeAll}>{isEn ? "About KIHC" : "KIHC 소개"}</Link>
             <button
               className="nav-group-toggle"
               type="button"
               aria-expanded={openGroup === "about"}
-              aria-label={isEn ? "Open About Submenu" : "KIHC 소개 하위 메뉴 열기"}
+              aria-label={openGroup === "about" ? (isEn ? "Close About Submenu" : "KIHC 소개 하위 메뉴 닫기") : (isEn ? "Open About Submenu" : "KIHC 소개 하위 메뉴 열기")}
               onClick={() => toggleGroup("about")}
             >
               ▾
@@ -90,7 +113,7 @@ export function SiteHeader() {
               className="nav-group-toggle"
               type="button"
               aria-expanded={openGroup === "news"}
-              aria-label={isEn ? "Open News Submenu" : "열린소식 하위 메뉴 열기"}
+              aria-label={openGroup === "news" ? (isEn ? "Close News Submenu" : "열린소식 하위 메뉴 닫기") : (isEn ? "Open News Submenu" : "열린소식 하위 메뉴 열기")}
               onClick={() => toggleGroup("news")}
             >
               ▾

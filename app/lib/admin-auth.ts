@@ -1,42 +1,66 @@
-import { headers } from "next/headers";
+import { createHash } from "node:crypto";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { getStoredAdminSession } from "../../db/admin-auth-store";
+
+export const ADMIN_SESSION_COOKIE = "kihc-admin-session";
 
 export type AdminUser = {
   userId: string;
   displayName: string;
-  email: string;
+  loginId: string;
   fullName: string | null;
 };
 
-function isLocalHost(host: string | null) {
-  return Boolean(host && (/^(localhost|127\.0\.0\.1)(:\d+)?$/.test(host) || host.startsWith("[::1]")));
+export function hashAdminSessionToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+async function userForToken(token?: string | null): Promise<AdminUser | null> {
+  if (!token) return null;
+  try {
+    const account = await getStoredAdminSession(hashAdminSessionToken(token));
+    if (!account) return null;
+    return {
+      userId: account.id,
+      displayName: account.displayName,
+      loginId: account.loginId,
+      fullName: account.displayName,
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function getAdminUser(): Promise<AdminUser | null> {
-  const requestHeaders = await headers();
-  const forwardedHost = requestHeaders.get("x-forwarded-host")?.split(",")[0]?.trim() ?? null;
-  if (isLocalHost(forwardedHost ?? requestHeaders.get("host"))) {
-    return { userId: "local-admin", displayName: "Local Admin", email: "local@kihc.test", fullName: "Local Admin" };
-  }
-  return null;
+  const cookieStore = await cookies();
+  return userForToken(cookieStore.get(ADMIN_SESSION_COOKIE)?.value);
 }
 
 export async function requireAdminUser(returnTo: string): Promise<AdminUser> {
   const user = await getAdminUser();
   if (user) return user;
-  redirect(`/adminpage1/login?return_to=${encodeURIComponent(safeReturnTo(returnTo))}`);
+  redirect(`/adminpage1/login?return_to=${encodeURIComponent(safeAdminReturnTo(returnTo))}`);
 }
 
-export function isAuthorizedAdminRequest(request: Request): boolean {
-  const forwardedHost = request.headers.get("x-forwarded-host")?.split(",")[0]?.trim();
-  const host = forwardedHost ?? request.headers.get("host") ?? new URL(request.url).host;
-  return isLocalHost(host);
+function requestCookie(request: Request, name: string): string | null {
+  const header = request.headers.get("cookie");
+  if (!header) return null;
+  for (const part of header.split(";")) {
+    const [rawName, ...rawValue] = part.trim().split("=");
+    if (rawName === name) return decodeURIComponent(rawValue.join("="));
+  }
+  return null;
+}
+
+export async function isAuthorizedAdminRequest(request: Request): Promise<boolean> {
+  return Boolean(await userForToken(requestCookie(request, ADMIN_SESSION_COOKIE)));
 }
 
 export function unauthorizedResponse() {
-  return Response.json({ error: "관리자 인증 연결이 필요합니다." }, { status: 401 });
+  return Response.json({ error: "관리자 로그인이 필요합니다." }, { status: 401 });
 }
 
-function safeReturnTo(value: string) {
-  return value.startsWith("/") && !value.startsWith("//") ? value : "/adminpage1";
+export function safeAdminReturnTo(value: string | null | undefined) {
+  return value?.startsWith("/") && !value.startsWith("//") ? value : "/adminpage1";
 }

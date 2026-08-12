@@ -24,7 +24,6 @@ export interface AdminContentRecord {
   startsAt?: string;
   endsAt?: string;
   chairmanMessage?: string;
-  chairmanImageUrl?: string;
   organizationIntroduction?: string;
   organizationImageUrl?: string;
   purpose?: string;

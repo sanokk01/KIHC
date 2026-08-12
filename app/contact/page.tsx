@@ -13,18 +13,27 @@ export default async function ContactPage() {
 
   const dict = {
     title: isEn ? "Contact Us" : "문의하기",
-    desc: isEn ? "Leave us a message for research partnerships, academic collaborations, and more." : "연구협력 · 논문 작업 등 KIHC와 함께 나누고 싶은 이야기를 남겨주세요.",
-    heading: isEn ? "We look forward to\nconversations for research and cooperation." : "연구와 협력을 위한\n대화를 기다립니다.",
-    subText: isEn ? "If you leave your inquiry and contact information, we will guide you after the reception function is ready." : "문의 내용과 연락처를 남겨주시면 접수 기능이 준비된 이후 안내드릴 예정입니다.",
-    noteTitle: isEn ? "Notice" : "안내",
-    noteBody: isEn ? "Currently in the screen configuration stage. The entered content will not be sent or saved." : "현재는 화면 구성 단계로, 작성 내용은 전송되거나 저장되지 않습니다.",
-    mapTitle: isEn ? "Location" : "오시는 길",
-    addressTitle: isEn ? "Address" : "주소",
-    addressDesc: isEn ? "Seoul, Republic of Korea" : "서울특별시 중구 세종대로 00",
-    deptTitle: isEn ? "Departments" : "부서별 연락처",
-    dept1: isEn ? "Research Collaboration" : "연구협력팀",
-    dept2: isEn ? "PR / Media" : "대외홍보팀",
-    dept3: isEn ? "General Affairs" : "경영기획팀"
+    desc: isEn ? "Connect with KIHC for research, consulting, seminars, and academic collaboration." : "연구·자문·강연·학술 협력까지, KIHC와 함께할 프로젝트를 제안해 주세요.",
+    heading: isEn ? "Ideas become stronger\nthrough the right conversation." : "좋은 질문이\n의미 있는 협력이 됩니다.",
+    subText: isEn ? "Tell us about your goals and context. We will review the best way KIHC can contribute." : "필요한 목표와 현재 상황을 알려주시면 KIHC가 함께할 수 있는 방향을 검토하겠습니다.",
+    scopeTitle: isEn ? "Ways we can work together" : "이런 협력을 제안해 주세요",
+    scopes: isEn
+      ? [
+          ["01", "Research & Assessment", "Joint research, competency models, and assessment design"],
+          ["02", "Advisory & Consulting", "Human-capability strategy and organizational application"],
+          ["03", "Seminars & Lectures", "Academic events, invited talks, and educational programs"],
+        ]
+      : [
+          ["01", "연구·진단 설계", "공동 연구, 역량 모델 및 진단 도구 개발"],
+          ["02", "자문·컨설팅", "인재역량 전략과 교육·조직 현장 적용"],
+          ["03", "강연·세미나", "학술행사, 초청 강연 및 교육 프로그램"],
+        ],
+    directTitle: isEn ? "Prefer a direct conversation?" : "빠르게 상의하고 싶으신가요?",
+    directDesc: isEn ? "Contact the KIHC representative directly by email or phone." : "대표 이메일 또는 전화로 바로 문의하실 수 있습니다.",
+    emailLabel: isEn ? "Email" : "이메일",
+    phoneLabel: isEn ? "Phone" : "전화",
+    processTitle: isEn ? "What happens next" : "문의 진행 방식",
+    process: isEn ? ["Send your inquiry", "We review the context", "We discuss the next step"] : ["문의 내용 작성", "협력 가능성 검토", "진행 방향 협의"],
   };
 
   return (
@@ -36,36 +45,48 @@ export default async function ContactPage() {
           <div className="container contact-layout">
             <aside>
               <p className="eyebrow">Get in Touch</p>
-              <h2 style={{ whiteSpace: "pre-line" }}>{dict.heading}</h2>
-              <p>{dict.subText}</p>
-              <div className="contact-note">
-                <strong>{dict.noteTitle}</strong>
-                <span>{dict.noteBody}</span>
-              </div>
-              <div style={{ marginTop: "48px" }}>
-                <h3 style={{ fontSize: "18px", color: "var(--navy-950)", marginBottom: "16px", fontWeight: 750 }}>{dict.mapTitle}</h3>
-                <div style={{ width: "100%", height: "200px", background: "#e2e8f0", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", color: "#94a3b8", marginBottom: "16px" }}>
-                  [ Map Placeholder ]
+              <h2 className="contact-heading">{dict.heading}</h2>
+              <p className="contact-lead">{dict.subText}</p>
+
+              <section className="contact-scopes" aria-labelledby="contact-scope-title">
+                <h3 id="contact-scope-title">{dict.scopeTitle}</h3>
+                <div className="contact-scope-list">
+                  {dict.scopes.map(([number, title, description]) => (
+                    <article key={number}>
+                      <span>{number}</span>
+                      <div>
+                        <strong>{title}</strong>
+                        <p>{description}</p>
+                      </div>
+                    </article>
+                  ))}
                 </div>
-                <p style={{ margin: "0 0 8px", fontSize: "14px", fontWeight: 700, color: "var(--navy-900)" }}>{dict.addressTitle}</p>
-                <p style={{ margin: "0 0 32px", fontSize: "14px", color: "var(--muted)" }}>{dict.addressDesc}</p>
-                
-                <h3 style={{ fontSize: "18px", color: "var(--navy-950)", marginBottom: "16px", fontWeight: 750 }}>{dict.deptTitle}</h3>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
-                  <li style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", borderBottom: "1px dashed var(--line)", paddingBottom: "8px" }}>
-                    <span style={{ color: "var(--navy-900)", fontWeight: 600 }}>{dict.dept1}</span>
-                    <span style={{ color: "var(--muted)" }}>research@kihc.org</span>
-                  </li>
-                  <li style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", borderBottom: "1px dashed var(--line)", paddingBottom: "8px" }}>
-                    <span style={{ color: "var(--navy-900)", fontWeight: 600 }}>{dict.dept2}</span>
-                    <span style={{ color: "var(--muted)" }}>pr@kihc.org</span>
-                  </li>
-                  <li style={{ display: "flex", justifyContent: "space-between", fontSize: "14px" }}>
-                    <span style={{ color: "var(--navy-900)", fontWeight: 600 }}>{dict.dept3}</span>
-                    <span style={{ color: "var(--muted)" }}>admin@kihc.org</span>
-                  </li>
-                </ul>
-              </div>
+              </section>
+
+              <section className="contact-direct-card" aria-labelledby="contact-direct-title">
+                <p className="eyebrow">Direct Contact</p>
+                <h3 id="contact-direct-title">{dict.directTitle}</h3>
+                <p>{dict.directDesc}</p>
+                <div className="contact-methods">
+                  <a href="mailto:annjae52@gmail.com">
+                    <span>{dict.emailLabel}</span>
+                    <strong>annjae52@gmail.com</strong>
+                  </a>
+                  <a href="tel:+821068396168">
+                    <span>{dict.phoneLabel}</span>
+                    <strong>+82 10-6839-6168</strong>
+                  </a>
+                </div>
+              </section>
+
+              <section className="contact-process" aria-labelledby="contact-process-title">
+                <h3 id="contact-process-title">{dict.processTitle}</h3>
+                <ol>
+                  {dict.process.map((step, index) => (
+                    <li key={step}><span>{index + 1}</span><strong>{step}</strong></li>
+                  ))}
+                </ol>
+              </section>
             </aside>
             <ContactForm isEn={isEn} />
           </div>

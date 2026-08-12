@@ -42,9 +42,9 @@ export function HomeFeaturedSlider({
         </div>
       </div>
 
-      <div className="featured-slider" style={{ overflow: "hidden", display: "flex", gap: "24px", paddingBottom: "20px" }}>
+      <div className="featured-slider">
         {itemsToShow.map((item, idx) => (
-          <article className="featured-card-h" key={`${item.id}-${idx}`} style={{ flex: "0 0 calc(50% - 12px)", minWidth: 0 }}>
+          <article className="featured-card-h" key={`${item.id}-${idx}`}>
             <div className={`featured-cover-h cover-${(currentIndex + idx) % 2 + 1}`}>
               <span className="cover-badge">
                 {item.researchType || "자료집"}

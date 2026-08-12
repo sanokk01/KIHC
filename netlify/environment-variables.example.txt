@@ -1,0 +1,57 @@
+KIHC Netlify 환경변수 입력 안내
+
+Netlify 경로
+Project configuration > Environment variables > Add a variable
+
+주의
+- 아래 DATABASE_URL에는 채팅에 노출된 기존 비밀번호가 아닌, Supabase에서 재설정한 새 DB 비밀번호를 사용하세요.
+- Key와 Value는 각각 별도 입력란에 넣습니다. Value에 `DATABASE_URL=` 문구를 붙이지 않습니다.
+- DATABASE_URL의 `Contains secret values`를 반드시 체크합니다.
+
+--------------------------------------------------
+1) 필수: DATABASE_URL
+--------------------------------------------------
+Key
+DATABASE_URL
+
+Value 형식 (현재 KIHC 프로젝트 기준)
+postgresql://postgres.obrziymkslkvsvjkjoow:URL_ENCODED_NEW_PASSWORD@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres
+
+권장 설정
+- Contains secret values: 체크
+- Scopes: All scopes
+- Deploy contexts: Production에만 적용 권장
+
+값을 얻는 위치
+Supabase Dashboard > Connect > Transaction pooler > URI
+
+--------------------------------------------------
+2) 권장: DB_POOL_MAX
+--------------------------------------------------
+Key
+DB_POOL_MAX
+
+Value
+1
+
+권장 설정
+- Contains secret values: 체크하지 않음
+- Scopes: All scopes
+- Deploy contexts: DATABASE_URL과 동일
+
+--------------------------------------------------
+3) 권장: NEXT_PUBLIC_SITE_URL
+--------------------------------------------------
+Key
+NEXT_PUBLIC_SITE_URL
+
+Value 예시
+https://실제-Netlify-도메인.netlify.app
+
+권장 설정
+- Contains secret values: 체크하지 않음
+- Scopes: Builds
+- Deploy contexts: Production
+
+저장 후
+Deploys > Trigger deploy > Deploy site를 실행해 새 환경변수가 반영된 배포를 만드세요.

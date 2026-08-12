@@ -3,16 +3,18 @@ import { AdminShell } from "../components/AdminShell";
 import { AppLink as Link } from "../components/AppLink";
 import { requireAdminUser } from "../lib/admin-auth";
 import { contentRepository } from "../lib/content";
+import { getDatabaseStatus } from "../lib/storage-status";
 
 export const metadata: Metadata = { title: "관리자 대시보드" };
 
 export default async function AdminPage() {
   const user = await requireAdminUser("/adminpage1");
+  const databaseStatus = await getDatabaseStatus();
   const [news, research, promotions, popup] = await Promise.all([contentRepository.listNews(), contentRepository.listResearch(), contentRepository.listPromotionalMaterials(), contentRepository.getActivePopup()]);
   return (
-    <AdminShell>
+    <AdminShell user={user}>
       <div className="admin-title"><div><p>DASHBOARD</p><h1>안녕하세요, {user.displayName}님.</h1><span>KIHC 홈페이지의 콘텐츠 현황과 관리 메뉴를 확인하세요.</span></div><Link prefetch={false} href="/" target="_blank">사이트 보기 ↗</Link></div>
-      <div className="admin-storage-note dashboard-note"><strong>외부 DB 연결 대기</strong><span>현재는 안전한 기본 데이터로 표시됩니다. 팀 DB 연결 후 공동 저장과 이미지 업로드가 활성화됩니다.</span></div>
+      <div className={`admin-storage-note dashboard-note${databaseStatus.connected ? " connected" : ""}`}><strong>{databaseStatus.connected ? "Supabase DB 연결됨" : "Supabase DB 연결 오류"}</strong><span>{databaseStatus.message}</span></div>
       <div className="stat-grid">
         <article><span>연구회 소식</span><strong>{news.length}</strong><Link prefetch={false} href="/adminpage1/news">관리하기 →</Link></article>
         <article><span>연구정책자료</span><strong>{research.length}</strong><Link prefetch={false} href="/adminpage1/research">관리하기 →</Link></article>
