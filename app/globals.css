@@ -248,10 +248,10 @@ button { cursor: pointer; }
 .news-events-desc { margin: 12px 0 20px; color: var(--muted); font-size: 14px; }
 
 .news-list { border-top: 2px solid var(--navy-900); }
-.news-list a { display: grid; grid-template-columns: min-content 1fr 22px; align-items: start; gap: 6px 14px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.news-list a { display: grid; grid-template-columns: 72px 1fr 22px; align-items: start; gap: 6px 14px; padding: 16px 0; border-bottom: 1px solid var(--line); }
 .news-list a:hover strong, .news-list a:hover .news-arrow { color: var(--blue-600); }
 .news-list strong { font-size: 15px; font-weight: 650; line-height: 1.45; word-break: keep-all; }
-.news-list time, .news-no { color: #89929c; font-size: 12px; white-space: nowrap; padding-top: 2px; }
+.news-list time, .news-no { color: #89929c; font-size: 12px; white-space: nowrap; padding-top: 3px; }
 .news-list .news-arrow { align-self: start; margin-top: 3px; }
 .article-featured-image { margin: 0 0 28px; }
 .article-featured-image .article-image { width: 100%; max-height: 480px; object-fit: cover; display: block; }
@@ -560,12 +560,17 @@ button { cursor: pointer; }
 .listing-grid { margin-top: 26px; }
 .article-main { background: white; padding: 60px 0 100px; }
 .article-shell { padding: 0 40px; }
-.article-detail-header { text-align: center; border-top: 2px solid var(--navy-950); padding: 40px 0 30px; }
-.article-detail-header h1 { margin: 0 0 24px; color: var(--navy-950); font-size: 26px; font-weight: 750; line-height: 1.4; word-break: keep-all; }
-.article-detail-meta { display: flex; justify-content: center; gap: 16px; background: #f8fafc; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: #64748b; font-size: 14px; }
-.article-detail-meta span::before { content: "·"; margin-right: 16px; color: #cbd5e1; }
-.article-detail-meta span:first-child::before { display: none; }
-.article-body { min-height: 320px; padding: 60px 0; border-bottom: 1px solid var(--line); }
+.article-detail-header { text-align: center; border-top: 2px solid var(--navy-950); padding: 40px 0 36px; }
+.article-detail-header h1 { margin: 0; color: var(--navy-950); font-size: 26px; font-weight: 750; line-height: 1.4; word-break: keep-all; }
+.article-body { min-height: 200px; padding: 48px 0 40px; border-bottom: 1px solid var(--line); }
+/* 본문 아래 메타 (작성일시 · 조회수 · 첨부파일) */
+.article-post-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 0; padding: 18px 0; border-bottom: 1px solid var(--line); background: #f8fafc; }
+.apm-item { display: inline-flex; align-items: center; gap: 6px; padding: 4px 20px; color: #475569; font-size: 13.5px; }
+.apm-label { font-weight: 600; color: #334155; }
+.apm-value { color: #64748b; }
+.apm-divider { width: 1px; height: 14px; background: #cbd5e1; flex-shrink: 0; }
+.apm-attach { color: #1e40af; font-weight: 600; text-decoration: none; gap: 7px; transition: color .15s; }
+.apm-attach:hover { color: #1d4ed8; text-decoration: underline; }
 .article-body p { margin: 0 0 22px; color: #334155; font-size: 16px; line-height: 1.8; }
 .article-image { display: block; max-width: 100%; max-height: 560px; margin: 0 0 38px; object-fit: contain; }
 .article-actions { display: flex; justify-content: center; padding: 40px 0; border-bottom: 1px solid var(--line); }
@@ -1374,10 +1379,11 @@ input, select, textarea { min-width: 0; max-width: 100%; }
 
   .article-main { padding: 38px 0 64px; }
   .article-shell { padding: 0; }
-  .article-detail-header { padding: 28px 0 22px; }
-  .article-detail-header h1 { margin-bottom: 20px; font-size: clamp(22px, 6.8vw, 27px); line-height: 1.45; overflow-wrap: anywhere; }
-  .article-detail-meta { align-items: center; flex-direction: column; gap: 4px; padding: 12px 14px; font-size: 12.5px; line-height: 1.6; text-align: center; }
-  .article-detail-meta span::before { display: none; }
+  .article-detail-header { padding: 28px 0 28px; }
+  .article-detail-header h1 { font-size: clamp(22px, 6.8vw, 27px); line-height: 1.45; overflow-wrap: anywhere; }
+  .article-post-meta { flex-direction: column; align-items: flex-start; gap: 4px; padding: 14px 16px; }
+  .apm-divider { display: none; }
+  .apm-item { padding: 2px 0; font-size: 13px; }
   .article-body { min-height: 220px; padding: 34px 0; }
   .article-body p { font-size: 15px; line-height: 1.85; overflow-wrap: anywhere; }
   .article-attachment { width: 100%; min-height: 48px; justify-content: center; margin-bottom: 26px; }

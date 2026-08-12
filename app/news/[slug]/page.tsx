@@ -26,10 +26,6 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
           <header className="article-detail-header">
             {post.category1 && <p className="news-cat-badge article-category">[{post.category1}]</p>}
             <h1>{post.title}</h1>
-            <div className="article-detail-meta">
-              <span>작성일시 {post.publishedAt} {post.heldAt && `(개최일: ${post.heldAt})`}</span>
-              <span>조회수 {post.views ?? 0}</span>
-            </div>
           </header>
 
           {post.imageUrl && (
@@ -39,14 +35,31 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
           )}
 
           <div className="article-body">
-            {post.attachmentUrl && (
-              <a href={post.attachmentUrl} target="_blank" rel="noreferrer" className="article-attachment">
-                📎 첨부파일 다운로드
-              </a>
-            )}
             {post.content.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           </div>
-          
+
+          {/* 작성일시 · 조회수 · 첨부파일 — 본문 아래 가로 배치 */}
+          <div className="article-post-meta">
+            <span className="apm-item">
+              <span className="apm-label">작성일시</span>
+              <span className="apm-value">{post.publishedAt}{post.heldAt && ` (개최일: ${post.heldAt})`}</span>
+            </span>
+            <span className="apm-divider" aria-hidden="true" />
+            <span className="apm-item">
+              <span className="apm-label">조회수</span>
+              <span className="apm-value">{post.views ?? 0}</span>
+            </span>
+            {post.attachmentUrl && (
+              <>
+                <span className="apm-divider" aria-hidden="true" />
+                <a href={post.attachmentUrl} target="_blank" rel="noreferrer" className="apm-item apm-attach">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                  첨부파일 다운로드
+                </a>
+              </>
+            )}
+          </div>
+
           <div className="article-actions">
             <Link prefetch={false} className="btn-list" href="/news">목록</Link>
           </div>
