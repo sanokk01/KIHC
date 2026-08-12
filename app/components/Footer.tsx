@@ -6,7 +6,13 @@ import { getAdminSingleton } from "../lib/admin-data";
 export async function Footer() {
   const cookieStore = await cookies();
   const isEn = cookieStore.get("kihc-language")?.value === "en";
-  const settings = await getAdminSingleton("settings");
+  let settings: Awaited<ReturnType<typeof getAdminSingleton>>;
+  try {
+    settings = await getAdminSingleton("settings");
+  } catch {
+    settings = { id: "settings", title: "사이트 설정", siteName: "KIHC 한국인재역량연구회", footerInformation: "", email: "annjae52@gmail.com" };
+  }
+
   const savedEmail = typeof settings.email === "string" ? settings.email.trim() : "";
   const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(savedEmail) ? savedEmail : "annjae52@gmail.com";
 
