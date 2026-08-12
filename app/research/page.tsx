@@ -102,7 +102,7 @@ export default async function ResearchPage({ searchParams }: { searchParams: Pro
             <div className="research-list-vertical">
               {materials.map((item) => (
                 <article className="research-list-item" key={item.id}>
-                  <Link href={`/research/${item.slug}`} className="research-list-thumb">
+                  <Link href={`/research/${item.slug || item.id}`} className="research-list-thumb">
                     {item.imageUrl ? <img src={item.imageUrl} alt="" /> : <div className="placeholder-thumb">KIHC</div>}
                     <div className="hover-overlay">
                       <span className="plus-icon">+</span>
@@ -111,7 +111,7 @@ export default async function ResearchPage({ searchParams }: { searchParams: Pro
                   </Link>
                   <div className="research-list-info">
                     <span className="doc-type">{item.researchType || "자료집"}</span>
-                    <h2><Link href={`/research/${item.slug}`}>{item.title}</Link></h2>
+                    <h2><Link href={`/research/${item.slug || item.id}`}>{item.title}</Link></h2>
                     <div className="doc-meta">
                       <span>KIHC 한국인재역량연구회</span>
                       <span>{item.publishedAt}</span>

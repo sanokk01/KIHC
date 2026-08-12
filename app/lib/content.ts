@@ -612,7 +612,11 @@ function mapStoredToEvent(row: any): EventRecord {
     eventType: payload.eventType || "세미나",
     heldAt: payload.heldAt || "",
     thumbnailLabel: payload.thumbnailLabel || "",
-    protectedDetails: payload.protectedDetails || [],
+    protectedDetails: Array.isArray(payload.protectedDetails)
+      ? payload.protectedDetails
+      : typeof payload.protectedDetails === "string" && payload.protectedDetails
+        ? payload.protectedDetails.split("\n").map((s: string) => s.trim()).filter(Boolean)
+        : [],
     imageUrl: row.imageUrl || undefined,
     status: row.status,
     createdAt: row.createdAt,
