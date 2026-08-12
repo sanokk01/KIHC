@@ -16,6 +16,7 @@ export function HomeFeaturedSlider({
   searchKeywords?: string;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<"next" | "prev">("next");
   const totalItems = featuredResearch.length;
   const configuredKeywords = searchKeywords === "정책연구,미래전략,탄소중립,컨퍼런스,포럼" ? "" : (searchKeywords || "");
   const keywordList = configuredKeywords
@@ -26,16 +27,24 @@ export function HomeFeaturedSlider({
   const keywords = keywordList.length > 0 ? keywordList : DEFAULT_RESEARCH_KEYWORDS;
 
   const scrollNext = () => {
-    if (totalItems > 0) setCurrentIndex((prev) => (prev + 1) % totalItems);
+    if (totalItems > 1) {
+      setSlideDirection("next");
+      setCurrentIndex((prev) => (prev + 1) % totalItems);
+    }
   };
 
   const scrollPrev = () => {
-    if (totalItems > 0) setCurrentIndex((prev) => (prev - 1 + totalItems) % totalItems);
+    if (totalItems > 1) {
+      setSlideDirection("prev");
+      setCurrentIndex((prev) => (prev - 1 + totalItems) % totalItems);
+    }
   };
 
-  const item1 = totalItems > 0 ? featuredResearch[currentIndex] : undefined;
-  const item2 = totalItems > 1 ? featuredResearch[(currentIndex + 1) % totalItems] : undefined;
-  const itemsToShow = [item1, item2].filter((item): item is ResearchMaterial => Boolean(item));
+  const visibleCount = Math.min(3, totalItems);
+  const itemsToShow = Array.from(
+    { length: visibleCount },
+    (_, offset) => featuredResearch[(currentIndex + offset) % totalItems],
+  ).filter((item): item is ResearchMaterial => Boolean(item));
 
   return (
     <>
@@ -44,9 +53,9 @@ export function HomeFeaturedSlider({
         <div className="slider-controls">
           {totalItems > 0 ? (
             <>
-              <button type="button" onClick={scrollPrev} className="slider-arrow" aria-label={isEn ? "Previous publication" : "이전 연구자료"}>‹</button>
+              <button type="button" onClick={scrollPrev} className="slider-arrow" aria-label={isEn ? "Previous publication" : "이전 연구자료"} disabled={totalItems < 2}>‹</button>
               <span>{currentIndex + 1}/{totalItems}</span>
-              <button type="button" onClick={scrollNext} className="slider-arrow" aria-label={isEn ? "Next publication" : "다음 연구자료"}>›</button>
+              <button type="button" onClick={scrollNext} className="slider-arrow" aria-label={isEn ? "Next publication" : "다음 연구자료"} disabled={totalItems < 2}>›</button>
             </>
           ) : <span>0/0</span>}
           <Link prefetch={false} href="/research" className="plus-icon" aria-label={isEn ? "View all publications" : "연구자료 전체보기"}>+</Link>
@@ -54,7 +63,11 @@ export function HomeFeaturedSlider({
       </div>
 
       {itemsToShow.length > 0 ? (
-        <div className="featured-slider">
+        <div
+          className={`featured-slider has-${itemsToShow.length} is-${slideDirection}`}
+          key={`${currentIndex}-${slideDirection}`}
+          aria-live="polite"
+        >
           {itemsToShow.map((item, idx) => (
             <article className="featured-card-h" key={`${item.id}-${idx}`}>
               <div className={`featured-cover-h cover-${(currentIndex + idx) % 2 + 1}`}>

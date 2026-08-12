@@ -1693,3 +1693,142 @@ body { max-width: 100%; overflow-x: clip; }
   .footer-primary-links a { display: inline-flex; align-items: center; min-height: 36px; }
   .footer-bottom-row p { white-space: normal; }
 }
+
+/* Featured publications: three-up desktop slider and compact mobile search */
+.featured-section .featured-slider {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(22px, 2.6vw, 40px);
+  overflow: visible;
+  padding-bottom: 26px;
+  scroll-snap-type: none;
+  animation: featured-slide-next .44s cubic-bezier(.22, 1, .36, 1) both;
+}
+.featured-section .featured-slider.is-prev { animation-name: featured-slide-prev; }
+.featured-section .featured-slider.has-2 {
+  grid-template-columns: repeat(2, minmax(0, 430px));
+  justify-content: center;
+}
+.featured-section .featured-slider.has-1 {
+  grid-template-columns: minmax(0, 430px);
+  justify-content: center;
+}
+.featured-section .featured-card-h {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  gap: clamp(15px, 1.5vw, 22px);
+}
+.featured-section .featured-cover-h {
+  width: clamp(108px, 9.6vw, 150px);
+  height: auto;
+  aspect-ratio: 16 / 23;
+}
+.featured-section .featured-copy-h { min-width: 0; padding-right: 0; }
+.featured-section .featured-copy-h h3 {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+.slider-arrow:disabled { opacity: .35; cursor: default; }
+
+@keyframes featured-slide-next {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes featured-slide-prev {
+  from { opacity: 0; transform: translateX(-28px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (max-width: 900px) {
+  .featured-section .featured-slider {
+    grid-template-columns: repeat(2, minmax(0, 340px));
+    justify-content: center;
+    gap: 28px;
+    margin: 0;
+    padding: 0 0 24px;
+  }
+  .featured-section .featured-slider .featured-card-h:nth-child(n + 3) { display: none; }
+  .featured-section .featured-cover-h { width: clamp(112px, 18vw, 142px); }
+}
+
+@media (max-width: 640px) {
+  .featured-heading-h {
+    align-items: center;
+    flex-direction: row;
+    gap: 16px;
+  }
+  .featured-heading-h h2 { font-size: 22px; }
+  .featured-section .featured-slider,
+  .featured-section .featured-slider.has-2,
+  .featured-section .featured-slider.has-1 {
+    grid-template-columns: minmax(0, 420px);
+    justify-content: center;
+    gap: 24px;
+  }
+  .featured-section .featured-card-h {
+    justify-self: center;
+    width: min(100%, 390px);
+    min-width: 0;
+    max-width: 390px;
+    gap: 18px;
+  }
+  .featured-section .featured-cover-h { width: 112px; }
+  .featured-section .featured-copy-h h3 { font-size: 15px; }
+  .featured-section .featured-copy-h p { font-size: 12.5px; -webkit-line-clamp: 3; }
+
+  .featured-search-box {
+    margin-top: 8px;
+    padding: 18px;
+    border-radius: 12px;
+  }
+  .featured-search-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 54px;
+    gap: 10px;
+    height: auto;
+    overflow: visible;
+    margin-bottom: 18px;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .featured-search-form .search-select {
+    grid-column: 1 / -1;
+    width: 100%;
+    height: 50px;
+    padding: 0 42px 0 15px;
+    border: 0;
+    border-radius: 7px;
+    background-color: #fff;
+    background-position: right 15px center;
+  }
+  .featured-search-form .search-select:disabled { background-color: #e8eef4; }
+  .featured-search-form .search-input {
+    grid-column: 1;
+    width: 100%;
+    height: 50px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 7px;
+    background: #fff;
+    font-size: 14px;
+  }
+  .featured-search-form .search-submit {
+    grid-column: 2;
+    width: 54px;
+    height: 50px;
+    border-radius: 7px;
+  }
+  .featured-search-form .search-submit::after { content: none; }
+  .featured-search-form .search-submit svg { width: 23px; height: 23px; }
+  .featured-search-box .search-keywords { margin-top: 0; gap: 8px; }
+  .featured-search-box .search-keywords strong { width: 100%; margin: 0 0 2px; }
+  .featured-search-box .search-keywords a { height: 32px; padding: 0 12px; font-size: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .featured-section .featured-slider { animation: none; }
+}
