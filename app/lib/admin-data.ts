@@ -72,7 +72,7 @@ export async function getAdminRecords(section: StoredSection): Promise<AdminCont
     if (rows.length === 0) {
       const defaults = defaultRecords(section);
       const rowsToUpsert = defaults.map((rec) => recordToRow(section, rec));
-      await contentStore.upsertContent(rowsToUpsert);
+      try { await contentStore.upsertContent(rowsToUpsert); } catch { /* DB 없는 환경에서는 저장 생략 */ }
       return defaults;
     }
     return rows.map(rowToRecord);
@@ -97,7 +97,7 @@ export async function getAdminSingleton(section: "about" | "settings"): Promise<
     const payload = await contentStore.getSingleton(section);
     if (!payload) {
       const defaultData = section === "about" ? { id: "about", title: "KIHC 소개", chairmanMessage: defaultAbout.chairmanMessage.join("\n\n"), organizationIntroduction: defaultAbout.organizationIntroduction.join("\n\n"), organizationImageUrl: defaultAbout.organizationImageUrl, purpose: defaultAbout.purpose, vision: defaultAbout.vision } : { id: "settings", title: "사이트 설정", siteName: defaultSettings.siteName, footerInformation: defaultSettings.footerInformation, email: defaultSettings.email, searchKeywords: defaultSettings.searchKeywords };
-      await contentStore.upsertSingleton(section, JSON.stringify(defaultData));
+      try { await contentStore.upsertSingleton(section, JSON.stringify(defaultData)); } catch { /* DB 없는 환경에서는 저장 생략 */ }
       return defaultData;
     }
     const stored = JSON.parse(payload) as AdminContentRecord;
