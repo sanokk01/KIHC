@@ -68,23 +68,44 @@ export class PostgresContentStore implements ContentStore {
 
   async getContentBySlug(section: StoredSection, slug: string): Promise<StoredContentRow | null> {
     const db = getDb();
+    // slug로 먼저 조회, 없으면 id로 폴백
     const [row] = await db
       .select()
       .from(contentRecords)
       .where(and(eq(contentRecords.section, section), eq(contentRecords.slug, slug)))
       .limit(1);
-    if (!row) return null;
+    if (row) {
+      return {
+        id: row.id,
+        section: row.section as StoredSection,
+        slug: row.slug,
+        title: row.title,
+        status: row.status as "published" | "draft",
+        publishedAt: row.publishedAt,
+        imageUrl: row.imageUrl,
+        payload: row.payload,
+        createdAt: typeof row.createdAt === "string" ? row.createdAt : new Date(row.createdAt).toISOString(),
+        updatedAt: typeof row.updatedAt === "string" ? row.updatedAt : new Date(row.updatedAt).toISOString(),
+      };
+    }
+    // slug로 못 찾은 경우 id로 재조회 (slug 미입력 게시물 대응)
+    const [rowById] = await db
+      .select()
+      .from(contentRecords)
+      .where(and(eq(contentRecords.section, section), eq(contentRecords.id, slug)))
+      .limit(1);
+    if (!rowById) return null;
     return {
-      id: row.id,
-      section: row.section as StoredSection,
-      slug: row.slug,
-      title: row.title,
-      status: row.status as "published" | "draft",
-      publishedAt: row.publishedAt,
-      imageUrl: row.imageUrl,
-      payload: row.payload,
-      createdAt: typeof row.createdAt === "string" ? row.createdAt : new Date(row.createdAt).toISOString(),
-      updatedAt: typeof row.updatedAt === "string" ? row.updatedAt : new Date(row.updatedAt).toISOString(),
+      id: rowById.id,
+      section: rowById.section as StoredSection,
+      slug: rowById.slug,
+      title: rowById.title,
+      status: rowById.status as "published" | "draft",
+      publishedAt: rowById.publishedAt,
+      imageUrl: rowById.imageUrl,
+      payload: rowById.payload,
+      createdAt: typeof rowById.createdAt === "string" ? rowById.createdAt : new Date(rowById.createdAt).toISOString(),
+      updatedAt: typeof rowById.updatedAt === "string" ? rowById.updatedAt : new Date(rowById.updatedAt).toISOString(),
     };
   }
 

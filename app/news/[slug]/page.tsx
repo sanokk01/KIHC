@@ -49,11 +49,11 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
           <nav className="article-nav" aria-label="이전글 다음글">
             <div className="article-nav-row">
               <span className="article-nav-label">∧ 이전글</span>
-              {prevPost ? <Link prefetch={false} href={`/news/${prevPost.slug}`}>{prevPost.title}</Link> : <span>이전 글이 없습니다.</span>}
+              {prevPost ? <Link prefetch={false} href={`/news/${prevPost.slug || prevPost.id}`}>{prevPost.title}</Link> : <span>이전 글이 없습니다.</span>}
             </div>
             <div className="article-nav-row">
               <span className="article-nav-label">∨ 다음글</span>
-              {nextPost ? <Link prefetch={false} href={`/news/${nextPost.slug}`}>{nextPost.title}</Link> : <span>다음 글이 없습니다.</span>}
+              {nextPost ? <Link prefetch={false} href={`/news/${nextPost.slug || nextPost.id}`}>{nextPost.title}</Link> : <span>다음 글이 없습니다.</span>}
             </div>
           </nav>
         </article>

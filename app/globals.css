@@ -223,7 +223,8 @@ button { cursor: pointer; }
 .news-board .board-row > a { text-align: left; }
 .news-title-link { display: inline-flex; align-items: center; gap: 8px; }
 .news-cat-badge { font-size: 12px; font-weight: 700; color: var(--gold-hover); }
-.attach-icon { font-size: 14px; color: #64748b; }
+.attach-icon { display: flex; align-items: center; justify-content: center; color: #64748b; }
+
 .views-count { color: #64748b; font-size: 13px; }
 .news-intro h2 { margin: 0; color: var(--navy-950); font-size: 42px; font-weight: 750; }
 .news-intro > p:not(.eyebrow) { margin: 20px 0 32px; color: var(--muted); }

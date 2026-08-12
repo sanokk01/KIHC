@@ -90,13 +90,17 @@ export default async function NewsPage({ searchParams }: { searchParams?: Promis
                 <div className="board-row board-head" role="row"><span>{dict.tableNo}</span><span>{dict.tableTitle}</span><span>{dict.tableDate}</span><span>{dict.tableAttach}</span><span>{dict.tableViews}</span></div>
                 {result.items.map((post, index) => (
                   <div className="board-row" role="row" key={post.id}>
-                    <span>{(result.page - 1) * result.pageSize + index + 1}</span>
-                    <Link href={`/news/${post.slug}`} className="news-title-link">
+                    <span>{result.filteredTotal - (result.page - 1) * result.pageSize - index}</span>
+                    <Link href={`/news/${post.slug || post.id}`} className="news-title-link">
                       {post.category1 && post.category1 !== "전체" && <span className="news-cat-badge">[{post.category1}]</span>}
                       {post.title}
                     </Link>
                     <time>{post.publishedAt}</time>
-                    <span className="attach-icon">{post.attachmentUrl ? "📎" : ""}</span>
+                    <span className="attach-icon">{post.attachmentUrl ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-label="첨부파일 있음">
+                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>
+                      </svg>
+                    ) : ""}</span>
                     <span className="views-count">{post.views ?? 0}</span>
                   </div>
                 ))}
