@@ -90,7 +90,7 @@ export default async function NewsPage({ searchParams }: { searchParams?: Promis
                 <div className="board-row board-head" role="row"><span>{dict.tableNo}</span><span>{dict.tableTitle}</span><span>{dict.tableDate}</span><span>{dict.tableAttach}</span><span>{dict.tableViews}</span></div>
                 {result.items.map((post, index) => (
                   <div className="board-row" role="row" key={post.id}>
-                    <span>{result.filteredTotal - ((result.page - 1) * result.pageSize) - index}</span>
+                    <span>{(result.page - 1) * result.pageSize + index + 1}</span>
                     <Link href={`/news/${post.slug}`} className="news-title-link">
                       {post.category1 && post.category1 !== "전체" && <span className="news-cat-badge">[{post.category1}]</span>}
                       {post.title}

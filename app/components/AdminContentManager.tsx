@@ -13,7 +13,6 @@ import {
 
 export type { AdminContentRecord, AdminSection } from "../lib/admin-types";
 
-const storageConnected = false;
 
 const emptyBySection: Record<AdminSection, AdminContentRecord> = {
   news: { id: "", slug: "", title: "", publishedAt: "", status: "draft", imageUrl: "", excerpt: "", content: "", category1: "공지사항", category2: "", heldAt: "", attachmentUrl: "", views: 0 },
@@ -38,7 +37,7 @@ async function uploadImage(file: File): Promise<string> {
   return result.url;
 }
 
-function ImageUploadField({ label, value, onChange, allowUrl = false }: { label: string; value?: string; onChange: (url: string) => void; allowUrl?: boolean }) {
+function ImageUploadField({ label, value, onChange, allowUrl = false, connected = false }: { label: string; value?: string; onChange: (url: string) => void; allowUrl?: boolean; connected?: boolean }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const choose = async (file?: File) => {
@@ -49,7 +48,50 @@ function ImageUploadField({ label, value, onChange, allowUrl = false }: { label:
     catch (uploadError) { setError(uploadError instanceof Error ? uploadError.message : "업로드에 실패했습니다."); }
     finally { setUploading(false); }
   };
-  return <label className="wide admin-upload-field"><span>{label}</span>{allowUrl ? <input type="url" value={value ?? ""} onChange={(event) => onChange(event.target.value)} placeholder="/popup.jpg 또는 https://example.com/popup.jpg" aria-label={`${label} 주소`} /> : null}<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(event) => choose(event.target.files?.[0])} disabled={uploading || !storageConnected} />{uploading && <small>이미지 업로드 중...</small>}{value && <div className="admin-upload-result"><img src={value} alt="업로드 미리보기" /><button type="button" onClick={() => onChange("")}>이미지 제거</button></div>}{error && <small className="error">{error}</small>}<small>{storageConnected ? "JPG, PNG, WEBP, GIF · 최대 6MB" : (allowUrl ? "Supabase Storage 연결 전에는 public 이미지 경로나 외부 이미지 주소를 사용해 주세요." : "Supabase Storage 연결 후 파일을 업로드할 수 있습니다.")}</small></label>;
+  return <label className="wide admin-upload-field"><span>{label}</span>{allowUrl ? <input type="url" value={value ?? ""} onChange={(event) => onChange(event.target.value)} placeholder="/popup.jpg 또는 https://example.com/popup.jpg" aria-label={`${label} 주소`} /> : null}<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(event) => choose(event.target.files?.[0])} disabled={uploading || !connected} />{uploading && <small>이미지 업로드 중...</small>}{value && <div className="admin-upload-result"><img src={value} alt="업로드 미리보기" /><button type="button" onClick={() => onChange("")}>이미지 제거</button></div>}{error && <small className="error">{error}</small>}<small>{connected ? "JPG, PNG, WEBP, GIF · 최대 6MB" : (allowUrl ? "DB 미연결 상태입니다. public 이미지 경로나 외부 이미지 주소를 사용해 주세요." : "DB 연결 후 파일을 업로드할 수 있습니다.")}</small></label>;
+}
+
+async function uploadAttachment(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const response = await fetch("/api/admin/upload", { method: "POST", body: formData });
+  const result = await responseJson<{ url: string }>(response);
+  return result.url;
+}
+
+function AttachmentUploadField({ value, onChange, connected = false }: { value?: string; onChange: (url: string) => void; connected?: boolean }) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+  const choose = async (file?: File) => {
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    try { onChange(await uploadAttachment(file)); }
+    catch (err) { setError(err instanceof Error ? err.message : "첨부파일 업로드에 실패했습니다."); }
+    finally { setUploading(false); }
+  };
+  return (
+    <label className="wide admin-upload-field">
+      <span>첨부파일</span>
+      <input
+        type="url"
+        value={value ?? ""}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder="직접 URL 입력 또는 아래에서 파일 선택"
+        aria-label="첨부파일 URL"
+      />
+      <input
+        type="file"
+        accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.hwp,.zip"
+        onChange={(event) => choose(event.target.files?.[0])}
+        disabled={uploading || !connected}
+      />
+      {uploading && <small>첨부파일 업로드 중...</small>}
+      {value && <small className="attach-preview">현재: {value}</small>}
+      {error && <small className="error">{error}</small>}
+      <small>{connected ? "PDF, DOC, PPT, XLS, HWP, ZIP · 최대 20MB" : "DB 연결 후 파일 업로드가 가능합니다. URL은 지금 바로 입력 가능합니다."}</small>
+    </label>
+  );
 }
 
 function AdminEditor({ section, value, onChange, onCancel, onSave, saving, databaseConnected }: {
@@ -73,8 +115,8 @@ function AdminEditor({ section, value, onChange, onCancel, onSave, saving, datab
           {section !== "popup" && <label><span>주소 식별자</span><input value={value.slug ?? ""} onChange={(event) => field("slug", event.target.value)} placeholder="영문-숫자-하이픈" /></label>}
           {section !== "popup" && <label><span>게시일</span><input value={value.publishedAt ?? ""} onChange={(event) => field("publishedAt", event.target.value)} placeholder="2026. 08. 08" /></label>}
           {section !== "popup" && <label><span>공개 상태</span><select value={value.status ?? "draft"} onChange={(event) => field("status", event.target.value)}><option value="published">공개</option><option value="draft">초안</option></select></label>}
-          <ImageUploadField label={section === "popup" ? "팝업 이미지" : "대표 이미지"} value={value.imageUrl} onChange={(url) => field("imageUrl", url)} allowUrl />
-          {section === "news" && <><label><span>대분류 (Category)</span><select value={value.category1 ?? "공지사항"} onChange={(event) => field("category1", event.target.value)}><option value="공지사항">공지사항</option><option value="뉴스레터">뉴스레터</option><option value="행사일정">행사일정</option></select></label>{value.category1 === "행사일정" && <><label><span>소분류 (행사구분)</span><select value={value.category2 ?? "학회"} onChange={(event) => field("category2", event.target.value)}><option value="학회">학회</option><option value="강연">강연</option><option value="기타">기타</option></select></label><label><span>행사일정</span><input value={value.heldAt ?? ""} onChange={(event) => field("heldAt", event.target.value)} placeholder="2026. 08. 15" /></label></>}<label><span>조회수</span><input type="number" value={value.views ?? 0} onChange={(event) => field("views", event.target.value)} /></label><label className="wide"><span>첨부파일 주소</span><input value={value.attachmentUrl ?? ""} onChange={(event) => field("attachmentUrl", event.target.value)} placeholder="/assets/file.pdf 또는 https://..." /></label><label className="wide"><span>요약</span><textarea rows={3} value={value.excerpt ?? ""} onChange={(event) => field("excerpt", event.target.value)} /></label><label className="wide"><span>본문</span><textarea rows={8} value={value.content ?? ""} onChange={(event) => field("content", event.target.value)} /></label></>}
+          <ImageUploadField label={section === "popup" ? "팝업 이미지" : "대표 이미지"} value={value.imageUrl} onChange={(url) => field("imageUrl", url)} allowUrl connected={databaseConnected} />
+          {section === "news" && <><label><span>대분류 (Category)</span><select value={value.category1 ?? "공지사항"} onChange={(event) => field("category1", event.target.value)}><option value="공지사항">공지사항</option><option value="뉴스레터">뉴스레터</option><option value="행사일정">행사일정</option></select></label>{value.category1 === "행사일정" && <><label><span>소분류 (행사구분)</span><select value={value.category2 ?? "학회"} onChange={(event) => field("category2", event.target.value)}><option value="학회">학회</option><option value="강연">강연</option><option value="기타">기타</option></select></label><label><span>행사일정</span><input value={value.heldAt ?? ""} onChange={(event) => field("heldAt", event.target.value)} placeholder="2026. 08. 15" /></label></>}<label><span>조회수</span><input type="number" value={value.views ?? 0} onChange={(event) => field("views", event.target.value)} /></label><AttachmentUploadField value={value.attachmentUrl} onChange={(url) => field("attachmentUrl", url)} connected={databaseConnected} /><label className="wide"><span>요약</span><textarea rows={3} value={value.excerpt ?? ""} onChange={(event) => field("excerpt", event.target.value)} /></label><label className="wide"><span>본문</span><textarea rows={8} value={value.content ?? ""} onChange={(event) => field("content", event.target.value)} /></label></>}
           {section === "research" && <>
             <label>
               <span>문서 유형 (뱃지)</span>

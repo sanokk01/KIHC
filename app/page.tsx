@@ -206,9 +206,8 @@ export default async function Home() {
                 <Link className="button button-outline" href="/news">{dict.newsMore}</Link>
               </div>
               <div className="news-list">
-                {news.map((item, index) => (
+                {news.map((item) => (
                   <Link href={`/news/${item.slug}`} key={item.id}>
-                    <span className="news-no">{String(index + 1).padStart(2, "0")}</span>
                     <time>{item.publishedAt}</time>
                     <strong>{item.title}</strong>
                     <span className="news-arrow" aria-hidden="true">↗</span>
