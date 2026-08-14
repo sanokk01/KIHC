@@ -248,7 +248,7 @@ button { cursor: pointer; }
 .news-events-desc { margin: 12px 0 20px; color: var(--muted); font-size: 14px; }
 
 .news-list { border-top: 2px solid var(--navy-900); }
-.news-list a { display: grid; grid-template-columns: 72px 1fr 22px; align-items: start; gap: 6px 14px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.news-list a { display: grid; grid-template-columns: max-content 1fr 22px; align-items: start; gap: 6px 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
 .news-list a:hover strong, .news-list a:hover .news-arrow { color: var(--blue-600); }
 .news-list strong { font-size: 15px; font-weight: 650; line-height: 1.45; word-break: keep-all; }
 .news-list time, .news-no { color: #89929c; font-size: 12px; white-space: nowrap; padding-top: 3px; }
