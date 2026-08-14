@@ -11,6 +11,22 @@ import {
   isResearchClassification,
 } from "../lib/research-taxonomy";
 
+/** YYYY-MM-DD ↔ "YYYY. MM. DD" 변환 헬퍼 */
+function toInputDate(val: string): string {
+  if (!val) return "";
+  // 이미 YYYY-MM-DD 형식
+  if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return val;
+  // "YYYY. MM. DD" 형식 변환
+  const m = val.match(/(\d{4})[.\s]+(\d{1,2})[.\s]+(\d{1,2})/);
+  if (m) return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
+  return "";
+}
+function fromInputDate(val: string): string {
+  if (!val) return "";
+  const [y, m, d] = val.split("-");
+  return `${y}. ${m}. ${d}`;
+}
+
 export type { AdminContentRecord, AdminSection } from "../lib/admin-types";
 
 
@@ -113,10 +129,10 @@ function AdminEditor({ section, value, onChange, onCancel, onSave, saving, datab
         <div className="admin-editor-fields">
           <label className="wide"><span>제목</span><input value={value.title} onChange={(event) => field("title", event.target.value)} required /></label>
           {section !== "popup" && <label><span>주소 식별자</span><input value={value.slug ?? ""} onChange={(event) => field("slug", event.target.value)} placeholder="영문-숫자-하이픈" /></label>}
-          {section !== "popup" && <label><span>게시일</span><input value={value.publishedAt ?? ""} onChange={(event) => field("publishedAt", event.target.value)} placeholder="2026. 08. 08" /></label>}
+          {section !== "popup" && <label><span>게시일</span><input type="date" value={toInputDate(value.publishedAt ?? "")} onChange={(event) => field("publishedAt", fromInputDate(event.target.value))} /></label>}
           {section !== "popup" && <label><span>공개 상태</span><select value={value.status ?? "draft"} onChange={(event) => field("status", event.target.value)}><option value="published">공개</option><option value="draft">초안</option></select></label>}
           <ImageUploadField label={section === "popup" ? "팝업 이미지" : "대표 이미지"} value={value.imageUrl} onChange={(url) => field("imageUrl", url)} allowUrl connected={databaseConnected} />
-          {section === "news" && <><label><span>대분류 (Category)</span><select value={value.category1 ?? "공지사항"} onChange={(event) => field("category1", event.target.value)}><option value="공지사항">공지사항</option><option value="뉴스레터">뉴스레터</option><option value="행사일정">행사일정</option></select></label>{value.category1 === "행사일정" && <><label><span>소분류 (행사구분)</span><select value={value.category2 ?? "학회"} onChange={(event) => field("category2", event.target.value)}><option value="학회">학회</option><option value="강연">강연</option><option value="기타">기타</option></select></label><label><span>행사일정</span><input value={value.heldAt ?? ""} onChange={(event) => field("heldAt", event.target.value)} placeholder="2026. 08. 15" /></label></>}<label><span>조회수</span><input type="number" value={value.views ?? 0} onChange={(event) => field("views", event.target.value)} /></label><AttachmentUploadField value={value.attachmentUrl} onChange={(url) => field("attachmentUrl", url)} connected={databaseConnected} /><label className="wide"><span>요약</span><textarea rows={3} value={value.excerpt ?? ""} onChange={(event) => field("excerpt", event.target.value)} /></label><label className="wide"><span>본문</span><textarea rows={8} value={value.content ?? ""} onChange={(event) => field("content", event.target.value)} /></label></>}
+          {section === "news" && <><label><span>대분류 (Category)</span><select value={value.category1 ?? "공지사항"} onChange={(event) => field("category1", event.target.value)}><option value="공지사항">공지사항</option><option value="뉴스레터">뉴스레터</option><option value="행사일정">행사일정</option></select></label>{value.category1 === "행사일정" && <><label><span>소분류 (행사구분)</span><select value={value.category2 ?? "학회"} onChange={(event) => field("category2", event.target.value)}><option value="학회">학회</option><option value="강연">강연</option><option value="기타">기타</option></select></label><label><span>행사일정</span><input type="date" value={toInputDate(value.heldAt ?? "")} onChange={(event) => field("heldAt", fromInputDate(event.target.value))} /></label></>}<label><span>조회수</span><input type="number" value={value.views ?? 0} onChange={(event) => field("views", event.target.value)} /></label><AttachmentUploadField value={value.attachmentUrl} onChange={(url) => field("attachmentUrl", url)} connected={databaseConnected} /><label className="wide"><span>요약</span><textarea rows={3} value={value.excerpt ?? ""} onChange={(event) => field("excerpt", event.target.value)} /></label><label className="wide"><span>본문</span><textarea rows={8} value={value.content ?? ""} onChange={(event) => field("content", event.target.value)} /></label></>}
           {section === "research" && <>
             <label>
               <span>문서 유형 (뱃지)</span>
